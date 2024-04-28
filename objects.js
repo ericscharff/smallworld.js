@@ -4,13 +4,26 @@ export class SmallObject {
     this.objClass = null; // The smalltalk class object
     this.data = []; // The object;s instance variables
   }
+
+  isSmallByteArray() {
+    return false;
+  }
+
+  isSmallInt() {
+    return false;
+  }
 }
 
 // An object with an array of bytes, often used for strings
 export class SmallByteArray extends SmallObject {
-  constructor(size) {
+  constructor(byteArrayClass, size) {
     super();
+    this.objClass = byteArrayClass;
     this.values = new Uint8Array(size);
+  }
+
+  isSmallByteArray() {
+    return true;
   }
 }
 
@@ -20,5 +33,9 @@ export class SmallInt extends SmallObject {
     super();
     this.objClass = integerClass;
     this.value = v | 0;
+  }
+
+  isSmallInt() {
+    return true;
   }
 }
