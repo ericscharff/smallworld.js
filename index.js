@@ -1,5 +1,6 @@
 import { ImageReader } from "./imagereader.js";
 import { Interpreter } from "./interpreter.js";
+import { SmallByteArray, SmallObject } from "./objects.js";
 
 fetch("image.data").then((resp) => {
   resp.arrayBuffer().then((buf) => {
@@ -24,7 +25,53 @@ fetch("image.data").then((resp) => {
       ContextClass,
       IntegerClass,
     );
-    console.log(interpreter);
+
+    // Simulate doIt
+    const task = "3 + 2";
+    const TrueClass = trueObject.objClass;
+    // the class name (instance var 0) is known to be an instance of String
+    const name = TrueClass.data[0];
+    const StringClass = name.objClass;
+    // String class should have a method called "doIt"
+    const methods = StringClass.data[2];
+    // Look for the method
+    let doItMethod = null;
+    for (let i = 0; i < methods.data.length; i++) {
+      const aMethod = methods.data[i];
+      // The method's first instance variable is a SmallByteArray name
+      if (aMethod.data[0].toString() === "doIt") {
+        doItMethod = aMethod;
+      }
+    }
+    if (doItMethod === null) {
+      throw new Error("No doIt method found");
+    } else {
+      const taskByteArray = new SmallByteArray(StringClass, 0);
+      taskByteArray.values = new TextEncoder().encode(task);
+      const args = new SmallObject(ArrayClass, 1);
+      args.data[0] = taskByteArray;
+      const ctx = interpreter.buildContext(nilObject, args, doItMethod);
+      console.log("Context class: " + ctx.objClass.data[0]);
+      console.log("Method class: " + ctx.data[0].objClass.data[0]);
+      console.log("Args class: " + ctx.data[1].objClass.data[0]);
+      console.log("Byte poiter class: " + ctx.data[4].objClass.data[0]);
+      console.log("Byte poiter value: " + ctx.data[4]);
+      console.log("Stack top class: " + ctx.data[5].objClass.data[0]);
+      console.log("Stack top value: " + ctx.data[5]);
+      console.log("Old context: " + ctx.data[6]);
+    }
+
+    //       try {
+    //         return interpreter.execute(ctx, null, null);
+    //       } catch (Exception ex) {
+    //         ex.printStackTrace();
+    //       } finally {
+    //         out("Task complete");
+    //       }
+    //     }
+    //     return null;
+    //   }
+    // */
   });
 });
 console.log("Hello, world");

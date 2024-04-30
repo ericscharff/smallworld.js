@@ -16,6 +16,10 @@ export class SmallObject {
   isSmallInt() {
     return false;
   }
+
+  toString() {
+    return "A SmallObject";
+  }
 }
 
 // An object with an array of bytes, often used for strings
@@ -29,6 +33,11 @@ export class SmallByteArray extends SmallObject {
   isSmallByteArray() {
     return true;
   }
+
+  toString() {
+    // Hopefully this is a well formatted string
+    return new TextDecoder().decode(this.values);
+  }
 }
 
 // An integer. The value is coerced to an int upon construction
@@ -41,5 +50,9 @@ export class SmallInt extends SmallObject {
 
   isSmallInt() {
     return true;
+  }
+
+  toString() {
+    return `SmallInteger ${this.value}`;
   }
 }
