@@ -1,4 +1,5 @@
 import { ImageReader } from "./imagereader.js";
+import { Interpreter } from "./interpreter.js";
 
 fetch("image.data").then((resp) => {
   resp.arrayBuffer().then((buf) => {
@@ -12,6 +13,18 @@ fetch("image.data").then((resp) => {
     const ContextClass = reader.readObject();
     const IntegerClass = reader.readObject();
     console.log("image initialized");
+
+    const interpreter = new Interpreter(
+      nilObject,
+      trueObject,
+      falseObject,
+      smallInts,
+      ArrayClass,
+      BlockClass,
+      ContextClass,
+      IntegerClass,
+    );
+    console.log(interpreter);
   });
 });
 console.log("Hello, world");

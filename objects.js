@@ -1,8 +1,12 @@
 // The base class of SmallWorld Smalltalk objects
 export class SmallObject {
-  constructor() {
-    this.objClass = null; // The smalltalk class object
-    this.data = []; // The object;s instance variables
+  constructor(objClass, instanceVarCount) {
+    this.objClass = objClass; // The smalltalk class object
+    if (instanceVarCount) {
+      this.data = new Array(instanceVarCount);
+    } else {
+      this.data = []; // The object;s instance variables
+    }
   }
 
   isSmallByteArray() {
