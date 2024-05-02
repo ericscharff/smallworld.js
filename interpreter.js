@@ -24,7 +24,13 @@ export class Interpreter {
   buildContext(oldContext, args, method) {
     const context = new SmallObject(this.ContextClass, 7);
     // The context object as defined in Smallworld has the following instance variables:
-    //
+    // method          - method being executed
+    // arguments       - arguments to the methood
+    // temporaries     - temporary variables in the method
+    // stack           - working stack for invoking that method
+    // bytePointer     - pointer into the method's bytecode
+    // stackTop        - top of the working stack
+    // previousContext - parent context
     context.data[0] = method;
     context.data[1] = args;
     // allocate temporaries
