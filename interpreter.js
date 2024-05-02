@@ -34,7 +34,16 @@ export class Interpreter {
     context.data[0] = method;
     context.data[1] = args;
     // allocate temporaries
-    let max = method.data[4].value; // method.data[4] is a SmallInt
+
+    // method's instance variables are
+    // name          - method name
+    // byteCodes     - method bytecodes (implementation)
+    // literals      - array of literals used in bytecodes
+    // stackSize     - the needed stack depth (SmallInt)
+    // temporarySize - number of temporaries (SmallInt)
+    // class         - method's enclosing class
+    // text          - String (method source code) '
+    let max = method.data[4].value; // method.data[4] is a SmallInt (temporarySize)
     if (max > 0) {
       context.data[2] = new SmallObject(this.ArrayClass, max);
       while (max > 0)
