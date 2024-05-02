@@ -32,7 +32,6 @@ fetch("image.data").then((resp) => {
     // variables: 'name parentClass methods size variables '
     // and method
     // variables: 'name byteCodes literals stackSize temporarySize class text '
-    // variables: 'name byteCodes literals stackSize temporarySize class text '
     const task = "3 + 2";
     const TrueClass = trueObject.objClass;
     // the class name (instance var 0) is known to be an instance of String
