@@ -35,10 +35,10 @@ fetch("image.data").then((resp) => {
     const task = "3 + 2";
     const TrueClass = trueObject.objClass;
     // the class name (instance var 0) is known to be an instance of String
-    const name = TrueClass.data[0];
+    const name = TrueClass.data[0]; // class name (a string)
     const StringClass = name.objClass;
     // String class should have a method called "doIt"
-    const methods = StringClass.data[2];
+    const methods = StringClass.data[2]; // class methods (an array)
     // Look for the method
     let doItMethod = null;
     for (let i = 0; i < methods.data.length; i++) {
@@ -51,10 +51,11 @@ fetch("image.data").then((resp) => {
     if (doItMethod === null) {
       throw new Error("No doIt method found");
     } else {
+      // Make the Smalltalk string object on which doIt will be called
       const taskByteArray = new SmallByteArray(StringClass, 0);
       taskByteArray.values = new TextEncoder().encode(task);
       const args = new SmallObject(ArrayClass, 1);
-      args.data[0] = taskByteArray;
+      args.data[0] = taskByteArray; // This is basically "self" for doIt
       const ctx = interpreter.buildContext(nilObject, args, doItMethod);
       console.log("Context class: " + ctx.objClass.data[0]);
       console.log("Method class: " + ctx.data[0].objClass.data[0]);
