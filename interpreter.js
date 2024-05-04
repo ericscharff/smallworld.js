@@ -1,4 +1,4 @@
-import { SmallObject } from "./objects.js";
+import { SmallObject, SmallInt } from "./objects.js";
 
 export class Interpreter {
   constructor(
@@ -57,5 +57,14 @@ export class Interpreter {
     context.data[5] = this.smallInts[0]; // stacktop
     context.data[6] = oldContext;
     return context;
+  }
+
+  // create a new small integer
+  newInteger(val) {
+    if (val >= 0 && val < 10) {
+      return this.smallInts[val];
+    } else {
+      return new SmallInt(this.IntegerClass, val);
+    }
   }
 }
