@@ -1,4 +1,4 @@
-import { SmallObject, SmallInt } from "./objects.js";
+import { SmallInt, SmallObject } from "./objects.js";
 
 export class Interpreter {
   constructor(
