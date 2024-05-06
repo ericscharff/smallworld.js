@@ -5,7 +5,7 @@ export class SmallObject {
     if (instanceVarCount) {
       this.data = new Array(instanceVarCount);
     } else {
-      this.data = []; // The object;s instance variables
+      this.data = []; // The object's instance variables
     }
   }
 
