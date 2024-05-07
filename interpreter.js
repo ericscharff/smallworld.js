@@ -61,6 +61,7 @@ export class Interpreter {
 
   // create a new small integer
   newInteger(val) {
+    val = val | 0; // Ensure the value really is an integer
     if (val >= 0 && val < 10) {
       return this.smallInts[val];
     } else {
