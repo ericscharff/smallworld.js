@@ -59,3 +59,60 @@ each one (like before) a reference to an object in the file's object pool.
 Finally, there is some custom handling for reading the custom types SmallInt
 (which needs its integer value) and SmallByteArray (which has an integer length,
 and then the bytes that make up the array).
+
+## Key objects
+
+The interpreter relies heavily on the Smalltalk definition of several key
+objects, including `Class`, `Method`, and `Context`. This is because much of
+what the interpreter needs to do is send messages to objects. An object's class
+has that object's methods, the method object has the byte codes needed to run
+that method, and the `Context` object represents a single frame in the call
+stack. The ability for Smalltalk to inspect and manipulate these objects is what
+gives it it's distinct dynamic nature. However, the interpreter (for
+simplicity's sake) makes assumptions about the definitions of these objects,
+because it needs to reference pieces of them in order to function.
+
+From the Smalltalk source code, `Class` has the following definition:
+
+```
+EVAL Class addNewClass: (
+  Object subclass: 'Class'
+         variables: 'name parentClass methods size variables '
+         classVariables: 'classes Parser ')
+```
+
+Of particular importance is `methods` which is an array of methods. Since an
+array is just an arbitrary sized JavaScript array, if you are looking at an
+object o in JavaScript, then `o.objClass.data[2]` are all the methods in that
+class.
+
+From the Smalltalk source code, `Method` has the following definition:
+
+```
+EVAL Class addNewClass: (
+  Object subclass: 'Method'
+         variables: 'name byteCodes literals stackSize temporarySize class text '
+         classVariables: '')
+```
+
+Here, `name` is a String (a Symbol really, but SmallWorld doesn't distinguish
+between Symbols and Strings), and `byteCodes` is a SmallByteArray used in
+virtual machine execution. For example, the JavaScript code needs to iterate
+through the methods to find the method called `doIt`, so it then has a handle on
+the method object.
+
+When a Method is called, the interpreter creates a new `Context` object that
+represents the invocation of that method. This is analogous to a stack frame in
+other languages.  From the Smalltalk source code, `Context` has the following
+definition:
+
+```
+EVAL Class addNewClass: (
+  Object subclass: 'Context'
+         variables: 'method arguments temporaries stack bytePointer
+                     stackTop previousContext '
+         classVariables: '')
+```
+
+The `buildContext` method in the `Interpreter` JavaScript class builds these
+objects.  The interpreter's job is to build and then run methods in a context.

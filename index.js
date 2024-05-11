@@ -60,8 +60,8 @@ fetch("image.data").then((resp) => {
       console.log("Context class: " + ctx.objClass.data[0]);
       console.log("Method class: " + ctx.data[0].objClass.data[0]);
       console.log("Args class: " + ctx.data[1].objClass.data[0]);
-      console.log("Byte poiter class: " + ctx.data[4].objClass.data[0]);
-      console.log("Byte poiter value: " + ctx.data[4]);
+      console.log("Byte pointer class: " + ctx.data[4].objClass.data[0]);
+      console.log("Byte pointer value: " + ctx.data[4]);
       console.log("Stack top class: " + ctx.data[5].objClass.data[0]);
       console.log("Stack top value: " + ctx.data[5]);
       console.log("Old context: " + ctx.data[6]);
