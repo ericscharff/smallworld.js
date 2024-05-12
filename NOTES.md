@@ -103,7 +103,7 @@ the method object.
 
 When a Method is called, the interpreter creates a new `Context` object that
 represents the invocation of that method. This is analogous to a stack frame in
-other languages.  From the Smalltalk source code, `Context` has the following
+other languages. From the Smalltalk source code, `Context` has the following
 definition:
 
 ```
@@ -115,4 +115,4 @@ EVAL Class addNewClass: (
 ```
 
 The `buildContext` method in the `Interpreter` JavaScript class builds these
-objects.  The interpreter's job is to build and then run methods in a context.
+objects. The interpreter's job is to build and then run methods in a context.
