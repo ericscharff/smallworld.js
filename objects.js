@@ -40,12 +40,7 @@ export class SmallByteArray extends SmallObject {
   }
 
   dump() {
-    let result = "";
-    for (const elt of this.values) {
-      result += elt.toString(16);
-      result += " ";
-    }
-    return result;
+    return this.values.reduce((s, elt) => s + elt.toString(16) + " ", "");
   }
 }
 
