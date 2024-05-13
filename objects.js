@@ -38,6 +38,15 @@ export class SmallByteArray extends SmallObject {
     // Hopefully this is a well formatted string
     return new TextDecoder().decode(this.values);
   }
+
+  dump() {
+    let result = "";
+    for (const elt of this.values) {
+      result += elt.toString(16);
+      result += " ";
+    }
+    return result;
+  }
 }
 
 // An integer. The value is coerced to an int upon construction
