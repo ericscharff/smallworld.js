@@ -105,6 +105,12 @@ export class Interpreter {
           low = code[bytePointer++] & 0x0ff;
         }
         switch (high) {
+          case 2: // PushArgument
+            if (args === null) {
+              args = contextData[1];
+            }
+            stack[stackTop++] = args.data[low];
+            break;
           case 4: // PushLiteral
             if (literals === null) {
               literals = method.data[2].data;
