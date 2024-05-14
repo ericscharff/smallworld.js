@@ -68,4 +68,53 @@ export class Interpreter {
       return new SmallInt(this.IntegerClass, val);
     }
   }
+
+  execute(context) {
+    const selectorCache = new Array(197);
+    const classCache = new Array(197);
+    const methodCache = new Array(197);
+    let lookup = 0;
+    let cached = 0;
+
+    let contextData = context.data;
+    // outerLoop:
+    while (true) {
+      const debug = false;
+      let method = contextData[0]; // method in context
+      const code = method.data[1].values; // code pointer
+      let bytePointer = contextData[4].value;
+      let stack = contextData[3].data;
+      let stackTop = contextData[5].value;
+      let returnedValue = null;
+      let tempa;
+
+      // everything else can be null for now
+      let temporaries = null;
+      let instanceVariables = null;
+      let args = null;
+      let literals = null;
+
+      // innerLoop:
+      while (true) {
+        let high = code[bytePointer++];
+        let low = high & 0x0f;
+        high = (high >>= 4) & 0x0f;
+        if (high == 0) {
+          high = low;
+          // convert to positive int
+          low = code[bytePointer++] & 0x0ff;
+        }
+        switch (high) {
+          case 4: // PushLiteral
+            if (literals === null) {
+              literals = method.data[2].data;
+            }
+            stack[stackTop++] = literals[low];
+            break;
+          default:
+            throw new Error("Unknown opcode " + high);
+        }
+      }
+    }
+  }
 }

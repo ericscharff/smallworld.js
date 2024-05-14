@@ -67,6 +67,7 @@ fetch("image.data").then((resp) => {
       console.log("Old context: " + ctx.data[6]);
       console.log("Smallint 0: " + interpreter.newInteger(0));
       console.log("SmallInt 30: " + interpreter.newInteger(30));
+      interpreter.execute(ctx);
     }
 
     //       try {
