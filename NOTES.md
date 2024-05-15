@@ -8,8 +8,8 @@ gleaned by porting the Java SmallWorld implementation to JavaScript.
 In Smalltalk, everything you can access is an object, and every object has a
 class. This is represented by the `SmallObject` representation of a Smalltalk
 object. It contains `objClass`, the class of the object. This is a reference to
-another `SmallObject`, the one representing a class. It also contains `data`, the
-object's instance variables. This is represented as a JavaScript array, each
+another `SmallObject`, the one representing a class. It also contains `data`,
+the object's instance variables. This is represented as a JavaScript array, each
 item of which is a `SmallObject` or subclass. For named instance variables, the
 compiler assigns an index to each instance variable, and they're referenced that
 way. Smalltalk also has an `Array` class which is an arbitrary sized collection
@@ -26,9 +26,9 @@ Smalltalk. Internally, the system keeps a cache of commonly used small integers
 (0 through 9). `SmallInt` has a `value` property (a JavaScript number) for
 convenience (since the interpreter needs to use and manipulate integers often).
 Although JavaScript lacks an integer number type, the number class should be
-sufficient for the usage within the system, since it is always less than 32
-bits of precision. However, care should be taken to ensure that `value` is always
-an integer.
+sufficient for the usage within the system, since it is always less than 32 bits
+of precision. However, care should be taken to ensure that `value` is always an
+integer.
 
 ## The Object File Format
 
@@ -65,7 +65,7 @@ and then the bytes that make up the array).
 The interpreter relies heavily on the Smalltalk definition of several key
 objects, including `Class`, `Method`, and `Context`. This is because much of
 what the interpreter needs to do is send messages to objects. An object's class
-has that object's methods, the method object has the byte codes needed to run
+has that object's methods, the method object has the bytecodes needed to run
 that method, and the `Context` object represents a single frame in the call
 stack. The ability for Smalltalk to inspect and manipulate these objects is what
 gives it it's distinct dynamic nature. However, the interpreter (for
@@ -116,3 +116,41 @@ EVAL Class addNewClass: (
 
 The `buildContext` method in the `Interpreter` JavaScript class builds these
 objects. The interpreter's job is to build and then run methods in a context.
+
+## The Interpreter
+
+The main job of `Interpreter` is to run bytecode. The Smalltalk virtual machine
+is a stack machine, with intermediate values stored on a stack in the context.
+The bytecodes themselves are one or two bytes, where the opcode (`high`) is four
+bits, and the operand (low) is 4 or 8 bits. For example, the sequence `41` hex
+has high = 4 and low = 1. The sequence `03 21` hex sets high = 3 and low = 0x21.
+
+Thie yields 15 possible opcodes:
+
+- 0 - Unused (invalid)
+- 1 - PushInstance (push an instance variable of the receiver on the stack,
+  indexed by low)
+- 2 - PushArgument (push one of the method's arguments on the stack, indexed by
+  low)
+- 3 - PushTemporary (push one of the method's local, aka temporary variables on
+  the stack, indexed by low)
+- 4 - PushLiteral (push one of the method's constants, or literals, on the
+  stack, indexed by low)
+- 5 - PushConstant (push special constant objects like the SmallInts 0-9, `nil`,
+  `true`, or `false`
+- 6 - AssignInstance (set one of the receiver's instance variables to the top of
+  the stack)
+- 7 - AssignTemporary (set one of the method's temporary variables to the top of
+  the stack)
+- 8 - MarkArguments (put arguments into an array)
+- 9 - SendMessage (Send a message to an object)
+- 10 - SendUnary (Send a unary message to an object)
+- 11 - SendBinary (Send a binary message to the top two objects on the stack,
+  optimized for things like integer arithmetic)
+- 12 - PushBlock (push a reference to a block)
+- 13 - DoPrimitive (do something special. low is the arg count, the follwing
+  byte is the number of the primitive)
+- 14 - PushClassVariable (push one of the variables owned by the receiver's
+  class)
+- 15 - DoSpecial (these are auxiliary instructions that didn't fit above, such
+  as returning from a context)
