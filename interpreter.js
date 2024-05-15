@@ -64,7 +64,7 @@ export class Interpreter {
     console.log("method lookup " + name);
     if (name.length === 0) throw new Error("bad");
     let cls = null;
-    for (cls = receiver; cls != this.nilObject; cls = cls.data[1]) {
+    for (cls = receiver; cls !== this.nilObject; cls = cls.data[1]) {
       const dict = cls.data[2]; // dictionary in class
       for (let i = 0; i < dict.data.length; i++) {
         const aMethod = dict.data[i];
@@ -134,7 +134,7 @@ export class Interpreter {
         let high = code[bytePointer++];
         let low = high & 0x0f;
         high = (high >>= 4) & 0x0f;
-        if (high == 0) {
+        if (high === 0) {
           high = low;
           // convert to positive int
           low = code[bytePointer++] & 0x0ff;
@@ -164,7 +164,7 @@ export class Interpreter {
             contextData[5] = this.newInteger(stackTop);
             contextData[4] = this.newInteger(bytePointer);
             // now build new context
-            if (literals == null) {
+            if (literals === null) {
               literals = method.data[2].data;
             }
             returnedValue = literals[low]; // message selector
@@ -218,7 +218,7 @@ export class Interpreter {
                   break;
                 case 2: // +
                   const li = (i + j) | 0; // Correct for 32 bit overflow
-                  if (li != i + j) {
+                  if (li !== i + j) {
                     done = false; // overflow
                   }
                   returnedValue = this.newInteger(i + j);
@@ -268,7 +268,7 @@ export class Interpreter {
           case 15: // Do Special
             switch (low) {
               case 1: // self return
-                if (args == null) {
+                if (args === null) {
                   args = contextData[1];
                 }
                 returnedValue = args.data[0];
@@ -303,14 +303,14 @@ export class Interpreter {
               case 7: // branch if true
                 low = code[bytePointer++] & 0x0ff;
                 returnedValue = stack[--stackTop];
-                if (returnedValue == this.trueObject) {
+                if (returnedValue === this.trueObject) {
                   bytePointer = low;
                 }
                 break;
               case 8: // branch if false
                 low = code[bytePointer++] & 0x0ff;
                 returnedValue = stack[--stackTop];
-                if (returnedValue == this.falseObject) {
+                if (returnedValue === this.falseObject) {
                   bytePointer = low;
                 }
                 break;
@@ -322,10 +322,10 @@ export class Interpreter {
                 contextData[5] = this.newInteger(stackTop);
                 contextData[4] = this.newInteger(bytePointer);
                 // now build new context
-                if (literals == null) {
+                if (literals === null) {
                   literals = method.data[2].data;
                 }
-                if (method == null) {
+                if (method === null) {
                   method = context.data[0];
                 }
                 method = method.data[5]; // class in method
@@ -352,7 +352,7 @@ export class Interpreter {
       } // end of inner loop
 
       if (runEndOfOuterLoop) {
-        if (context == null || context == this.nilObject) {
+        if (context === null || context === this.nilObject) {
           if (debug) {
             console.log("lookups " + lookup + " cached " + cached);
           }
