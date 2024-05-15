@@ -1,4 +1,4 @@
-import { SmallInt, SmallObject } from "./objects.js";
+import { SmallInt, SmallObject } from './objects.js';
 
 export class Interpreter {
   constructor(
@@ -118,7 +118,7 @@ export class Interpreter {
             stack[stackTop++] = literals[low];
             break;
           default:
-            throw new Error("Unknown opcode " + high);
+            throw new Error('Unknown opcode ' + high);
         }
       }
     }
