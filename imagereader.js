@@ -1,4 +1,4 @@
-import { SmallObject, SmallByteArray, SmallInt } from './objects.js';
+import { SmallObject, SmallByteArray, SmallInt } from "./objects.js";
 
 // Convenience for reading Ui
 class DataStream {
@@ -30,10 +30,10 @@ export class ImageReader {
 
   readObjects() {
     if (this.stream.readInt() != 0x53575354) {
-      throw new Error('Bad magic number');
+      throw new Error("Bad magic number");
     }
     if (this.stream.readInt() != 0) {
-      throw new Error('Bad version number');
+      throw new Error("Bad version number");
     }
     const objectCount = this.stream.readInt();
     this.objectPool = new Array(objectCount);
@@ -51,7 +51,7 @@ export class ImageReader {
           this.objectPool[i] = new SmallByteArray(null, 0);
           break;
         default:
-          throw new Error('Unknown object type ' + objType);
+          throw new Error("Unknown object type " + objType);
       }
     }
     // Then fill in the objects
@@ -93,7 +93,7 @@ export class ImageReader {
 
   readSmallInts() {
     const ints = new Array(this.smallIntCount);
-    console.log('small ints: ' + this.smallIntCount);
+    console.log("small ints: " + this.smallIntCount);
     for (let i = 0; i < this.smallIntCount; i++) {
       ints[i] = this.readObject();
     }

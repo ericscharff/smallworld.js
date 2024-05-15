@@ -18,7 +18,7 @@ export class SmallObject {
   }
 
   toString() {
-    return 'A SmallObject';
+    return "A SmallObject";
   }
 }
 
@@ -40,7 +40,7 @@ export class SmallByteArray extends SmallObject {
   }
 
   dump() {
-    return this.values.reduce((s, elt) => s + elt.toString(16) + ' ', '');
+    return this.values.reduce((s, elt) => s + elt.toString(16) + " ", "");
   }
 }
 
