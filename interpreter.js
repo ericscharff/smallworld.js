@@ -1,4 +1,4 @@
-import { SmallInt, SmallObject } from "./objects.js";
+import { SmallByteArray, SmallInt, SmallObject } from "./objects.js";
 
 export class Interpreter {
   constructor(
@@ -59,6 +59,39 @@ export class Interpreter {
     return context;
   }
 
+  methodLookup(receiver, messageSelector, context, args) {
+    const name = messageSelector.toString();
+    console.log("method lookup " + name);
+    if (name.length === 0) throw new Error("bad");
+    let cls = null;
+    for (cls = receiver; cls != this.nilObject; cls = cls.data[1]) {
+      const dict = cls.data[2]; // dictionary in class
+      for (let i = 0; i < dict.data.length; i++) {
+        const aMethod = dict.data[i];
+        if (name.toString() === aMethod.data[0].toString()) {
+          return aMethod;
+        }
+      }
+    }
+    // try once to handle method in Smalltalk before giving up
+    if (name.toString() === "error:") {
+      throw new Error("Unrecognized message selector: " + messageSelector);
+    }
+    const newArgs = new Array(2);
+    newArgs[0] = args.data[0]; // same receiver
+    newArgs[1] = new SmallByteArray(
+      messageSelector.objClass,
+      "Unrecognized message selector: " + name,
+    );
+    args.data = newArgs;
+    return this.methodLookup(
+      receiver,
+      new SmallByteArray(messageSelector.objClass, "error:"),
+      context,
+      args,
+    );
+  }
+
   // create a new small integer
   newInteger(val) {
     val = val | 0; // Ensure the value really is an integer
@@ -93,9 +126,10 @@ export class Interpreter {
       let instanceVariables = null;
       let args = null;
       let literals = null;
+      let innerLoopRunning = true;
 
       // innerLoop:
-      while (true) {
+      while (innerLoopRunning) {
         let high = code[bytePointer++];
         let low = high & 0x0f;
         high = (high >>= 4) & 0x0f;
@@ -116,6 +150,65 @@ export class Interpreter {
               literals = method.data[2].data;
             }
             stack[stackTop++] = literals[low];
+            break;
+          case 11: // SendBinary
+            if (
+              stack[stackTop - 1].isSmallInt() &&
+              stack[stackTop - 2].isSmallInt()
+            ) {
+              // Optimized integer special cases
+              const j = stack[--stackTop].value;
+              const i = stack[--stackTop].value;
+              let done = true;
+              switch (low) {
+                case 0: // <
+                  returnedValue = i < j ? this.trueObject : this.falseObject;
+                  break;
+                case 1: // <=
+                  returnedValue = i <= j ? this.trueObject : this.falseObject;
+                  break;
+                case 2: // +
+                  const li = (i + j) | 0; // Correct for 32 bit overflow
+                  if (li != i + j) {
+                    done = false; // overflow
+                  }
+                  returnedValue = this.newInteger(i + j);
+                  break;
+              }
+              if (done) {
+                stack[stackTop++] = returnedValue;
+                break;
+              } else {
+                stackTop += 2; // overflow, send message
+              }
+            }
+            // non optimized binary message
+            args = new SmallObject(this.ArrayClass, 2);
+            args.data[1] = stack[--stackTop];
+            args.data[0] = stack[--stackTop];
+            contextData[5] = this.newInteger(stackTop);
+            contextData[4] = this.newInteger(bytePointer);
+            let msg = null;
+            switch (low) {
+              case 0:
+                msg = new SmallByteArray(null, "<");
+                break;
+              case 1:
+                msg = new SmallByteArray(null, "<=");
+                break;
+              case 2:
+                msg = new SmallByteArray(null, "+");
+                break;
+            }
+            method = this.methodLookup(
+              args.data[0].objClass,
+              msg,
+              context,
+              args,
+            );
+            context = this.buildContext(context, args, method);
+            contextData = context.data;
+            innerLoopRunning = false;
             break;
           default:
             throw new Error("Unknown opcode " + high);

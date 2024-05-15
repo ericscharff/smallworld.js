@@ -24,10 +24,15 @@ export class SmallObject {
 
 // An object with an array of bytes, often used for strings
 export class SmallByteArray extends SmallObject {
-  constructor(byteArrayClass, size) {
+  constructor(byteArrayClass, sizeOrString) {
     super();
     this.objClass = byteArrayClass;
-    this.values = new Uint8Array(size);
+    if (typeof sizeOrString === "number") {
+      this.values = new Uint8Array(sizeOrString);
+    } else {
+      // size is actually a string
+      this.values = new TextEncoder().encode(sizeOrString);
+    }
   }
 
   isSmallByteArray() {
