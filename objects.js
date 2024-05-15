@@ -1,6 +1,9 @@
+let uniqueId = 1000;
+
 // The base class of SmallWorld Smalltalk objects
 export class SmallObject {
   constructor(objClass, instanceVarCount) {
+    this.hash = uniqueId++;
     this.objClass = objClass; // The smalltalk class object
     if (instanceVarCount) {
       this.data = new Array(instanceVarCount);
@@ -15,6 +18,10 @@ export class SmallObject {
 
   isSmallInt() {
     return false;
+  }
+
+  hashCode() {
+    return this.hash;
   }
 
   toString() {

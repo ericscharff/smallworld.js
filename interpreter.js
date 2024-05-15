@@ -151,6 +151,54 @@ export class Interpreter {
             }
             stack[stackTop++] = literals[low];
             break;
+          case 8: // MarkArguments
+            const newArguments = new SmallObject(this.ArrayClass, low);
+            tempa = newArguments.data; // direct access to array
+            while (low > 0) tempa[--low] = stack[--stackTop];
+            stack[stackTop++] = newArguments;
+            break;
+          case 9: // SendMessage
+            // save old context
+            args = stack[--stackTop];
+            contextData[5] = this.newInteger(stackTop);
+            contextData[4] = this.newInteger(bytePointer);
+            // now build new context
+            if (literals == null) {
+              literals = method.data[2].data;
+            }
+            returnedValue = literals[low]; // message selector
+            // System.out.println("Sending " + returnedValue);
+            // System.out.println("Arguments " + arguments);
+            // System.out.println("Arguments receiver " + arguments.data[0]);
+            // System.out.println("Arguments class " + arguments.data[0].objClass);
+            high =
+              Math.abs(
+                args.data[0].objClass.hashCode() + returnedValue.hashCode(),
+              ) % 197;
+            if (
+              selectorCache[high] !== null &&
+              selectorCache[high] === returnedValue &&
+              classCache[high] === args.data[0].objClass
+            ) {
+              method = methodCache[high];
+              cached++;
+            } else {
+              method = this.methodLookup(
+                args.data[0].objClass,
+                literals[low],
+                context,
+                args,
+              );
+              lookup++;
+              selectorCache[high] = returnedValue;
+              classCache[high] = args.data[0].objClass;
+              methodCache[high] = method;
+            }
+            context = this.buildContext(context, args, method);
+            contextData = context.data;
+            // load information from context
+            innerLoopRunning = false;
+            break;
           case 11: // SendBinary
             if (
               stack[stackTop - 1].isSmallInt() &&
