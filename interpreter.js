@@ -267,81 +267,12 @@ export class Interpreter {
             }
           case 15: // Do Special
             switch (low) {
-              case 1: // self return
-                if (args === null) {
-                  args = contextData[1];
-                }
-                returnedValue = args.data[0];
-                context = contextData[6]; // previous context
-                innerLoopRunning = false;
-                runEndOfOuterLoop = true;
-                break;
               case 2: // stack return
                 returnedValue = stack[--stackTop];
                 context = contextData[6]; // previous context
                 innerLoopRunning = false;
                 runEndOfOuterLoop = true;
                 break;
-              case 3: // block return
-                returnedValue = stack[--stackTop];
-                context = contextData[8]; // creating context in block
-                context = context.data[6]; // previous context
-                innerLoopRunning = false;
-                runEndOfOuterLoop = true;
-                break;
-              case 4: // duplicate
-                returnedValue = stack[stackTop - 1];
-                stack[stackTop++] = returnedValue;
-                break;
-              case 5: // pop top
-                stackTop--;
-                break;
-              case 6: // branch
-                low = code[bytePointer++] & 0x0ff;
-                bytePointer = low;
-                break;
-              case 7: // branch if true
-                low = code[bytePointer++] & 0x0ff;
-                returnedValue = stack[--stackTop];
-                if (returnedValue === this.trueObject) {
-                  bytePointer = low;
-                }
-                break;
-              case 8: // branch if false
-                low = code[bytePointer++] & 0x0ff;
-                returnedValue = stack[--stackTop];
-                if (returnedValue === this.falseObject) {
-                  bytePointer = low;
-                }
-                break;
-              case 11: // send to super
-                low = code[bytePointer++] & 0x0ff;
-                // message selector
-                // save old context
-                args = stack[--stackTop];
-                contextData[5] = this.newInteger(stackTop);
-                contextData[4] = this.newInteger(bytePointer);
-                // now build new context
-                if (literals === null) {
-                  literals = method.data[2].data;
-                }
-                if (method === null) {
-                  method = context.data[0];
-                }
-                method = method.data[5]; // class in method
-                method = method.data[1]; // parent in class
-                method = this.methodLookup(
-                  method,
-                  literals[low],
-                  context,
-                  args,
-                );
-                context = this.buildContext(context, args, method);
-                contextData = context.data;
-                // load information from context
-                innerLoopRunning = false;
-                break;
-
               default: // throw exception
                 throw new Error("Unrecogized DoSpecial " + low);
             }
