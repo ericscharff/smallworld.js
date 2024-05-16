@@ -4,7 +4,7 @@ let uniqueId = 1000;
 export class SmallObject {
   constructor(objClass, instanceVarCount) {
     this.hash = uniqueId++;
-    this.objClass = objClass; // The smalltalk class object
+    this.objClass = objClass; // The Smalltalk class object
     if (instanceVarCount) {
       this.data = new Array(instanceVarCount);
     } else {
@@ -25,7 +25,7 @@ export class SmallObject {
   }
 
   toString() {
-    return "A SmallObject";
+    return `A SmallObject (${this.hash})`;
   }
 }
 
