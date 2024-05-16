@@ -58,14 +58,10 @@ export class ImageReader {
     for (let i = 0; i < objectCount; i++) {
       const obj = this.objectPool[i];
       obj.objClass = this.objectPool[this.stream.readInt()];
-      const dataLength = this.stream.readInt();
-      if (dataLength === -1) {
-        obj.data = null;
-      } else {
-        obj.data = new Array(dataLength);
-        for (let j = 0; j < dataLength; j++) {
-          obj.data[j] = this.objectPool[this.stream.readInt()];
-        }
+      const dataLength = Math.max(0, this.stream.readInt());
+      obj.data = new Array(dataLength);
+      for (let j = 0; j < dataLength; j++) {
+        obj.data[j] = this.objectPool[this.stream.readInt()];
       }
       // Type specific data
       if (obj.isSmallInt()) {
