@@ -262,9 +262,26 @@ export class Interpreter {
           case 13: // Do Primitive, low is arg count, next byte is number
             high = code[bytePointer++] & 0x0ff;
             switch (high) {
+              case 24:
+                {
+                  // string append
+                  const a = stack[--stackTop];
+                  const b = stack[--stackTop];
+                  low = a.values.length + b.values.length;
+                  const n = new SmallByteArray(a.objClass, low);
+                  high = 0;
+                  for (let i = 0; i < a.values.length; i++)
+                    n.values[high++] = a.values[i];
+                  for (let i = 0; i < b.values.length; i++)
+                    n.values[high++] = b.values[i];
+                  returnedValue = n;
+                }
+                break;
               default:
                 throw new Error("Unknown Primitive " + high);
             }
+            stack[stackTop++] = returnedValue;
+            break;
           case 15: // Do Special
             switch (low) {
               case 2: // stack return
