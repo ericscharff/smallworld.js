@@ -140,6 +140,15 @@ export class Interpreter {
           low = code[bytePointer++] & 0x0ff;
         }
         switch (high) {
+          case 1: // PushInstance
+            if (args == null) {
+              args = contextData[1];
+            }
+            if (instanceVariables == null) {
+              instanceVariables = args.data[0].data;
+            }
+            stack[stackTop++] = instanceVariables[low];
+            break;
           case 2: // PushArgument
             if (args === null) {
               args = contextData[1];
