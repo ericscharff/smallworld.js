@@ -209,6 +209,21 @@ export class Interpreter {
             // load information from context
             innerLoopRunning = false;
             break;
+          case 10: // SendUnary
+            if (low == 0) {
+              // isNil
+              const arg = stack[--stackTop];
+              stack[stackTop++] =
+                arg == this.nilObject ? this.trueObject : this.falseObject;
+            } else if (low == 1) {
+              // notNil
+              const arg = stack[--stackTop];
+              stack[stackTop++] =
+                arg != this.nilObject ? this.trueObject : this.falseObject;
+            } else {
+              throw new Error("Illegal SendUnary " + low);
+            }
+            break;
           case 11: // SendBinary
             if (
               stack[stackTop - 1].isSmallInt() &&
@@ -275,6 +290,33 @@ export class Interpreter {
                 low = stack[--stackTop].value;
                 returnedValue = new SmallObject(stack[--stackTop], low);
                 while (low > 0) returnedValue.data[--low] = this.nilObject;
+                break;
+              case 8:
+                {
+                  // block invocation
+                  returnedValue = stack[--stackTop]; // the block
+                  high = returnedValue.data[7].value; // arg location
+                  low -= 2;
+                  if (low >= 0) {
+                    temporaries = returnedValue.data[2].data;
+                    while (low >= 0) {
+                      temporaries[high + low--] = stack[--stackTop];
+                    }
+                  }
+                  contextData[5] = this.newInteger(stackTop);
+                  contextData[4] = this.newInteger(bytePointer);
+                  const newContext = new SmallObject(this.ContextClass, 10);
+                  for (let i = 0; i < 10; i++)
+                    newContext.data[i] = returnedValue.data[i];
+                  newContext.data[6] = contextData[6];
+                  newContext.data[5] = this.newInteger(0); // stack top
+                  newContext.data[4] = returnedValue.data[9]; // starting addr
+                  low = newContext.data[3].data.length; // stack size
+                  newContext.data[3] = new SmallObject(this.ArrayClass, low); // new stack
+                  context = newContext;
+                  contextData = context.data;
+                  innerLoopRunning = false;
+                }
                 break;
               case 24:
                 {
