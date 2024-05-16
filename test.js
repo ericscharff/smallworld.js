@@ -60,7 +60,6 @@ fs.readFile("image.data").then((buf) => {
     const ctx = interpreter.buildContext(nilObject, args, doItMethod);
     console.log("Context class: " + ctx.objClass.data[0]);
     console.log("Method class: " + ctx.data[0].objClass.data[0]);
-    console.log("doItMethod bytes: " + doItMethod.data[1].dump());
     console.log("Args class: " + ctx.data[1].objClass.data[0]);
     console.log("Byte pointer class: " + ctx.data[4].objClass.data[0]);
     console.log("Byte pointer value: " + ctx.data[4]);

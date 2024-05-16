@@ -34,6 +34,7 @@ export class SmallByteArray extends SmallObject {
   constructor(byteArrayClass, sizeOrString) {
     super();
     this.objClass = byteArrayClass;
+    this.cachedString = null;
     if (typeof sizeOrString === "number") {
       this.values = new Uint8Array(sizeOrString);
     } else {
@@ -47,12 +48,10 @@ export class SmallByteArray extends SmallObject {
   }
 
   toString() {
-    // Hopefully this is a well formatted string
-    return new TextDecoder().decode(this.values);
-  }
-
-  dump() {
-    return this.values.reduce((s, elt) => s + elt.toString(16) + " ", "");
+    if (this.cachedString === null) {
+      this.cachedString = new TextDecoder().decode(this.values);
+    }
+    return this.cachedString;
   }
 }
 
