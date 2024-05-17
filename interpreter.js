@@ -333,6 +333,25 @@ export class Interpreter {
             contextData = context.data;
             innerLoopRunning = false;
             break;
+          case 12: // PushBlock
+            // low is argument location
+            // next byte is goto value
+            high = code[bytePointer++] & 0x0ff;
+            returnedValue = new SmallObject(this.BlockClass, 10);
+            tempa = returnedValue.data;
+            tempa[0] = contextData[0]; // share method
+            tempa[1] = contextData[1]; // share arguments
+            tempa[2] = contextData[2]; // share temporaries
+            tempa[3] = contextData[3]; // stack (later replaced)
+            tempa[4] = this.newInteger(bytePointer); // current byte pointer
+            tempa[5] = this.newInteger(0); // stacktop
+            tempa[6] = contextData[6]; // previous context
+            tempa[7] = this.newInteger(low); // argument location
+            tempa[8] = context; // creating context
+            tempa[9] = this.newInteger(bytePointer); // current byte pointer
+            stack[stackTop++] = returnedValue;
+            bytePointer = high;
+            break;
           case 13: // DoPrimitive, low is arg count, next byte is number
             high = code[bytePointer++] & 0x0ff;
             switch (high) {
@@ -391,6 +410,13 @@ export class Interpreter {
                 returnedValue =
                   low === high ? this.trueObject : this.falseObject;
                 break;
+              case 21: // string at
+                low = stack[--stackTop].value;
+                returnedValue = stack[--stackTop];
+                const baa = returnedValue;
+                low = baa.values[low - 1] & 0x0ff;
+                returnedValue = this.newInteger(low);
+                break;
               case 24:
                 {
                   // string append
@@ -406,6 +432,38 @@ export class Interpreter {
                   returnedValue = n;
                 }
                 break;
+              case 26:
+                {
+                  // string compare
+                  const a = stack[--stackTop];
+                  const b = stack[--stackTop];
+                  low = a.values.length;
+                  high = b.values.length;
+                  let s = low < high ? low : high;
+                  let r = 0;
+                  for (let i = 0; i < s; i++)
+                    if (a.values[i] < b.values[i]) {
+                      r = 1;
+                      break;
+                    } else if (b.values[i] < a.values[i]) {
+                      r = -1;
+                      break;
+                    }
+                  if (r === 0) {
+                    if (low < high) {
+                      r = 1;
+                    } else if (low > high) {
+                      r = -1;
+                    }
+                  }
+                  returnedValue = this.newInteger(r);
+                }
+                break;
+              case 30: // array at
+                low = stack[--stackTop].value;
+                returnedValue = stack[--stackTop];
+                returnedValue = returnedValue.data[low - 1];
+                break;
               default:
                 throw new Error("Unknown Primitive " + high);
             }
@@ -413,14 +471,41 @@ export class Interpreter {
             break;
           case 15: // DoSpecial
             switch (low) {
+              case 1: // self return
+                if (args === null) {
+                  args = contextData[1];
+                }
+                returnedValue = args.data[0];
+                context = contextData[6]; // previous context
+                innerLoopRunning = false;
+                runEndOfOuterLoop = true;
+                break;
               case 2: // stack return
                 returnedValue = stack[--stackTop];
                 context = contextData[6]; // previous context
                 innerLoopRunning = false;
                 runEndOfOuterLoop = true;
                 break;
+              case 3: // block return
+                returnedValue = stack[--stackTop];
+                context = contextData[8]; // creating context in block
+                context = context.data[6]; // previous context
+                innerLoopRunning = false;
+                runEndOfOuterLoop = true;
+                break;
               case 5: // pop top
                 stackTop--;
+                break;
+              case 6: // branch
+                low = code[bytePointer++] & 0x0ff;
+                bytePointer = low;
+                break;
+              case 7: // branch if true
+                low = code[bytePointer++] & 0x0ff;
+                returnedValue = stack[--stackTop];
+                if (returnedValue == this.trueObject) {
+                  bytePointer = low;
+                }
                 break;
               case 8: // branch if false
                 low = code[bytePointer++] & 0x0ff;
