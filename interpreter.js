@@ -155,11 +155,61 @@ export class Interpreter {
             }
             stack[stackTop++] = args.data[low];
             break;
+          case 3: // PushTemporary
+            if (temporaries == null) {
+              temporaries = contextData[2].data;
+            }
+            stack[stackTop++] = temporaries[low];
+            break;
           case 4: // PushLiteral
             if (literals === null) {
               literals = method.data[2].data;
             }
             stack[stackTop++] = literals[low];
+            break;
+          case 5: // PushConstant
+            switch (low) {
+              case 0:
+              case 1:
+              case 2:
+              case 3:
+              case 4:
+              case 5:
+              case 6:
+              case 7:
+              case 8:
+              case 9:
+                // All the SmallIntegers from [0..9] will return cached objects
+                stack[stackTop++] = this.newInteger(low);
+                break;
+              case 10:
+                stack[stackTop++] = this.nilObject;
+                break;
+              case 11:
+                stack[stackTop++] = this.trueObject;
+                break;
+              case 12:
+                stack[stackTop++] = this.falseObject;
+                break;
+              default:
+                throw new Exception("Unknown constant " + low);
+            }
+            break;
+          case 6: // AssignInstance
+            if (args == null) {
+              args = contextData[1];
+            }
+            if (instanceVariables == null) {
+              instanceVariables = args.data[0].data;
+            }
+            // leave result on stack
+            instanceVariables[low] = stack[stackTop - 1];
+            break;
+          case 7: // AssignTemporary
+            if (temporaries == null) {
+              temporaries = contextData[2].data;
+            }
+            temporaries[low] = stack[stackTop - 1];
             break;
           case 8: // MarkArguments
             const newArguments = new SmallObject(this.ArrayClass, low);
@@ -283,9 +333,12 @@ export class Interpreter {
             contextData = context.data;
             innerLoopRunning = false;
             break;
-          case 13: // Do Primitive, low is arg count, next byte is number
+          case 13: // DoPrimitive, low is arg count, next byte is number
             high = code[bytePointer++] & 0x0ff;
             switch (high) {
+              case 2: // object class
+                returnedValue = stack[--stackTop].objClass;
+                break;
               case 7: // new object allocation
                 low = stack[--stackTop].value;
                 returnedValue = new SmallObject(stack[--stackTop], low);
@@ -338,13 +391,50 @@ export class Interpreter {
             }
             stack[stackTop++] = returnedValue;
             break;
-          case 15: // Do Special
+          case 15: // DoSpecial
             switch (low) {
               case 2: // stack return
                 returnedValue = stack[--stackTop];
                 context = contextData[6]; // previous context
                 innerLoopRunning = false;
                 runEndOfOuterLoop = true;
+                break;
+              case 5: // pop top
+                stackTop--;
+                break;
+              case 8: // branch if false
+                low = code[bytePointer++] & 0x0ff;
+                returnedValue = stack[--stackTop];
+                if (returnedValue == this.falseObject) {
+                  bytePointer = low;
+                }
+                break;
+              case 11: // send to super
+                low = code[bytePointer++] & 0x0ff;
+                // message selector
+                // save old context
+                args = stack[--stackTop];
+                contextData[5] = this.newInteger(stackTop);
+                contextData[4] = this.newInteger(bytePointer);
+                // now build new context
+                if (literals == null) {
+                  literals = method.data[2].data;
+                }
+                if (method == null) {
+                  method = context.data[0];
+                }
+                method = method.data[5]; // class in method
+                method = method.data[1]; // parent in class
+                method = this.methodLookup(
+                  method,
+                  literals[low],
+                  context,
+                  args,
+                );
+                context = this.buildContext(context, args, method);
+                contextData = context.data;
+                // load information from context
+                innerLoopRunning = false;
                 break;
               default: // throw exception
                 throw new Error("Unrecogized DoSpecial " + low);
