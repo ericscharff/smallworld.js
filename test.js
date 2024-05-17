@@ -14,14 +14,14 @@ describe("SmallWorld", () => {
   });
 
   it("fails on bad version", async () => {
-    await fs.readFile("badvers.txt").then((buf) => {
+    await fs.readFile("testdata/badvers.txt").then((buf) => {
       const reader = new ImageReader(buf);
       assert.throws(() => reader.readObject());
     });
   });
 
   it("fails on object type", async () => {
-    await fs.readFile("image.bad").then((buf) => {
+    await fs.readFile("testdata/image.bad").then((buf) => {
       const reader = new ImageReader(buf);
       assert.throws(() => reader.readObject());
     });
