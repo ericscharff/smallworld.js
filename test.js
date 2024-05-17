@@ -92,10 +92,8 @@ describe("SmallWorld", () => {
         console.log("Old context: " + ctx.data[6]);
         console.log("Smallint 0: " + interpreter.newInteger(0));
         console.log("SmallInt 30: " + interpreter.newInteger(30));
-        // TODO: Remove from try block
-        try {
-          interpreter.execute(ctx);
-        } catch (expected) {}
+        const r = interpreter.execute(ctx);
+        assert(r === interpreter.newInteger(5));
       }
     });
     console.log("Started");

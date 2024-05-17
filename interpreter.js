@@ -61,7 +61,7 @@ export class Interpreter {
 
   methodLookup(receiver, messageSelector, context, args) {
     const name = messageSelector.toString();
-    console.log("method lookup " + name);
+    //console.log("method lookup " + name);
     if (name.length === 0) throw new Error("bad");
     let cls = null;
     for (cls = receiver; cls !== this.nilObject; cls = cls.data[1]) {
@@ -354,6 +354,14 @@ export class Interpreter {
           case 13: // DoPrimitive, low is arg count, next byte is number
             high = code[bytePointer++] & 0x0ff;
             switch (high) {
+              case 1: // object identity
+                returnedValue = stack[--stackTop];
+                if (returnedValue === stack[--stackTop]) {
+                  returnedValue = this.trueObject;
+                } else {
+                  returnedValue = this.falseObject;
+                }
+                break;
               case 2: // object class
                 returnedValue = stack[--stackTop].objClass;
                 break;
@@ -370,6 +378,9 @@ export class Interpreter {
                 low = stack[--stackTop].value;
                 returnedValue = stack[--stackTop];
                 returnedValue.data[low - 1] = stack[--stackTop];
+                break;
+              case 6: // new context execute
+                returnedValue = this.execute(stack[--stackTop]);
                 break;
               case 7: // new object allocation
                 low = stack[--stackTop].value;
@@ -420,6 +431,20 @@ export class Interpreter {
                 high = stack[--stackTop].value;
                 returnedValue =
                   low === high ? this.trueObject : this.falseObject;
+                break;
+              case 15:
+                {
+                  // small integer multiplication
+                  low = stack[--stackTop].value;
+                  high = stack[--stackTop].value;
+                  const lhigh = high * low; // full precision
+                  high = (high * low) | 0; // int32 precision
+                  if (lhigh === high) {
+                    returnedValue = this.newInteger(high);
+                  } else {
+                    returnedValue = this.nilObject;
+                  }
+                }
                 break;
               case 16:
                 {
@@ -506,10 +531,10 @@ export class Interpreter {
             stack[stackTop++] = returnedValue;
             break;
           case 14: // PushClassVariable
-            if (args == null) {
+            if (args === null) {
               args = contextData[1];
             }
-            if (instanceVariables == null) {
+            if (instanceVariables === null) {
               instanceVariables = args.data[0].data;
             }
             stack[stackTop++] = args.data[0].objClass.data[low + 5];
@@ -548,7 +573,7 @@ export class Interpreter {
               case 7: // branch if true
                 low = code[bytePointer++] & 0x0ff;
                 returnedValue = stack[--stackTop];
-                if (returnedValue == this.trueObject) {
+                if (returnedValue === this.trueObject) {
                   bytePointer = low;
                 }
                 break;
