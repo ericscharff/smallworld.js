@@ -89,7 +89,6 @@ export class ImageReader {
 
   readSmallInts() {
     const ints = new Array(this.smallIntCount);
-    console.log("small ints: " + this.smallIntCount);
     for (let i = 0; i < this.smallIntCount; i++) {
       ints[i] = this.readObject();
     }
