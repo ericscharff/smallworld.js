@@ -232,9 +232,8 @@ export class Interpreter {
             // System.out.println("Arguments receiver " + arguments.data[0]);
             // System.out.println("Arguments class " + arguments.data[0].objClass);
             high =
-              Math.abs(
-                args.data[0].objClass.hashCode() + returnedValue.hashCode(),
-              ) % 197;
+              (args.data[0].objClass.hashCode() + returnedValue.hashCode()) %
+              197;
             if (
               selectorCache[high] !== null &&
               selectorCache[high] === returnedValue &&
@@ -404,11 +403,41 @@ export class Interpreter {
                   innerLoopRunning = false;
                 }
                 break;
+              case 11: // small integer quotient
+                low = stack[--stackTop].value;
+                high = stack[--stackTop].value;
+                high /= low;
+                returnedValue = this.newInteger(high);
+                break;
+              case 12: // small integer remainder
+                low = stack[--stackTop].value;
+                high = stack[--stackTop].value;
+                high %= low;
+                returnedValue = this.newInteger(high);
+                break;
               case 14: // small int equality
                 low = stack[--stackTop].value;
                 high = stack[--stackTop].value;
                 returnedValue =
                   low === high ? this.trueObject : this.falseObject;
+                break;
+              case 16:
+                {
+                  // small integer subtraction
+                  low = stack[--stackTop].value;
+                  high = stack[--stackTop].value;
+                  const lhigh = high - low; // full precision
+                  high = (high - low) | 0; // int32 precision
+                  if (lhigh === high) {
+                    returnedValue = this.newInteger(high);
+                  } else {
+                    returnedValue = this.nilObject;
+                  }
+                }
+                break;
+              case 20: // byte array allocation
+                low = stack[--stackTop].value;
+                returnedValue = new SmallByteArray(stack[--stackTop], low);
                 break;
               case 21: // string at
                 low = stack[--stackTop].value;
@@ -416,6 +445,13 @@ export class Interpreter {
                 const baa = returnedValue;
                 low = baa.values[low - 1] & 0x0ff;
                 returnedValue = this.newInteger(low);
+                break;
+              case 22: // string at put
+                low = stack[--stackTop].value;
+                const ba = stack[--stackTop];
+                high = stack[--stackTop].value;
+                ba.values[low - 1] = high;
+                returnedValue = ba;
                 break;
               case 24:
                 {
