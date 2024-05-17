@@ -7,21 +7,21 @@ import { SmallByteArray, SmallObject } from "./objects.js";
 
 describe("SmallWorld", () => {
   it("fails on bad magic number", async () => {
-    await fs.readFile("README.md").then((buf) => {
+    await fs.readFile("testdata/image.badMagicNumber").then((buf) => {
       const reader = new ImageReader(buf);
       assert.throws(() => reader.readObject());
     });
   });
 
   it("fails on bad version", async () => {
-    await fs.readFile("testdata/badvers.txt").then((buf) => {
+    await fs.readFile("testdata/image.badVersionNumber").then((buf) => {
       const reader = new ImageReader(buf);
       assert.throws(() => reader.readObject());
     });
   });
 
   it("fails on object type", async () => {
-    await fs.readFile("testdata/image.bad").then((buf) => {
+    await fs.readFile("testdata/image.badObjectType").then((buf) => {
       const reader = new ImageReader(buf);
       assert.throws(() => reader.readObject());
     });
