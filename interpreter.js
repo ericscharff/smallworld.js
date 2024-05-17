@@ -505,6 +505,15 @@ export class Interpreter {
             }
             stack[stackTop++] = returnedValue;
             break;
+          case 14: // PushClassVariable
+            if (args == null) {
+              args = contextData[1];
+            }
+            if (instanceVariables == null) {
+              instanceVariables = args.data[0].data;
+            }
+            stack[stackTop++] = args.data[0].objClass.data[low + 5];
+            break;
           case 15: // DoSpecial
             switch (low) {
               case 1: // self return
