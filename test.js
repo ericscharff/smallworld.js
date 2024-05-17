@@ -1,6 +1,6 @@
-import assert from "assert";
 import fs from "fs/promises";
 import path from "path";
+import { expect } from "chai";
 import { ImageReader } from "./imagereader.js";
 import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
@@ -10,21 +10,21 @@ describe("SmallWorld", () => {
     it("fails on bad magic number", async () => {
       await fs.readFile("testdata/image.badMagicNumber").then((buf) => {
         const reader = new ImageReader(buf);
-        assert.throws(() => reader.readObject());
+        expect(() => reader.readObject()).to.throw();
       });
     });
 
     it("fails on bad version", async () => {
       await fs.readFile("testdata/image.badVersionNumber").then((buf) => {
         const reader = new ImageReader(buf);
-        assert.throws(() => reader.readObject());
+        expect(() => reader.readObject()).to.throw();
       });
     });
 
     it("fails on object type", async () => {
       await fs.readFile("testdata/image.badObjectType").then((buf) => {
         const reader = new ImageReader(buf);
-        assert.throws(() => reader.readObject());
+        expect(() => reader.readObject()).to.throw();
       });
     });
 
@@ -39,8 +39,8 @@ describe("SmallWorld", () => {
         const BlockClass = reader.readObject();
         const ContextClass = reader.readObject();
         const IntegerClass = reader.readObject();
-        assert(smallInts[0].objClass === IntegerClass);
-        assert(smallInts[1].value === 1);
+        expect(smallInts[0].objClass).to.equal(IntegerClass);
+        expect(smallInts[1].value).to.equal(1);
       });
     });
   });
@@ -101,7 +101,7 @@ describe("SmallWorld", () => {
           args.data[0] = taskByteArray; // This is basically "self" for doIt
           const ctx = interpreter.buildContext(nilObject, args, doItMethod);
           const r = interpreter.execute(ctx);
-          assert(r === interpreter.newInteger(5));
+          expect(r).to.equal(interpreter.newInteger(5));
         }
       });
     });
