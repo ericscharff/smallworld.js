@@ -25,7 +25,7 @@ export class SmallObject {
   }
 
   toString() {
-    return `A SmallObject (${this.hash})`;
+    return `SmallObject (${this.hash})`;
   }
 }
 

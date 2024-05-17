@@ -41,6 +41,9 @@ describe("SmallWorld", () => {
         const IntegerClass = reader.readObject();
         expect(smallInts[0].objClass).to.equal(IntegerClass);
         expect(smallInts[1].value).to.equal(1);
+        expect(smallInts[2].toString()).to.equal("SmallInteger 2");
+        expect(nilObject.toString()).to.equal("SmallObject (1021)");
+        expect(nilObject.objClass.data[0].toString()).to.equal("Undefined");
       });
     });
   });
