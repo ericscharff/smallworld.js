@@ -141,10 +141,10 @@ export class Interpreter {
         }
         switch (high) {
           case 1: // PushInstance
-            if (args == null) {
+            if (args === null) {
               args = contextData[1];
             }
-            if (instanceVariables == null) {
+            if (instanceVariables === null) {
               instanceVariables = args.data[0].data;
             }
             stack[stackTop++] = instanceVariables[low];
@@ -156,7 +156,7 @@ export class Interpreter {
             stack[stackTop++] = args.data[low];
             break;
           case 3: // PushTemporary
-            if (temporaries == null) {
+            if (temporaries === null) {
               temporaries = contextData[2].data;
             }
             stack[stackTop++] = temporaries[low];
@@ -196,17 +196,17 @@ export class Interpreter {
             }
             break;
           case 6: // AssignInstance
-            if (args == null) {
+            if (args === null) {
               args = contextData[1];
             }
-            if (instanceVariables == null) {
+            if (instanceVariables === null) {
               instanceVariables = args.data[0].data;
             }
             // leave result on stack
             instanceVariables[low] = stack[stackTop - 1];
             break;
           case 7: // AssignTemporary
-            if (temporaries == null) {
+            if (temporaries === null) {
               temporaries = contextData[2].data;
             }
             temporaries[low] = stack[stackTop - 1];
@@ -260,16 +260,16 @@ export class Interpreter {
             innerLoopRunning = false;
             break;
           case 10: // SendUnary
-            if (low == 0) {
+            if (low === 0) {
               // isNil
               const arg = stack[--stackTop];
               stack[stackTop++] =
-                arg == this.nilObject ? this.trueObject : this.falseObject;
-            } else if (low == 1) {
+                arg === this.nilObject ? this.trueObject : this.falseObject;
+            } else if (low === 1) {
               // notNil
               const arg = stack[--stackTop];
               stack[stackTop++] =
-                arg != this.nilObject ? this.trueObject : this.falseObject;
+                arg !== this.nilObject ? this.trueObject : this.falseObject;
             } else {
               throw new Error("Illegal SendUnary " + low);
             }
@@ -339,6 +339,20 @@ export class Interpreter {
               case 2: // object class
                 returnedValue = stack[--stackTop].objClass;
                 break;
+              case 4: // object size
+                returnedValue = stack[--stackTop];
+                if (returnedValue.isSmallByteArray()) {
+                  low = returnedValue.values.length;
+                } else {
+                  low = returnedValue.data.length;
+                }
+                returnedValue = this.newInteger(low);
+                break;
+              case 5: // object at put
+                low = stack[--stackTop].value;
+                returnedValue = stack[--stackTop];
+                returnedValue.data[low - 1] = stack[--stackTop];
+                break;
               case 7: // new object allocation
                 low = stack[--stackTop].value;
                 returnedValue = new SmallObject(stack[--stackTop], low);
@@ -370,6 +384,12 @@ export class Interpreter {
                   contextData = context.data;
                   innerLoopRunning = false;
                 }
+                break;
+              case 14: // small int equality
+                low = stack[--stackTop].value;
+                high = stack[--stackTop].value;
+                returnedValue =
+                  low === high ? this.trueObject : this.falseObject;
                 break;
               case 24:
                 {
@@ -405,7 +425,7 @@ export class Interpreter {
               case 8: // branch if false
                 low = code[bytePointer++] & 0x0ff;
                 returnedValue = stack[--stackTop];
-                if (returnedValue == this.falseObject) {
+                if (returnedValue === this.falseObject) {
                   bytePointer = low;
                 }
                 break;
@@ -417,10 +437,10 @@ export class Interpreter {
                 contextData[5] = this.newInteger(stackTop);
                 contextData[4] = this.newInteger(bytePointer);
                 // now build new context
-                if (literals == null) {
+                if (literals === null) {
                   literals = method.data[2].data;
                 }
-                if (method == null) {
+                if (method === null) {
                   method = context.data[0];
                 }
                 method = method.data[5]; // class in method
