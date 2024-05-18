@@ -125,7 +125,7 @@ The bytecodes themselves are one or two bytes, where the opcode (`high`) is four
 bits, and the operand (low) is 4 or 8 bits. For example, the sequence `41` hex
 has high = 4 and low = 1. The sequence `03 21` hex sets high = 3 and low = 0x21.
 
-Thie yields 15 possible opcodes:
+This yields 15 possible opcodes:
 
 - 0 - Unused (invalid)
 - 1 - PushInstance (push an instance variable of the receiver on the stack,
@@ -148,9 +148,23 @@ Thie yields 15 possible opcodes:
 - 11 - SendBinary (Send a binary message to the top two objects on the stack,
   optimized for things like integer arithmetic)
 - 12 - PushBlock (push a reference to a block)
-- 13 - DoPrimitive (do something special. low is the arg count, the follwing
+- 13 - DoPrimitive (do something special. low is the arg count, the following
   byte is the number of the primitive)
 - 14 - PushClassVariable (push one of the variables owned by the receiver's
   class)
 - 15 - DoSpecial (these are auxiliary instructions that didn't fit above, such
   as returning from a context)
+
+Block is a special object which is a subset of bytecode within a compiled
+method. Blocks are special because they are executable - sending the `value`
+message to a block evaluates it. From the Smalltalk source code, `Block` has the
+following definition.
+
+```
+EVAL Class addNewClass: (
+  Context subclass: 'Block'
+          variables: 'argumentLocation creatingContext oldBytePointer '
+          classVariables: '')
+```
+
+Note that block thus has the 7 instance variables of context, plus 3 new ones.
