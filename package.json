@@ -9,7 +9,7 @@
     "cov": "c8 mocha"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "c8": "^9.1.0",
     "chai": "^5.1.1",
