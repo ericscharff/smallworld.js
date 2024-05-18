@@ -120,12 +120,79 @@ describe("SmallWorld", () => {
       }
     };
 
-    it("runs", () => {
+    it("adds", () => {
       expect(runDoIt("3 + 2")).to.equal(interpreter.newInteger(5));
     });
 
-    it("runs 2", () => {
+    it("subtracts", () => {
       expect(runDoIt("(100 - 75) printString").toString()).to.equal("25");
+    });
+
+    it("multiplies", () => {
+      expect(runDoIt("(9 * 12) printString").toString()).to.equal("108");
+    });
+
+    it("divides", () => {
+      expect(runDoIt("75 quo: 5").value).to.equal(
+        interpreter.newInteger(15).value,
+      );
+      expect(runDoIt("76 quo: 5").value).to.equal(
+        interpreter.newInteger(15).value,
+      );
+    });
+
+    it("remainder", () => {
+      expect(runDoIt("75 rem: 5")).to.equal(interpreter.newInteger(0));
+      expect(runDoIt("76 rem: 5")).to.equal(interpreter.newInteger(1));
+    });
+
+    it("fractions", () => {
+      expect(runDoIt("((1 / 3) + (3 / 4)) printString").toString()).to.equal(
+        "(13/12)",
+      );
+    });
+
+    it("adds large integers", () => {
+      expect(
+        runDoIt("(2000000000 + 2000000000) printString").toString(),
+      ).to.equal("4000000000");
+    });
+
+    it("subtracts large integers", () => {
+      expect(
+        runDoIt("(2000000000 negated - 2000000000) printString").toString(),
+      ).to.equal("-4000000000");
+    });
+
+    it("multiplies large integers", () => {
+      expect(
+        runDoIt("(2000000000 * 2000000000) printString").toString(),
+      ).to.equal("04000000000000000000");
+    });
+
+    it("concatenates strings", () => {
+      expect(runDoIt("'abc' + 'def'").toString()).to.equal("abcdef");
+    });
+
+    it("compares strings", () => {
+      expect(runDoIt("('abc' < 'def') printString").toString()).to.equal(
+        "true",
+      );
+      expect(runDoIt("('abc' <= 'def') printString").toString()).to.equal(
+        "true",
+      );
+      expect(runDoIt("('abc' = 'def') printString").toString()).to.equal(
+        "false",
+      );
+      expect(runDoIt("('abc' = 'abcd') printString").toString()).to.equal(
+        "false",
+      );
+      expect(runDoIt("('abc' >= 'def') printString").toString()).to.equal(
+        "false",
+      );
+      expect(runDoIt("('abc' > 'def') printString").toString()).to.equal(
+        "false",
+      );
     });
   });
 });
