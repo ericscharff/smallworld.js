@@ -525,6 +525,17 @@ export class Interpreter {
                 returnedValue = stack[--stackTop];
                 returnedValue = returnedValue.data[low - 1];
                 break;
+              case 31:
+                {
+                  // array with: (add new item)
+                  const oldArr = stack[--stackTop];
+                  low = oldArr.data.length;
+                  returnedValue = new SmallObject(oldArr.objClass, low + 1);
+                  for (let i = 0; i < low; i++)
+                    returnedValue.data[i] = oldArr.data[i];
+                  returnedValue.data[low] = stack[--stackTop];
+                }
+                break;
               default:
                 throw new Error("Unknown Primitive " + high);
             }

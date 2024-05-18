@@ -123,5 +123,9 @@ describe("SmallWorld", () => {
     it("runs", () => {
       expect(runDoIt("3 + 2")).to.equal(interpreter.newInteger(5));
     });
+
+    it("runs 2", () => {
+      expect(runDoIt("(100 - 75) printString").toString()).to.equal("25");
+    });
   });
 });
