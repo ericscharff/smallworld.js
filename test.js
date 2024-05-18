@@ -194,5 +194,27 @@ describe("SmallWorld", () => {
         "false",
       );
     });
+
+    it("compiles and runs new methods", () => {
+      const r = runDoIt(`
+[String compileMethod: '
+asUpper | r |
+  r <- String new: self size.
+  1 to: self size do: [:i |
+    r at: i put: (self at: i) upperCase].
+  ^r
+'.
+'hello, world! test.' asUpper] value`);
+      expect(r.toString()).to.equal("HELLO, WORLD! TEST.");
+      expect(runDoIt("(String methods at: 4) name").toString()).to.equal(
+        "asUpper",
+      );
+      expect(
+        runDoIt("(String methods at: 4) byteCodes asString").toString(),
+      ).to.equal(
+        "64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
+          "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 ",
+      );
+    });
   });
 });

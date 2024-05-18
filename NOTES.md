@@ -168,3 +168,67 @@ EVAL Class addNewClass: (
 ```
 
 Note that block thus has the 7 instance variables of context, plus 3 new ones.
+
+Putting it all together, here is a sample method added to `String`:
+
+```
+asUpper | r |
+  r <- String new: self size.
+  1 to: self size do: [:i |
+    r at: i put: (self at: i) upperCase].
+  ^r
+```
+
+which demonstrates features like blocks. Here is a hand annotated disassembly of
+the bytecode associated with that block:
+
+bytecode
+
+`#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )`
+
+literals
+
+`#(String size new: size at: upperCase at:put: to:do: )`
+
+Disassembly:
+
+```
+PC  Bytecode   Opcode             Comment
+ 0: 64 (40)    PushLiteral 0      (String)
+ 1: 32 (20)    PushArgument 0     (self)
+ 2: 129 (81)   MarkArguments 1    (the 1 arg TOS self is marked)
+ 3: 145 (91)   SendMessage 1      (size, which will leave "self size" on the stack)
+ 4: 130 (82)   MarkArguments 2    (String which was on the stack, and "self size")
+ 5: 146 (92)   SendMessage 2      (new: which evaluates "String new: self size")
+ 6: 112 (70)   AssignTemporary 0  (assign to "r", leaves value on stack)
+ 7: 245 (f5)   DoSpeical 5        (pop TOS, what was assigned to r)
+ 8; 81 (51),   PushConstant 1     (push smallint 1 on stack)
+ 9: 32 (20)    PushArgument 0     (self)
+10: 129 (81)   MarkArguments 1    (self)
+11: 147 (93)   SendMessage 3      (#size, calling self size)
+12: 193 (c1)   PushBlock 1        (the arg is at temp pos 1)
+13: 25 (19)                       (goto value for block) so execution jumps to 25
+               Contents of block
+14: 48 (30)    PushTemporary 0    (r from method)
+15: 49 (31)    PushTemporary 1    (i, the block arg)
+16: 32 (20)    PushArgument 0     (self, the string)
+17: 49 (31)    PushTemporary 1    (i)
+18: 130 (82)   MarkArguments 2    (for self and i)
+19: 148 (94)   SendMessage 4      (at:)
+20: 129 (81)   MarkArguments 1    (char from at: above)
+21: 149 (95)   SendMessage 5      (send upperCase)
+22: 131 (83)   MarkArgumen 3      (r, i, char)
+23: 150 (96)   SendMessage 6      (send at:put:)
+24: 242 (f2)   Special 2          (stack return, block done)
+               After the block
+25: 131 (83)   MarkArguments 3    (args for to:do:, 1, self size, and block)
+26: 151 (97)   SendMessage 7      (to:do:)
+27: 245 (f5)   DoSpecial 5        (pop TOS, which is whatever to:do: returned)
+28: 48 (30)    PushTemporary 0    (r)
+29: 242 (f2)   DoSpecial 2        (stack return, which returns r)
+30: 245 (f5)   DpSpecial 5        (unrechable? pops TOS)
+31: 241 (f1)   DoSpecial 1        (unreachable? self return)
+```
+
+This covers many, but not all of the features of the bytecode. The interpreter
+source itself is the canonical source of truth.
