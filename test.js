@@ -120,16 +120,20 @@ describe("SmallWorld", () => {
       }
     };
 
+    let runPrintIt = (task) => {
+      return runDoIt(task + " printString").toString();
+    };
+
     it("adds", () => {
       expect(runDoIt("3 + 2")).to.equal(interpreter.newInteger(5));
     });
 
     it("subtracts", () => {
-      expect(runDoIt("(100 - 75) printString").toString()).to.equal("25");
+      expect(runPrintIt("(100 - 75)")).to.equal("25");
     });
 
     it("multiplies", () => {
-      expect(runDoIt("(9 * 12) printString").toString()).to.equal("108");
+      expect(runPrintIt("(9 * 12)")).to.equal("108");
     });
 
     it("divides", () => {
@@ -147,52 +151,36 @@ describe("SmallWorld", () => {
     });
 
     it("fractions", () => {
-      expect(runDoIt("((1 / 3) + (3 / 4)) printString").toString()).to.equal(
-        "(13/12)",
-      );
+      expect(runPrintIt("((1 / 3) + (3 / 4))")).to.equal("(13/12)");
     });
 
     it("adds large integers", () => {
-      expect(
-        runDoIt("(2000000000 + 2000000000) printString").toString(),
-      ).to.equal("4000000000");
+      expect(runPrintIt("(2000000000 + 2000000000)")).to.equal("4000000000");
     });
 
     it("subtracts large integers", () => {
-      expect(
-        runDoIt("(2000000000 negated - 2000000000) printString").toString(),
-      ).to.equal("-4000000000");
+      expect(runPrintIt("(2000000000 negated - 2000000000)")).to.equal(
+        "-4000000000",
+      );
     });
 
     it("multiplies large integers", () => {
-      expect(
-        runDoIt("(2000000000 * 2000000000) printString").toString(),
-      ).to.equal("04000000000000000000");
+      expect(runPrintIt("(2000000000 * 2000000000)")).to.equal(
+        "04000000000000000000",
+      );
     });
 
     it("concatenates strings", () => {
-      expect(runDoIt("'abc' + 'def'").toString()).to.equal("abcdef");
+      expect(runPrintIt("'abc' + 'def'")).to.equal("abcdef");
     });
 
     it("compares strings", () => {
-      expect(runDoIt("('abc' < 'def') printString").toString()).to.equal(
-        "true",
-      );
-      expect(runDoIt("('abc' <= 'def') printString").toString()).to.equal(
-        "true",
-      );
-      expect(runDoIt("('abc' = 'def') printString").toString()).to.equal(
-        "false",
-      );
-      expect(runDoIt("('abc' = 'abcd') printString").toString()).to.equal(
-        "false",
-      );
-      expect(runDoIt("('abc' >= 'def') printString").toString()).to.equal(
-        "false",
-      );
-      expect(runDoIt("('abc' > 'def') printString").toString()).to.equal(
-        "false",
-      );
+      expect(runPrintIt("('abc' < 'def')")).to.equal("true");
+      expect(runPrintIt("('abc' <= 'def')")).to.equal("true");
+      expect(runPrintIt("('abc' = 'def')")).to.equal("false");
+      expect(runPrintIt("('abc' = 'abcd')")).to.equal("false");
+      expect(runPrintIt("('abc' >= 'def')")).to.equal("false");
+      expect(runPrintIt("('abc' > 'def')")).to.equal("false");
     });
 
     it("compiles and runs new methods", () => {
@@ -206,14 +194,10 @@ asUpper | r |
 '.
 'hello, world! test.' asUpper] value`);
       expect(r.toString()).to.equal("HELLO, WORLD! TEST.");
-      expect(runDoIt("(String methods at: 4) name").toString()).to.equal(
-        "asUpper",
-      );
-      expect(
-        runDoIt("(String methods at: 4) byteCodes asString").toString(),
-      ).to.equal(
-        "64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
-          "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 ",
+      expect(runPrintIt("(String methods at: 4) name")).to.equal("asUpper");
+      expect(runPrintIt("(String methods at: 4) byteCodes")).to.equal(
+        "#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
+          "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )",
       );
     });
   });
