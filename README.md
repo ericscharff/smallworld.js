@@ -32,8 +32,9 @@ intended for embedding in some other system.
 After cloning, use `npm install` to install the dependencies (only needed for
 running unit tests). Running `npm test` will run the test suite in test.js.
 
-A version suitable for running in a browser exists in index.html and index.js
-but is not yet suitable for actual use.
+You can run a very, very primitive version of the interpeter by loading
+[index.html](index.html) in a Web browser. You can evaluate expressions and
+the result will be printed below.
 
 ## Why?
 
