@@ -42,7 +42,10 @@ of using a virtual image (snapshot of all of the objects in a system). This kind
 of Smalltalk provides a level of system introspection and manipulation that is
 rare in other programming systems. Budd's Little Smalltalk and SmallWorld are
 especially interesting Smalltalk variants, because a very few Smalltalk classes
-and a relatively small virtual machine can accomplish a great deal.
+and a relatively small virtual machine can accomplish a great deal. The base
+image is made from 41 classes. The whole environment (full source code,
+bytecode, programming tools, and so on) is made from 4924 objects, taking up
+less than 170K of disk space.
 
 I've written many interpreters and compilers over the years, and I even took Tim
 Budd's original SmallWorld and cleaned up the code a bit. However, I never
