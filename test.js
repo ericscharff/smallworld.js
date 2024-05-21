@@ -212,6 +212,61 @@ describe("SmallWorld", () => {
       expect(runPrintIt("('abc' > 'def')")).to.equal("false");
     });
 
+    it("handles unrecogized messages", () => {
+      const calledPrimitives = new Set();
+      let capturedText = "";
+      const uiSpy = {
+        handlePrimitive: (s) => {
+          calledPrimitives.add(s.high);
+          switch (s.high) {
+            case 60: // make window
+              s.returnedValue = new SmallObject(s.stack[--s.stackTop]);
+              break;
+            case 61: // show/hide text window
+              s.returnedValue = s.stack[--s.stackTop];
+              s.stackTop--; // ignore pane
+              break;
+            case 62: // set content pane
+              s.stackTop--; // ignore pane
+              s.returnedValue = s.stack[--s.stackTop];
+              break;
+            case 63: // set window size
+              s.stackTop--; // ignore x
+              s.stackTop--; // ignore y
+              s.returnedValue = new SmallObject(s.stack[--s.stackTop]);
+              break;
+            case 65: // set window title
+              s.stackTop--; // ignore title
+              s.returnedValue = new SmallObject(s.stack[--s.stackTop]);
+              break;
+            case 71: // new button
+              s.stackTop--; // ignore action
+              s.stackTop--; // ignore button text
+              s.returnedValue = new SmallObject(s.stack[--s.stackTop]);
+              break;
+            case 73: // new text area
+              s.returnedValue = new SmallObject(s.stack[--s.stackTop]);
+              break;
+            case 76: // new border panel
+              s.stackTop -= 5; // ignore n, s, e, w, c
+              s.returnedValue = new SmallObject(s.stack[--s.stackTop]);
+              break;
+            case 82: // set text area
+              s.returnedValue = s.stack[--s.stackTop]; // text
+              s.stackTop--; // pop dummy textarea object
+              capturedText = s.returnedValue.toString();
+              break;
+            default:
+              throw new Error("Bad ui " + s.high);
+          }
+          return s;
+        },
+      };
+      interpreter.uiHandler = uiSpy;
+      runDoIt("3 moo");
+      expect(capturedText).to.contain("Unrecognized message selector: moo");
+    });
+
     it("compiles and runs new methods", () => {
       const r = runDoIt(`
 [String compileMethod: '
