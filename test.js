@@ -114,7 +114,7 @@ describe("SmallWorld", () => {
       });
     });
 
-    let runDoIt = (task) => {
+    function runDoIt(task) {
       // Simulate doIt
 
       // This relies on the defintions of class
@@ -147,11 +147,11 @@ describe("SmallWorld", () => {
         const ctx = interpreter.buildContext(nilObject, args, doItMethod);
         return interpreter.execute(ctx);
       }
-    };
+    }
 
-    let runPrintIt = (task) => {
+    function runPrintIt(task) {
       return runDoIt(task + " printString").toString();
-    };
+    }
 
     it("adds", () => {
       expect(runDoIt("3 + 2")).to.equal(interpreter.newInteger(5));
