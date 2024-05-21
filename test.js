@@ -11,21 +11,21 @@ describe("SmallWorld", () => {
     it("fails on bad magic number", async () => {
       await fs.readFile("testdata/image.badMagicNumber").then((buf) => {
         const reader = new ImageReader(buf);
-        expect(() => reader.readObject()).to.throw();
+        expect(() => reader.readObject()).to.throw("Bad magic number");
       });
     });
 
     it("fails on bad version", async () => {
       await fs.readFile("testdata/image.badVersionNumber").then((buf) => {
         const reader = new ImageReader(buf);
-        expect(() => reader.readObject()).to.throw();
+        expect(() => reader.readObject()).to.throw("Bad version number");
       });
     });
 
-    it("fails on object type", async () => {
+    it("fails on bad object type", async () => {
       await fs.readFile("testdata/image.badObjectType").then((buf) => {
         const reader = new ImageReader(buf);
-        expect(() => reader.readObject()).to.throw();
+        expect(() => reader.readObject()).to.throw("Unknown object type 10");
       });
     });
 
