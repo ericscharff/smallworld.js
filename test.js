@@ -114,7 +114,7 @@ describe("SmallWorld", () => {
       });
     });
 
-    function runDoIt(task) {
+    function runDoIt(task, bytecodePatcher) {
       // Simulate doIt
 
       // This relies on the defintions of class
@@ -134,6 +134,9 @@ describe("SmallWorld", () => {
         // The method's first instance variable is a SmallByteArray name
         if (aMethod.data[0].toString() === "doIt") {
           doItMethod = aMethod;
+          if (bytecodePatcher) {
+            bytecodePatcher(aMethod.data[1].values);
+          }
         }
       }
       if (doItMethod === null) {
@@ -232,6 +235,58 @@ asUpper | r |
       expect(runPrintIt("(String methods at: 4) byteCodes")).to.equal(
         "#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
           "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )",
+      );
+    });
+
+    it("throws on invalid opcode", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0x00;
+          code[1] = 0x00;
+        }),
+      ).to.throw("Unknown opcode 0");
+    });
+
+    it("throws on invalid constant", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0x5d;
+        }),
+      ).to.throw("Unknown constant 13");
+    });
+
+    it("throws on invalid unary", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0xa2;
+        }),
+      ).to.throw("Illegal SendUnary 2");
+    });
+
+    it("throws on invalid primitive", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0xd0;
+          code[1] = 0xff;
+        }),
+      ).to.throw("Unknown Primitive 255");
+    });
+
+    it("throws on invalid special", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0xf0;
+        }),
+      ).to.throw("Unrecognized DoSpecial 0");
+    });
+
+    it("throws on bad method lookup", () => {
+      expect(() => interpreter.methodLookup(nilObject, "")).to.throw("bad");
+    });
+
+    it("throws on double error: method lookup", () => {
+      expect(() => interpreter.methodLookup(nilObject, "error:")).to.throw(
+        "Unrecognized message selector: error:",
       );
     });
   });

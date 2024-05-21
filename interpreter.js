@@ -112,7 +112,7 @@ export class Interpreter {
     let contextData = context.data;
     // outerLoop:
     while (true) {
-      const debug = false;
+      // const debug = false;
       let method = contextData[0]; // method in context
       const code = method.data[1].values; // code pointer
       let bytePointer = contextData[4].value;
@@ -192,7 +192,7 @@ export class Interpreter {
                 stack[stackTop++] = this.falseObject;
                 break;
               default:
-                throw new Exception("Unknown constant " + low);
+                throw new Error("Unknown constant " + low);
             }
             break;
           case 6: // AssignInstance
@@ -609,9 +609,11 @@ export class Interpreter {
                 if (literals === null) {
                   literals = method.data[2].data;
                 }
-                if (method === null) {
-                  method = context.data[0];
-                }
+                // this was copied from the Java code, but it
+                // appears to be unreachable
+                // if (method === null) {
+                //   method = context.data[0];
+                // }
                 method = method.data[5]; // class in method
                 method = method.data[1]; // parent in class
                 method = this.methodLookup(
@@ -626,7 +628,7 @@ export class Interpreter {
                 innerLoopRunning = false;
                 break;
               default: // throw exception
-                throw new Error("Unrecogized DoSpecial " + low);
+                throw new Error("Unrecognized DoSpecial " + low);
             }
             break;
           default:
@@ -636,9 +638,9 @@ export class Interpreter {
 
       if (runEndOfOuterLoop) {
         if (context === null || context === this.nilObject) {
-          if (debug) {
-            console.log("lookups " + lookup + " cached " + cached);
-          }
+          // if (debug) {
+          //  console.log("lookups " + lookup + " cached " + cached);
+          // }
           return returnedValue;
         }
         contextData = context.data;
