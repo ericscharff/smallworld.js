@@ -353,18 +353,6 @@ export class Interpreter {
             break;
           case 13: // DoPrimitive, low is arg count, next byte is number
             high = code[bytePointer++] & 0x0ff;
-            // defer GUI primitives to a plugin
-            if (high >= 60 && high < 100 && this.uiHandler) {
-              let ret = this.uiHandler.handlePrimitive({
-                stack,
-                stackTop,
-                high,
-              });
-              stackTop = ret.stackTop;
-              returnedValue = ret.returnedValue;
-              stack[stackTop++] = returnedValue;
-              break;
-            }
             switch (high) {
               case 1: // object identity
                 returnedValue = stack[--stackTop];
@@ -548,8 +536,6 @@ export class Interpreter {
                   returnedValue.data[low] = stack[--stackTop];
                 }
                 break;
-              case 34: // thread kill
-                return this.nilObject;
               case 35: // return current context
                 returnedValue = context;
                 break;
