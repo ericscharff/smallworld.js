@@ -1,6 +1,6 @@
 import { SmallObject, SmallByteArray, SmallInt } from "./objects.js";
 
-// Convenience for reading Ui
+// Convenience for reading big endian numbers from a Uint8Array
 class DataStream {
   constructor(arr) {
     this.content = new Uint8Array(arr);
@@ -29,10 +29,10 @@ export class ImageReader {
   }
 
   readObjects() {
-    if (this.stream.readInt() != 0x53575354) {
+    if (this.stream.readInt() !== 0x53575354) {
       throw new Error("Bad magic number");
     }
-    if (this.stream.readInt() != 0) {
+    if (this.stream.readInt() !== 0) {
       throw new Error("Bad version number");
     }
     const objectCount = this.stream.readInt();

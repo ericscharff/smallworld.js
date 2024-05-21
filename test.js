@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { expect } from "chai";
 import { ImageReader } from "./imagereader.js";
+import { ImageWriter } from "./imagewriter.js";
 import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
 
@@ -44,6 +45,34 @@ describe("SmallWorld", () => {
         expect(smallInts[2].toString()).to.equal("SmallInteger 2");
         expect(nilObject.toString()).to.equal("SmallObject (1021)");
         expect(nilObject.objClass.data[0].toString()).to.equal("Undefined");
+      });
+    });
+  });
+
+  describe("Image writing", () => {
+    it("writes a complete image", async () => {
+      await fs.readFile("image.data").then((buf) => {
+        const reader = new ImageReader(buf);
+        const nilObject = reader.readObject();
+        const trueObject = reader.readObject();
+        const falseObject = reader.readObject();
+        const smallInts = reader.readSmallInts();
+        const ArrayClass = reader.readObject();
+        const BlockClass = reader.readObject();
+        const ContextClass = reader.readObject();
+        const IntegerClass = reader.readObject();
+
+        const writer = new ImageWriter();
+        writer.writeObject(nilObject);
+        writer.writeObject(trueObject);
+        writer.writeObject(falseObject);
+        writer.writeSmallInts(smallInts);
+        writer.writeObject(ArrayClass);
+        writer.writeObject(BlockClass);
+        writer.writeObject(ContextClass);
+        writer.writeObject(IntegerClass);
+        const arr = writer.finish();
+        expect(arr).to.eql(buf);
       });
     });
   });
