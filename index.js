@@ -1,4 +1,4 @@
-import { ImageReader } from "./imagereader.js";
+import { ImageReader } from "./image_reader.js";
 import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
 

@@ -1,8 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
 import { expect } from "chai";
-import { ImageReader } from "./imagereader.js";
-import { ImageWriter } from "./imagewriter.js";
+import { ImageReader } from "./image_reader.js";
+import { ImageWriter } from "./image_writer.js";
 import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
 
