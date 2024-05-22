@@ -6,13 +6,15 @@
   "type": "module",
   "scripts": {
     "test": "mocha",
-    "cov": "c8 mocha"
+    "cov": "c8 mocha",
+    "prettier": "prettier -w ."
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "c8": "^9.1.0",
     "chai": "^5.1.1",
-    "mocha": "^10.4.0"
+    "mocha": "^10.4.0",
+    "prettier": "^3.2.5"
   }
 }
