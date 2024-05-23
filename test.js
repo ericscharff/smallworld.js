@@ -5,6 +5,7 @@ import { ImageReader } from "./image_reader.js";
 import { ImageWriter } from "./image_writer.js";
 import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
+import { UIHandler } from "./ui_handler.js";
 
 describe("SmallWorld", () => {
   describe("Image reading", () => {
@@ -221,6 +222,14 @@ describe("SmallWorld", () => {
     it("handles unrecognized messages", () => {
       const r = runPrintIt("3 moo");
       expect(r).to.contain("Unrecognized message selector: moo");
+    });
+
+    describe("User interface", () => {
+      beforeEach(() => {
+        interpreter.uiHandler = new UIHandler();
+      });
+
+      it("does a ui thing", () => runDoIt("Class browser"));
     });
 
     it("compiles and runs new methods", () => {

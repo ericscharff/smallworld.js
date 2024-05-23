@@ -539,8 +539,21 @@ export class Interpreter {
               case 35: // return current context
                 returnedValue = context;
                 break;
+              case 36: // fast array creation
+                returnedValue = new SmallObject(this.ArrayClass, low);
+                for (let i = low - 1; i >= 0; i--)
+                  returnedValue.data[i] = stack[--stackTop];
+                break;
               default:
-                throw new Error("Unknown Primitive " + high);
+                if (this.uiHandler && high >= 60 && high <= 76) {
+                  ({ returnedValue, stack, stackTop } = this.uiHandler.handle(
+                    high,
+                    stack,
+                    stackTop,
+                  ));
+                } else {
+                  throw new Error("Unknown Primitive " + high);
+                }
             }
             stack[stackTop++] = returnedValue;
             break;
