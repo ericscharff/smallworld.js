@@ -25,8 +25,8 @@ export class UIHandler {
         returnedValue.nativeObject.addChildWidget(contentPane);
         break;
       case 63: // set window size
-        const height = stack[--stackTop].value; // a SmallInt
         const width = stack[--stackTop].value; // a SmallInt
+        const height = stack[--stackTop].value; // a SmallInt
         returnedValue = stack[--stackTop]; // the window
         returnedValue.nativeObject.setSize(width, height);
         break;

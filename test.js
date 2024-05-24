@@ -295,11 +295,14 @@ describe("SmallWorld", () => {
         makeWindow: function () {
           return {
             addChildWidget: () => 0,
-            setSize: () => 0,
+            setSize: (w, h) => {
+              expect(w).to.equal(500);
+              expect(h).to.equal(200);
+            },
             setTitle: (t) => {
               windowTitle = t;
             },
-            setVisible: () => 0,
+            setVisible: (v) => expect(v).to.equal(true),
           };
         },
       };
