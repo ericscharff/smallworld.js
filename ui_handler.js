@@ -41,7 +41,7 @@ export class UIHandler {
           /* label = */ stack[--stackTop].toString(),
         );
         returnedValue = new SmallJsObject(stack[--stackTop], uiButton);
-        uiButton.addButtonListener(() => "todo: use buttonAction");
+        uiButton.addButtonListener(() => interpreter.runAction(buttonAction));
         break;
       case 72: // new text field
         returnedValue = new SmallJsObject(
@@ -71,8 +71,8 @@ export class UIHandler {
         returnedValue = stack[--stackTop]; // wrapper class for list
         const uiList = this.uiFactory.makeListWidget(listData);
         returnedValue = new SmallJsObject(returnedValue, uiList);
-        uiList.addSelectionListener(
-          (index) => "todo: use listAction and index",
+        uiList.addSelectionListener((index) =>
+          interpreter.runActionWithIndex(listAction, index),
         );
         break;
       case 76: // new border panel
@@ -99,6 +99,13 @@ export class UIHandler {
         }
         returnedValue = new SmallJsObject(stack[--stackTop], uiBorderPanel);
         break;
+      case 83: // get list selected index
+        returnedValue = interpreter.newInteger(
+          stack[--stackTop].nativeObject.getSelectedIndex(),
+        );
+        break;
+      default:
+        throw new Error("Bad UI " + high);
     }
     return [returnedValue, stack, stackTop];
   }

@@ -545,7 +545,7 @@ export class Interpreter {
                   returnedValue.data[i] = stack[--stackTop];
                 break;
               default:
-                if (this.uiHandler && high >= 60 && high <= 76) {
+                if (this.uiHandler && high >= 60 && high <= 83) {
                   [returnedValue, stack, stackTop] = this.uiHandler.handle(
                     this,
                     high,
@@ -664,5 +664,39 @@ export class Interpreter {
         contextData[5] = this.newInteger(stackTop);
       }
     } // end of outer loop
+  }
+
+  runAction(action) {
+    // Make a context for the action (block) provided
+    const block = new SmallObject(this.ContextClass, 10);
+    for (let i = 0; i < 10; i++) {
+      block.data[i] = action.data[i];
+    }
+
+    // now run it
+    const stackSize = block.data[3].data.length;
+    block.data[3] = new SmallObject(this.ArrayClass, stackSize); // new stack
+    block.data[4] = block.data[9]; // bytePointer from Block
+    block.data[5] = this.newInteger(0); // new stack top
+    block.data[6] = this.nilObject; // callback, so no previousContext
+    this.execute(block);
+  }
+
+  runActionWithIndex(action, index) {
+    // Make a context for the action (block) provided
+    const block = new SmallObject(this.ContextClass, 10);
+    for (let i = 0; i < 10; i++) {
+      block.data[i] = action.data[i];
+    }
+    const argLoc = block.data[7].value; // Block's argumentLocaition
+    block.data[2].data[argLoc] = this.newInteger(index);
+
+    // now run it
+    const stackSize = block.data[3].data.length;
+    block.data[3] = new SmallObject(this.ArrayClass, stackSize); // new stack
+    block.data[4] = block.data[9]; // bytePointer from Block
+    block.data[5] = this.newInteger(0); // new stack top
+    block.data[6] = this.nilObject; // callback, so no previousContext
+    this.execute(block);
   }
 }

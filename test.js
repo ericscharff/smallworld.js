@@ -266,6 +266,10 @@ describe("SmallWorld", () => {
       let windowTitle = "";
       let listData = [];
       let buttons = [];
+      let buttonListeners = [];
+      let listSelectionListener = null;
+      let savedWidth = 0;
+      let savedHeight = 0;
       let uiFactory = {
         makeBorderedPanel: function () {
           return {
@@ -277,14 +281,19 @@ describe("SmallWorld", () => {
         },
         makeButton: function (b) {
           buttons.push(b);
-          return { addButtonListener: () => 0 };
+          return { addButtonListener: (l) => buttonListeners.push(l) };
         },
         makeGridPanel: function () {
           return { addChild: () => 0 };
         },
         makeListWidget: function (data) {
           listData = data;
-          return { addSelectionListener: () => 0 };
+          return {
+            addSelectionListener: (l) => {
+              listSelectionListener = l;
+            },
+            getSelectedIndex: () => 3,
+          };
         },
         makeTextArea: function () {
           return {};
@@ -296,8 +305,8 @@ describe("SmallWorld", () => {
           return {
             addChildWidget: () => 0,
             setSize: (w, h) => {
-              expect(w).to.equal(500);
-              expect(h).to.equal(200);
+              savedWidth = w;
+              savedHeight = h;
             },
             setTitle: (t) => {
               windowTitle = t;
@@ -322,7 +331,41 @@ describe("SmallWorld", () => {
         runDoIt("Class browser");
         expect(windowTitle).to.equal("Smalltalk Browser");
         expect(listData).to.eql(ALL_SMALLTALK_CLASSES);
-        expect(buttons).to.eql(browserButtons);
+        expect(buttons).to.eql([
+          "evaluate expression",
+          "examine class",
+          "delete class",
+          "clear",
+          "close",
+        ]);
+        expect(savedWidth).to.equal(500);
+        expect(savedHeight).to.equal(200);
+
+        listSelectionListener(3); // Class brower's list just returns nil
+
+        buttons = [];
+        buttonListeners[1](); // This opens a new window
+        expect(windowTitle).to.equal("Class Editor: Block");
+        // The new list in the class editor has Block's methods
+        expect(listData).to.eql([
+          "fork",
+          "value",
+          "value:",
+          "value:value:",
+          "whileFalse:",
+          "whileTrue:",
+        ]);
+        expect(buttons).to.eql([
+          "clear text area",
+          "compile",
+          "delete method",
+          "instance variables",
+          "edit class variables",
+          "examine superclass",
+          "examine metaclass",
+          "object edit",
+          "close",
+        ]);
       });
     });
 
