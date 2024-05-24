@@ -546,11 +546,12 @@ export class Interpreter {
                 break;
               default:
                 if (this.uiHandler && high >= 60 && high <= 76) {
-                  ({ returnedValue, stack, stackTop } = this.uiHandler.handle(
+                  [returnedValue, stack, stackTop] = this.uiHandler.handle(
+                    this,
                     high,
                     stack,
                     stackTop,
-                  ));
+                  );
                 } else {
                   throw new Error("Unknown Primitive " + high);
                 }

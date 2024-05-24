@@ -1,104 +1,105 @@
-import { SmallObject } from "./objects.js";
+import { SmallJsObject } from "./objects.js";
 
 export class UIHandler {
-  handle(high, stack, stackTop) {
+  constructor(uiFactory) {
+    this.uiFactory = uiFactory;
+  }
+
+  handle(interpreter, high, stack, stackTop) {
     let returnedValue = null;
     switch (high) {
       case 60: // make window
-        returnedValue = new SmallObject(stack[--stackTop], 0);
+        const uiWindow = this.uiFactory.makeWindow();
+        returnedValue = new SmallJsObject(stack[--stackTop], uiWindow);
         break;
       case 61: // show/hide text window
-        const showHide = stack[--stackTop];
-        /* the window = */ stack[--stackTop];
-        // Set visible vased on showHide
-        returnedValue = showHide;
+        returnedValue = stack[--stackTop]; // true = visible (show)
+        const windowToShow = stack[--stackTop];
+        windowToShow.nativeObject.setVisible(
+          returnedValue === interpreter.trueObject,
+        );
         break;
-      case 62: // set window content pane
-        /* SmallJavaObject pane = */ stack[--stackTop];
-        returnedValue = stack[--stackTop];
-        // SmallJavaObject jd = (SmallJavaObject) returnedValue;
-        // ((Window) jd.value).addChild((Widget) tc.value);
+      case 62: // add pane to window
+        const contentPane = stack[--stackTop].nativeObject;
+        returnedValue = stack[--stackTop]; // the window
+        returnedValue.nativeObject.addChildWidget(contentPane);
         break;
       case 63: // set window size
-        /* const height = */ stack[--stackTop];
-        /* const width = */ stack[--stackTop];
-        returnedValue = stack[--stackTop];
-        // set window size
+        const height = stack[--stackTop].value; // a SmallInt
+        const width = stack[--stackTop].value; // a SmallInt
+        returnedValue = stack[--stackTop]; // the window
+        returnedValue.nativeObject.setSize(width, height);
         break;
       case 65: // set window title
-        /* const title = */ stack[--stackTop];
-        returnedValue = stack[--stackTop];
-        // set window title
+        const windowTitle = stack[--stackTop].toString();
+        returnedValue = stack[--stackTop]; // the window
+        returnedValue.nativeObject.setTitle(windowTitle);
         break;
       case 71: // new button
-        /* final SmallObject action = */ stack[--stackTop];
-        /* String label = */ stack[--stackTop];
-        returnedValue = new SmallObject(stack[--stackTop], 0);
-        // jb.addButtonListener(
-        //     new Button.ButtonListener() {
-        //       @Override
-        //       public void buttonClicked() {
-        //         new ActionThread(action, myThread).start();
-        //       }
-        //     });
+        const buttonAction = stack[--stackTop];
+        const uiButton = this.uiFactory.makeButton(
+          /* label = */ stack[--stackTop].toString(),
+        );
+        returnedValue = new SmallJsObject(stack[--stackTop], uiButton);
+        uiButton.addButtonListener(() => "todo: use buttonAction");
         break;
       case 72: // new text field
-        returnedValue = new SmallObject(stack[--stackTop], 0);
+        returnedValue = new SmallJsObject(
+          stack[--stackTop],
+          this.uiFactory.makeTextField(),
+        );
         break;
       case 73: // new text area
-        returnedValue = new SmallObject(stack[--stackTop], 0);
+        returnedValue = new SmallJsObject(
+          stack[--stackTop],
+          this.uiFactory.makeTextArea(),
+        );
         break;
       case 74: // new grid panel
-        /* SmallObject data = */ stack[--stackTop];
-        /* const columns = */ stack[--stackTop];
-        /* const rows = */ stack[--stackTop];
-        //GridPanel gp = this.uiFactory.makeGridPanel(low, high);
-        //for (int i = 0; i < data.data.length; i++) {
-        //  gp.addChild(asWidget(data.data[i]));
-        //}
-        returnedValue = new SmallObject(stack[--stackTop], 0);
+        const gridPanelData = stack[--stackTop]; // a SmallObject array of widgets
+        const gridHeight = stack[--stackTop].value; // a SmallInt
+        const gridWidth = stack[--stackTop].value; // a SmallInt
+        const uiGridPanel = this.uiFactory.makeGridPanel(gridWidth, gridHeight);
+        for (let i = 0; i < gridPanelData.data.length; i++) {
+          uiGridPanel.addChild(gridPanelData.data[i].nativeObject);
+        }
+        returnedValue = new SmallJsObject(stack[--stackTop], uiGridPanel);
         break;
       case 75: // new list panel
-        // new list panel
-        /* ignored action = */ stack[--stackTop];
-        /* ignored data = */ stack[--stackTop];
-        returnedValue = stack[--stackTop];
-        // ListWidget jl = this.uiFactory.makeListWidget(data.data);
-        // returnedValue = new SmallJavaObject(returnedValue, jl);
-        returnedValue = new SmallObject(returnedValue, 0);
-        // jl.addSelectionListener(
-        //     new ListWidget.Listener() {
-        //       @Override
-        //       public void itemSelected(int selectedIndex) {
-        //         new ActionThread(action, myThread, selectedIndex).start();
-        //       }
-        //     });
+        const listAction = stack[--stackTop];
+        const listData = stack[--stackTop].data.map((e) => e.toString()); // array of strings
+        returnedValue = stack[--stackTop]; // wrapper class for list
+        const uiList = this.uiFactory.makeListWidget(listData);
+        returnedValue = new SmallJsObject(returnedValue, uiList);
+        uiList.addSelectionListener(
+          (index) => "todo: use listAction and index",
+        );
         break;
       case 76: // new border panel
-        // BorderedPanel bp = this.uiFactory.makeBorderedPanel();
+        const uiBorderPanel = this.uiFactory.makeBorderedPanel();
         returnedValue = stack[--stackTop];
-        // if (returnedValue != this.nilObject) {
-        //  bp.addToCenter(asWidget(returnedValue));
-        // }
+        if (returnedValue !== interpreter.nilObject) {
+          uiBorderPanel.addToCenter(returnedValue.nativeObject);
+        }
         returnedValue = stack[--stackTop];
-        // if (returnedValue != this.nilObject) {
-        //   bp.addToWest(asWidget(returnedValue));
-        // }
+        if (returnedValue != interpreter.nilObject) {
+          uiBorderPanel.addToWest(returnedValue.nativeObject);
+        }
         returnedValue = stack[--stackTop];
-        // if (returnedValue != this.nilObject) {
-        //   bp.addToEast(asWidget(returnedValue));
-        // }
+        if (returnedValue != interpreter.nilObject) {
+          uiBorderPanel.addToEast(returnedValue.nativeObject);
+        }
         returnedValue = stack[--stackTop];
-        // if (returnedValue != this.nilObject) {
-        //  bp.addToSouth(asWidget(returnedValue));
-        // }
+        if (returnedValue != interpreter.nilObject) {
+          uiBorderPanel.addToSouth(returnedValue.nativeObject);
+        }
         returnedValue = stack[--stackTop];
-        // if (returnedValue != this.nilObject) {
-        //  bp.addToNorth(asWidget(returnedValue));
-        //}
-        returnedValue = new SmallObject(stack[--stackTop], 0);
+        if (returnedValue != this.nilObject) {
+          uiBorderPanel.addToNorth(returnedValue.nativeObject);
+        }
+        returnedValue = new SmallJsObject(stack[--stackTop], uiBorderPanel);
         break;
     }
-    return { returnedValue, stack, stackTop };
+    return [returnedValue, stack, stackTop];
   }
 }

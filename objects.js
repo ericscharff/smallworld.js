@@ -71,3 +71,11 @@ export class SmallInt extends SmallObject {
     return `SmallInteger ${this.value}`;
   }
 }
+
+// A holder for a javascript object
+export class SmallJsObject extends SmallObject {
+  constructor(stClass, nativeObject) {
+    super(stClass, 0);
+    this.nativeObject = nativeObject;
+  }
+}

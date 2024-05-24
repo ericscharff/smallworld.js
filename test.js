@@ -7,6 +7,44 @@ import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
 import { UIHandler } from "./ui_handler.js";
 
+const ALL_SMALLTALK_CLASSES = [
+  "Application",
+  "Array",
+  "Block",
+  "Boolean",
+  "ByteArray",
+  "Char",
+  "Class",
+  "Collection",
+  "Color",
+  "Context",
+  "False",
+  "File",
+  "Float",
+  "Fraction",
+  "Image",
+  "Indexed",
+  "Integer",
+  "Interval",
+  "LargeNegative",
+  "LargePositive",
+  "List",
+  "Magnitude",
+  "Menu",
+  "Method",
+  "Number",
+  "Object",
+  "Ordered",
+  "Pane",
+  "Point",
+  "Semaphore",
+  "SmallInt",
+  "String",
+  "True",
+  "Undefined",
+  "Window",
+];
+
 describe("SmallWorld", () => {
   describe("Image reading", () => {
     it("fails on bad magic number", async () => {
@@ -225,11 +263,64 @@ describe("SmallWorld", () => {
     });
 
     describe("User interface", () => {
+      let windowTitle = "";
+      let listData = [];
+      let buttons = [];
+      let uiFactory = {
+        makeBorderedPanel: function () {
+          return {
+            addToCenter: () => 0,
+            addToEast: () => 0,
+            addToNorth: () => 0,
+            addToWest: () => 0,
+          };
+        },
+        makeButton: function (b) {
+          buttons.push(b);
+          return { addButtonListener: () => 0 };
+        },
+        makeGridPanel: function () {
+          return { addChild: () => 0 };
+        },
+        makeListWidget: function (data) {
+          listData = data;
+          return { addSelectionListener: () => 0 };
+        },
+        makeTextArea: function () {
+          return {};
+        },
+        makeTextField: function () {
+          return {};
+        },
+        makeWindow: function () {
+          return {
+            addChildWidget: () => 0,
+            setSize: () => 0,
+            setTitle: (t) => {
+              windowTitle = t;
+            },
+            setVisible: () => 0,
+          };
+        },
+      };
+
       beforeEach(() => {
-        interpreter.uiHandler = new UIHandler();
+        interpreter.uiHandler = new UIHandler(uiFactory);
       });
 
-      it("does a ui thing", () => runDoIt("Class browser"));
+      it("Opens the class browser", () => {
+        const browserButtons = [
+          "evaluate expression",
+          "examine class",
+          "delete class",
+          "clear",
+          "close",
+        ];
+        runDoIt("Class browser");
+        expect(windowTitle).to.equal("Smalltalk Browser");
+        expect(listData).to.eql(ALL_SMALLTALK_CLASSES);
+        expect(buttons).to.eql(browserButtons);
+      });
     });
 
     it("compiles and runs new methods", () => {
