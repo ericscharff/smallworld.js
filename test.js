@@ -270,6 +270,7 @@ describe("SmallWorld", () => {
       let listSelectionListener = null;
       let savedWidth = 0;
       let savedHeight = 0;
+      let savedTextArea = "";
       let uiFactory = {
         makeBorderedPanel: function () {
           return {
@@ -296,7 +297,11 @@ describe("SmallWorld", () => {
           };
         },
         makeTextArea: function () {
-          return {};
+          return {
+            setText: (s) => {
+              savedTextArea = s;
+            },
+          };
         },
         makeTextField: function () {
           return {};
@@ -366,6 +371,11 @@ describe("SmallWorld", () => {
           "object edit",
           "close",
         ]);
+
+        listSelectionListener(1); // Click on the "fork" option in the editor
+        expect(savedTextArea).to.equal(`fork
+   " must be a no arg block "
+   <19 self>`);
       });
     });
 

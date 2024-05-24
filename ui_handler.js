@@ -99,6 +99,10 @@ export class UIHandler {
         }
         returnedValue = new SmallJsObject(stack[--stackTop], uiBorderPanel);
         break;
+      case 82: // set contents of text area
+        returnedValue = stack[--stackTop]; // The text (String)
+        stack[--stackTop].nativeObject.setText(returnedValue.toString());
+        break;
       case 83: // get list selected index
         returnedValue = interpreter.newInteger(
           stack[--stackTop].nativeObject.getSelectedIndex(),
