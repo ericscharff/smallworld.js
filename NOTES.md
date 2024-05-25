@@ -232,3 +232,53 @@ PC  Bytecode   Opcode             Comment
 
 This covers many, but not all of the features of the bytecode. The interpreter
 source itself is the canonical source of truth.
+
+## The GUI
+
+Smallworld's GUI provides a Smalltalk programming environment. You can add and
+remove classes, edit existing class methods, add methods, evaluate expressions,
+inspect live object, and so on.
+
+The GUI has a significant number of primitives for manipulating the GUI objects,
+becahse the host system (originally Java) provided all of the graphical
+primitives. The way the Smalltalk code interacts with these primitives is
+interesting. A good example of this is the `Pane (class)>>#textArea`:
+
+```
+META Pane
+textArea  " create a multi-line text area"
+   ^ <73 self>
+```
+
+So, when primitive 73 is called, it is passed an argument, the Pane class (note
+that because this is a META (class) method, `self` here is `Pane`). It is then
+expected for the primitive to return a new object, whose class is Pane, which
+represents the newly created object. It creates a new Smalltalk Object, whose
+class is Pane, and which (interally) has a reference to the platform specific
+object, not directly exposed to the Smalltalk code.
+
+When invoking methods, those object's are refenced. In `Pane>>#setText:`
+
+```
+METHOD Pane
+setText: s " set text in text pane "
+   ^ <82 self s>
+```
+
+Primitive 82 is passed two arguments, `s` (the string to display) and `self`,
+which in the case is the _instance_ of a Pane created above. The primitive thus
+assumes that self has a native object peer (a multi line text display) and
+invokes code to change the text in that text display. In practice, the object
+peer can be anything, but in the Java and JavaScript implementations, it is a
+native (JavaScript) object that represents the TextArea.
+
+Smallworld's paradigms belie it's roots as a Java AWT application. It uses
+concepts such as AWT's `BorderLayout` and `GridLayout`, as well as the event
+listener mechiansms.
+
+Event handling in Smalltalk is handled with blocks. A block is evaluated when a
+button is pushed, for example. To accomplish this, a reference to the block is
+stored in the native object's event handler. When the native code runs it's
+event handler, it invokes code in `ui_handler.js`, which in turn calls
+`interpreter.runAction(action)`, which effectivly creates a new context from the
+block and executes it.
