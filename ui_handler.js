@@ -82,19 +82,19 @@ export class UIHandler {
           uiBorderPanel.addToCenter(returnedValue.nativeObject);
         }
         returnedValue = stack[--stackTop];
-        if (returnedValue != interpreter.nilObject) {
+        if (returnedValue !== interpreter.nilObject) {
           uiBorderPanel.addToWest(returnedValue.nativeObject);
         }
         returnedValue = stack[--stackTop];
-        if (returnedValue != interpreter.nilObject) {
+        if (returnedValue !== interpreter.nilObject) {
           uiBorderPanel.addToEast(returnedValue.nativeObject);
         }
         returnedValue = stack[--stackTop];
-        if (returnedValue != interpreter.nilObject) {
+        if (returnedValue !== interpreter.nilObject) {
           uiBorderPanel.addToSouth(returnedValue.nativeObject);
         }
         returnedValue = stack[--stackTop];
-        if (returnedValue != this.nilObject) {
+        if (returnedValue !== this.nilObject) {
           uiBorderPanel.addToNorth(returnedValue.nativeObject);
         }
         returnedValue = new SmallJsObject(stack[--stackTop], uiBorderPanel);
