@@ -388,31 +388,29 @@ export class Interpreter {
                 while (low > 0) returnedValue.data[--low] = this.nilObject;
                 break;
               case 8:
-                {
-                  // block invocation
-                  returnedValue = stack[--stackTop]; // the block
-                  high = returnedValue.data[7].value; // arg location
-                  low -= 2;
-                  if (low >= 0) {
-                    temporaries = returnedValue.data[2].data;
-                    while (low >= 0) {
-                      temporaries[high + low--] = stack[--stackTop];
-                    }
+                // block invocation
+                returnedValue = stack[--stackTop]; // the block
+                high = returnedValue.data[7].value; // arg location
+                low -= 2;
+                if (low >= 0) {
+                  temporaries = returnedValue.data[2].data;
+                  while (low >= 0) {
+                    temporaries[high + low--] = stack[--stackTop];
                   }
-                  contextData[5] = this.newInteger(stackTop);
-                  contextData[4] = this.newInteger(bytePointer);
-                  const newContext = new SmallObject(this.ContextClass, 10);
-                  for (let i = 0; i < 10; i++)
-                    newContext.data[i] = returnedValue.data[i];
-                  newContext.data[6] = contextData[6];
-                  newContext.data[5] = this.newInteger(0); // stack top
-                  newContext.data[4] = returnedValue.data[9]; // starting addr
-                  low = newContext.data[3].data.length; // stack size
-                  newContext.data[3] = new SmallObject(this.ArrayClass, low); // new stack
-                  context = newContext;
-                  contextData = context.data;
-                  innerLoopRunning = false;
                 }
+                contextData[5] = this.newInteger(stackTop);
+                contextData[4] = this.newInteger(bytePointer);
+                const newContext = new SmallObject(this.ContextClass, 10);
+                for (let i = 0; i < 10; i++)
+                  newContext.data[i] = returnedValue.data[i];
+                newContext.data[6] = contextData[6];
+                newContext.data[5] = this.newInteger(0); // stack top
+                newContext.data[4] = returnedValue.data[9]; // starting addr
+                low = newContext.data[3].data.length; // stack size
+                newContext.data[3] = new SmallObject(this.ArrayClass, low); // new stack
+                context = newContext;
+                contextData = context.data;
+                innerLoopRunning = false;
                 break;
               case 11: // small integer quotient
                 low = stack[--stackTop].value;
@@ -433,31 +431,27 @@ export class Interpreter {
                   low === high ? this.trueObject : this.falseObject;
                 break;
               case 15:
-                {
-                  // small integer multiplication
-                  low = stack[--stackTop].value;
-                  high = stack[--stackTop].value;
-                  const lhigh = high * low; // full precision
-                  high = (high * low) | 0; // int32 precision
-                  if (lhigh === high) {
-                    returnedValue = this.newInteger(high);
-                  } else {
-                    returnedValue = this.nilObject;
-                  }
+                // small integer multiplication
+                low = stack[--stackTop].value;
+                high = stack[--stackTop].value;
+                const lmult = high * low; // full precision
+                high = (high * low) | 0; // int32 precision
+                if (lmult === high) {
+                  returnedValue = this.newInteger(high);
+                } else {
+                  returnedValue = this.nilObject;
                 }
                 break;
               case 16:
-                {
-                  // small integer subtraction
-                  low = stack[--stackTop].value;
-                  high = stack[--stackTop].value;
-                  const lhigh = high - low; // full precision
-                  high = (high - low) | 0; // int32 precision
-                  if (lhigh === high) {
-                    returnedValue = this.newInteger(high);
-                  } else {
-                    returnedValue = this.nilObject;
-                  }
+                // small integer subtraction
+                low = stack[--stackTop].value;
+                high = stack[--stackTop].value;
+                const lsub = high - low; // full precision
+                high = (high - low) | 0; // int32 precision
+                if (lsub === high) {
+                  returnedValue = this.newInteger(high);
+                } else {
+                  returnedValue = this.nilObject;
                 }
                 break;
               case 20: // byte array allocation
@@ -479,46 +473,42 @@ export class Interpreter {
                 returnedValue = ba;
                 break;
               case 24:
-                {
-                  // string append
-                  const a = stack[--stackTop];
-                  const b = stack[--stackTop];
-                  low = a.values.length + b.values.length;
-                  const n = new SmallByteArray(a.objClass, low);
-                  high = 0;
-                  for (let i = 0; i < a.values.length; i++)
-                    n.values[high++] = a.values[i];
-                  for (let i = 0; i < b.values.length; i++)
-                    n.values[high++] = b.values[i];
-                  returnedValue = n;
-                }
+                // string append
+                const appendA = stack[--stackTop];
+                const appendB = stack[--stackTop];
+                low = appendA.values.length + appendB.values.length;
+                const n = new SmallByteArray(appendA.objClass, low);
+                high = 0;
+                for (let i = 0; i < appendA.values.length; i++)
+                  n.values[high++] = appendA.values[i];
+                for (let i = 0; i < appendB.values.length; i++)
+                  n.values[high++] = appendB.values[i];
+                returnedValue = n;
                 break;
               case 26:
-                {
-                  // string compare
-                  const a = stack[--stackTop];
-                  const b = stack[--stackTop];
-                  low = a.values.length;
-                  high = b.values.length;
-                  let s = low < high ? low : high;
-                  let r = 0;
-                  for (let i = 0; i < s; i++)
-                    if (a.values[i] < b.values[i]) {
-                      r = 1;
-                      break;
-                    } else if (b.values[i] < a.values[i]) {
-                      r = -1;
-                      break;
-                    }
-                  if (r === 0) {
-                    if (low < high) {
-                      r = 1;
-                    } else if (low > high) {
-                      r = -1;
-                    }
+                // string compare
+                const a = stack[--stackTop];
+                const b = stack[--stackTop];
+                low = a.values.length;
+                high = b.values.length;
+                let s = low < high ? low : high;
+                let r = 0;
+                for (let i = 0; i < s; i++)
+                  if (a.values[i] < b.values[i]) {
+                    r = 1;
+                    break;
+                  } else if (b.values[i] < a.values[i]) {
+                    r = -1;
+                    break;
                   }
-                  returnedValue = this.newInteger(r);
+                if (r === 0) {
+                  if (low < high) {
+                    r = 1;
+                  } else if (low > high) {
+                    r = -1;
+                  }
                 }
+                returnedValue = this.newInteger(r);
                 break;
               case 30: // array at
                 low = stack[--stackTop].value;
@@ -526,15 +516,13 @@ export class Interpreter {
                 returnedValue = returnedValue.data[low - 1];
                 break;
               case 31:
-                {
-                  // array with: (add new item)
-                  const oldArr = stack[--stackTop];
-                  low = oldArr.data.length;
-                  returnedValue = new SmallObject(oldArr.objClass, low + 1);
-                  for (let i = 0; i < low; i++)
-                    returnedValue.data[i] = oldArr.data[i];
-                  returnedValue.data[low] = stack[--stackTop];
-                }
+                // array with: (add new item)
+                const oldArr = stack[--stackTop];
+                low = oldArr.data.length;
+                returnedValue = new SmallObject(oldArr.objClass, low + 1);
+                for (let i = 0; i < low; i++)
+                  returnedValue.data[i] = oldArr.data[i];
+                returnedValue.data[low] = stack[--stackTop];
                 break;
               case 35: // return current context
                 returnedValue = context;
