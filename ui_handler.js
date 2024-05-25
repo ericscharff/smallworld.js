@@ -94,7 +94,7 @@ export class UIHandler {
           uiBorderPanel.addToSouth(returnedValue.nativeObject);
         }
         returnedValue = stack[--stackTop];
-        if (returnedValue !== this.nilObject) {
+        if (returnedValue !== interpreter.nilObject) {
           uiBorderPanel.addToNorth(returnedValue.nativeObject);
         }
         returnedValue = new SmallJsObject(stack[--stackTop], uiBorderPanel);
