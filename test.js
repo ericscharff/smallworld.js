@@ -277,6 +277,7 @@ describe("SmallWorld", () => {
             addToCenter: () => 0,
             addToEast: () => 0,
             addToNorth: () => 0,
+            addToSouth: () => 0,
             addToWest: () => 0,
           };
         },
@@ -287,6 +288,9 @@ describe("SmallWorld", () => {
         makeGridPanel: function () {
           return { addChild: () => 0 };
         },
+        makeLabel: function () {
+          return {};
+        },
         makeListWidget: function (data) {
           listData = data;
           return {
@@ -294,10 +298,14 @@ describe("SmallWorld", () => {
               listSelectionListener = l;
             },
             getSelectedIndex: () => 3,
+            setData: (data) => {
+              listData = data;
+            },
           };
         },
         makeTextArea: function () {
           return {
+            getText: () => savedTextArea,
             setText: (s) => {
               savedTextArea = s;
             },
@@ -349,7 +357,9 @@ describe("SmallWorld", () => {
         listSelectionListener(3); // Class brower's list just returns nil
 
         buttons = [];
-        buttonListeners[1](); // This opens a new window
+        const examineClassButton = buttonListeners[1];
+        buttonListeners = [];
+        examineClassButton(); // This opens a new window
         expect(windowTitle).to.equal("Class Editor: Block");
         // The new list in the class editor has Block's methods
         expect(listData).to.eql([
@@ -376,6 +386,14 @@ describe("SmallWorld", () => {
         expect(savedTextArea).to.equal(`fork
    " must be a no arg block "
    <19 self>`);
+        const compileMethodButton = buttonListeners[1];
+        // The method to compile
+        savedTextArea = 'fork\n  " from UI "\n<19 self>';
+        compileMethodButton(); // click compile method
+        // The newly compiled fork method should be in the image now
+        expect(runPrintIt("(Block methods at: 1) text")).to.equal(
+          savedTextArea,
+        );
       });
     });
 

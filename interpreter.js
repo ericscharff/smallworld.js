@@ -533,7 +533,7 @@ export class Interpreter {
                   returnedValue.data[i] = stack[--stackTop];
                 break;
               default:
-                if (this.uiHandler && high >= 60 && high <= 83) {
+                if (this.uiHandler && high >= 60 && high <= 84) {
                   [returnedValue, stack, stackTop] = this.uiHandler.handle(
                     this,
                     high,

@@ -1,4 +1,4 @@
-import { SmallJsObject } from "./objects.js";
+import { SmallByteArray, SmallJsObject } from "./objects.js";
 
 export class UIHandler {
   constructor(uiFactory) {
@@ -34,6 +34,14 @@ export class UIHandler {
         const windowTitle = stack[--stackTop].toString();
         returnedValue = stack[--stackTop]; // the window
         returnedValue.nativeObject.setTitle(windowTitle);
+        break;
+      case 66: // repaint window
+        returnedValue = stack[--stackTop];
+        // redraw widget? not needed...
+        break;
+      case 70: // new label panel
+        const uiLabel = this.uiFactory.makeLabel(stack[--stackTop].toString());
+        returnedValue = new SmallJsObject(stack[--stackTop], uiLabel);
         break;
       case 71: // new button
         const buttonAction = stack[--stackTop];
@@ -99,6 +107,12 @@ export class UIHandler {
         }
         returnedValue = new SmallJsObject(stack[--stackTop], uiBorderPanel);
         break;
+      case 80: // get contents of text area
+        const textAreaContents = stack[--stackTop].nativeObject.getText();
+        // String class is passed in to create the return type
+        const stringClass = stack[--stackTop];
+        returnedValue = new SmallByteArray(stringClass, textAreaContents);
+        break;
       case 82: // set contents of text area
         returnedValue = stack[--stackTop]; // The text (String)
         stack[--stackTop].nativeObject.setText(returnedValue.toString());
@@ -107,6 +121,11 @@ export class UIHandler {
         returnedValue = interpreter.newInteger(
           stack[--stackTop].nativeObject.getSelectedIndex(),
         );
+        break;
+      case 84: // set list data
+        const newListData = stack[--stackTop].data.map((e) => e.toString()); // array of strings
+        returnedValue = stack[--stackTop]; // the list widget
+        returnedValue.nativeObject.setData(newListData);
         break;
       default:
         throw new Error("Bad UI " + high);
