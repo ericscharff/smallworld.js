@@ -16,16 +16,19 @@ performance.
 
 ## Status
 
-The current implementation is extremely minimalist. There is no GUI, and many
-primitives are not yet implemented. However, what is here is capable of running
-a fairly large amount of Smalltalk code correctly, including basic arbitrary
-precision arithmetic, string manipulation, and adding new methods to existing
-classes. See the tests in [test.js](test.js) for more details.
+The current implementation is extremely minimalist. The GUI is rough and
+incomplete. However, what is here is capable of running a fairly large amount of
+Smalltalk code correctly, including basic arbitrary precision arithmetic, string
+manipulation, and adding new methods to existing classes. See the tests in
+[test.js](test.js) for more details.
 
-I plan to maintain multiple branches of this code with different purposes. The
-main branch will continue to be core features and primitives for a "headless"
-experience - no GUI and minimal interaction with the outside world. It is thus
-intended for embedding in some other system.
+The main interpreter can be used "headless" - you can run basic Smalltalk code
+without a GUI. You can optionally add a UI Handler (which adds the UI
+primitives) but the base system doesn't depend on it. The UI Handler itself
+doesn't do much either, it depends on a UI implementation (called the UI
+factory) which presents the Smalltalk UI concepts in a browser using the HTML
+DOM APIs. These are all included here, but since the interpreter doesn't depend
+directly on any UI, it could be used for embedding in other systems.
 
 ## Running
 
