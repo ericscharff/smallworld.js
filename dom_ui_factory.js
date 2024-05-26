@@ -118,11 +118,15 @@ export class DomUiFactory {
   }
 
   makeTextField() {
-    // TODO: input instead of textarea
-    const t = document.createElement("span");
-    t.innerText = "TextField";
-    //return {elt: t, setText: (s) => {t.value = s;}}
-    return { elt: t };
+    const t = document.createElement("input");
+    t.type = "text";
+    return {
+      elt: t,
+      getText: () => t.value,
+      setText: (s) => {
+        t.value = s;
+      },
+    };
   }
 
   makeWindow() {
