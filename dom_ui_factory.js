@@ -6,6 +6,7 @@ export class DomUiFactory {
       addToCenter: (e) => d.appendChild(e.elt),
       addToEast: (e) => d.appendChild(e.elt),
       addToNorth: (e) => d.appendChild(e.elt),
+      addToSouth: (e) => d.appendChild(e.elt),
       addToWest: (e) => d.appendChild(e.elt),
     };
   }
@@ -22,6 +23,12 @@ export class DomUiFactory {
   makeGridPanel() {
     const d = document.createElement("div");
     return { elt: d, addChild: (c) => d.appendChild(c.elt) };
+  }
+
+  makeLabel(labelText) {
+    const s = document.createElement("span");
+    s.innerText = labelText;
+    return { elt: s };
   }
 
   makeListWidget(listItems) {
@@ -43,6 +50,23 @@ export class DomUiFactory {
       elt: l,
       addSelectionListener: (l) => listeners.push(l),
       getSelectedIndex: () => selectedIndex,
+      setData: (newListItems) => {
+        // Remove all list elements
+        while (l.firstChild) {
+          l.removeChild(l.firstChild);
+        }
+        for (const [i, label] of newListItems.entries()) {
+          const e = document.createElement("li");
+          e.innerText = label;
+          e.addEventListener("click", () => {
+            selectedIndex = i + 1;
+            for (const l of listeners) {
+              l(i + 1);
+            }
+          });
+          l.appendChild(e);
+        }
+      },
     };
   }
 
@@ -50,6 +74,7 @@ export class DomUiFactory {
     const t = document.createElement("textarea");
     return {
       elt: t,
+      getText: () => t.value,
       setText: (s) => {
         t.value = s;
       },
