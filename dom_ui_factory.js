@@ -1,13 +1,29 @@
 export class DomUiFactory {
   makeBorderedPanel() {
     const d = document.createElement("div");
+    d.classList.add("borderPane");
     return {
       elt: d,
-      addToCenter: (e) => d.appendChild(e.elt),
-      addToEast: (e) => d.appendChild(e.elt),
-      addToNorth: (e) => d.appendChild(e.elt),
-      addToSouth: (e) => d.appendChild(e.elt),
-      addToWest: (e) => d.appendChild(e.elt),
+      addToCenter: (e) => {
+        e.elt.classList.add("center");
+        d.appendChild(e.elt);
+      },
+      addToEast: (e) => {
+        e.elt.classList.add("east");
+        d.appendChild(e.elt);
+      },
+      addToNorth: (e) => {
+        e.elt.classList.add("north");
+        d.appendChild(e.elt);
+      },
+      addToSouth: (e) => {
+        e.elt.classList.add("south");
+        d.appendChild(e.elt);
+      },
+      addToWest: (e) => {
+        e.elt.classList.add("west");
+        d.appendChild(e.elt);
+      },
     };
   }
 
@@ -33,18 +49,28 @@ export class DomUiFactory {
 
   makeListWidget(listItems) {
     const l = document.createElement("ul");
+    l.classList.add("listBox");
     let selectedIndex = -1;
     let listeners = [];
+    let listItemElts = [];
     for (const [i, label] of listItems.entries()) {
       const e = document.createElement("li");
       e.innerText = label;
       e.addEventListener("click", () => {
+        // Deslect old item
+        if (selectedIndex > 0) {
+          listItemElts[selectedIndex - 1].classList.remove("selected");
+        }
+        // Select new item
+        listItemElts[i].classList.add("selected");
+
         selectedIndex = i + 1;
         for (const l of listeners) {
           l(i + 1);
         }
       });
       l.appendChild(e);
+      listItemElts.push(e);
     }
     return {
       elt: l,
@@ -55,16 +81,26 @@ export class DomUiFactory {
         while (l.firstChild) {
           l.removeChild(l.firstChild);
         }
+        listItemElts = [];
+        selectedIndex = -1;
         for (const [i, label] of newListItems.entries()) {
           const e = document.createElement("li");
           e.innerText = label;
           e.addEventListener("click", () => {
+            // Deslect old item
+            if (selectedIndex > 0) {
+              listItemElts[selectedIndex - 1].classList.remove("selected");
+            }
+            // Select new item
+            listItemElts[i].classList.add("selected");
+
             selectedIndex = i + 1;
             for (const l of listeners) {
               l(i + 1);
             }
           });
           l.appendChild(e);
+          listItemElts.push(e);
         }
       },
     };
@@ -91,13 +127,24 @@ export class DomUiFactory {
 
   makeWindow() {
     const d = document.createElement("div");
+    d.classList.add("stWindow");
     document.getElementById("workspace").appendChild(d);
     return {
       elt: d,
       addChildWidget: (c) => d.appendChild(c.elt),
-      setSize: (w, h) => console.log("window size", w, h),
-      setTitle: (t) => console.log("window title: " + t),
-      setVisible: (v) => 0,
+      //setSize: (w, h) => console.log("window size", w, h),
+      setSize: (w, h) => 0,
+      setTitle: (t) => {
+        const s = document.createElement("span");
+        s.classList.add("windowTitle");
+        s.innerText = t;
+        d.appendChild(s);
+      },
+      setVisible: (v) => {
+        if (!v) {
+          document.getElementById("workspace").removeChild(d);
+        }
+      },
     };
   }
 }
