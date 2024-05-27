@@ -169,7 +169,7 @@ describe("SmallWorld", () => {
     function runDoIt(task, bytecodePatcher) {
       // Simulate doIt
 
-      // This relies on the defintions of class
+      // This relies on the definitions of class
       // variables: 'name parentClass methods size variables '
       // and method
       // variables: 'name byteCodes literals stackSize temporarySize class text '
@@ -376,7 +376,7 @@ describe("SmallWorld", () => {
         expect(savedWidth).to.equal(500);
         expect(savedHeight).to.equal(200);
 
-        listSelectionListener(3); // Class brower's list just returns nil
+        listSelectionListener(3); // Class browser's list just returns nil
 
         buttons = [];
         const examineClassButton = buttonListeners[1];

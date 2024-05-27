@@ -30,7 +30,7 @@ export class Interpreter {
     const context = new SmallObject(this.ContextClass, 7);
     // The context object as defined in Smallworld has the following instance variables:
     // method          - method being executed
-    // arguments       - arguments to the methood
+    // arguments       - arguments to the method
     // temporaries     - temporary variables in the method
     // stack           - working stack for invoking that method
     // bytePointer     - pointer into the method's bytecode
@@ -52,7 +52,7 @@ export class Interpreter {
     if (max > 0) {
       context.data[2] = new SmallObject(this.ArrayClass, max);
       while (max > 0)
-        // iniailize to nil
+        // initialize to nil
         context.data[2].data[--max] = this.nilObject;
     }
     // allocate stack
