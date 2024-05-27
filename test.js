@@ -4,7 +4,7 @@ import { expect } from "chai";
 import { ImageReader } from "./image_reader.js";
 import { ImageWriter } from "./image_writer.js";
 import { Interpreter } from "./interpreter.js";
-import { SmallByteArray, SmallObject } from "./objects.js";
+import { SmallByteArray, SmallJsObject, SmallObject } from "./objects.js";
 import { UIHandler } from "./ui_handler.js";
 
 const ALL_SMALLTALK_CLASSES = [
@@ -116,6 +116,16 @@ describe("SmallWorld", () => {
         const arr = writer.finish();
         expect(arr).to.eql(buf);
       });
+    });
+
+    it("fails to write native objects", () => {
+      const writer = new ImageWriter();
+      const nilObject = new SmallObject(null, 0);
+      nilObject.objClass = nilObject;
+      writer.writeObject(new SmallJsObject(nilObject, "str"));
+      expect(() => writer.finish()).to.throw(
+        "SmallJsObject can not be serialized",
+      );
     });
   });
 

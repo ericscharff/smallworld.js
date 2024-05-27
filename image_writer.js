@@ -56,6 +56,8 @@ export class ImageWriter {
         stream.writeByte(2);
       } else if (o.isSmallInt()) {
         stream.writeByte(1);
+      } else if (o.isSmallJsObject()) {
+        throw new Error("SmallJsObject can not be serialized");
       } else {
         stream.writeByte(0);
       }

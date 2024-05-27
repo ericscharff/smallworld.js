@@ -20,6 +20,10 @@ export class SmallObject {
     return false;
   }
 
+  isSmallJsObject() {
+    return false;
+  }
+
   hashCode() {
     return this.hash;
   }
@@ -77,5 +81,9 @@ export class SmallJsObject extends SmallObject {
   constructor(stClass, nativeObject) {
     super(stClass, 0);
     this.nativeObject = nativeObject;
+  }
+
+  isSmallJsObject() {
+    return true;
   }
 }
