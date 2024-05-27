@@ -30,6 +30,16 @@ sufficient for the usage within the system, since it is always less than 32 bits
 of precision. However, care should be taken to ensure that `value` is always an
 integer.
 
+There is an additional, optional subclass of `SmallObject` called
+`SmallJsObject`. This object represents something whose primary representation
+exists outside of the Smalltalk object system. For example, GUI objects like a
+Text entry widget are represented in HTML as a `<textarea>` element. When doing
+floating point arithmetic, The number is opaque to Smalltalk, and relies on
+JavaScript to do the floating point operations. Thus any time can be placed in
+the `nativeObject` property of a `SmallJsObject`, and the appropriate primitives
+manipulate it. This is optional because the compiler and interpreter can work
+without requiring an arbitrary native object type.
+
 ## The Object File Format
 
 The Smalltalk system is a complicated, circular graph of interrelated objects.
@@ -240,7 +250,7 @@ remove classes, edit existing class methods, add methods, evaluate expressions,
 inspect live object, and so on.
 
 The GUI has a significant number of primitives for manipulating the GUI objects,
-becahse the host system (originally Java) provided all of the graphical
+because the host system (originally Java) provided all of the graphical
 primitives. The way the Smalltalk code interacts with these primitives is
 interesting. A good example of this is the `Pane (class)>>#textArea`:
 
@@ -254,10 +264,10 @@ So, when primitive 73 is called, it is passed an argument, the Pane class (note
 that because this is a META (class) method, `self` here is `Pane`). It is then
 expected for the primitive to return a new object, whose class is Pane, which
 represents the newly created object. It creates a new Smalltalk Object, whose
-class is Pane, and which (interally) has a reference to the platform specific
+class is Pane, and which (internally) has a reference to the platform specific
 object, not directly exposed to the Smalltalk code.
 
-When invoking methods, those object's are refenced. In `Pane>>#setText:`
+When invoking methods, those object's are referenced. In `Pane>>#setText:`
 
 ```
 METHOD Pane
@@ -274,11 +284,11 @@ native (JavaScript) object that represents the TextArea.
 
 Smallworld's paradigms belie it's roots as a Java AWT application. It uses
 concepts such as AWT's `BorderLayout` and `GridLayout`, as well as the event
-listener mechiansms.
+listener mechanisms.
 
 Event handling in Smalltalk is handled with blocks. A block is evaluated when a
 button is pushed, for example. To accomplish this, a reference to the block is
 stored in the native object's event handler. When the native code runs it's
 event handler, it invokes code in `ui_handler.js`, which in turn calls
-`interpreter.runAction(action)`, which effectivly creates a new context from the
-block and executes it.
+`interpreter.runAction(action)`, which effectively creates a new context from
+the block and executes it.

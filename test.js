@@ -254,6 +254,18 @@ describe("SmallWorld", () => {
       );
     });
 
+    it("adds floating point numbers", () => {
+      expect(runPrintIt("(1.2 + 1.2)")).to.equal("2.4");
+    });
+
+    it("subtracts floating point numbers", () => {
+      expect(runPrintIt("(2.0 - 1.5)")).to.equal("0.5");
+    });
+
+    it("multiplies floating point numbers", () => {
+      expect(runPrintIt("(1.4 * 1.2)")).to.equal("1.68");
+    });
+
     it("concatenates strings", () => {
       expect(runPrintIt("'abc' + 'def'")).to.equal("abcdef");
     });

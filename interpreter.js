@@ -1,4 +1,9 @@
-import { SmallByteArray, SmallInt, SmallObject } from "./objects.js";
+import {
+  SmallByteArray,
+  SmallInt,
+  SmallJsObject,
+  SmallObject,
+} from "./objects.js";
 
 export class Interpreter {
   constructor(
@@ -531,6 +536,34 @@ export class Interpreter {
                 returnedValue = new SmallObject(this.ArrayClass, low);
                 for (let i = low - 1; i >= 0; i--)
                   returnedValue.data[i] = stack[--stackTop];
+                break;
+              case 50: // convert SmallInt into float
+                low = stack[--stackTop].value;
+                returnedValue = new SmallJsObject(stack[--stackTop], low);
+                break;
+              case 51: // float addition
+                const aa = stack[--stackTop].nativeObject;
+                const ab = stack[--stackTop].nativeObject;
+                returnedValue = new SmallJsObject(stack[--stackTop], aa + ab);
+                break;
+              case 52: // float subtraction
+                const sa = stack[--stackTop].nativeObject;
+                const sb = stack[--stackTop].nativeObject;
+                returnedValue = new SmallJsObject(stack[--stackTop], sa - sb);
+                break;
+              case 53: // float multiplication
+                const ma = stack[--stackTop].nativeObject;
+                const mb = stack[--stackTop].nativeObject;
+                returnedValue = new SmallJsObject(stack[--stackTop], ma * mb);
+                break;
+              case 54: // float multiplication
+                const da = stack[--stackTop].nativeObject;
+                const db = stack[--stackTop].nativeObject;
+                returnedValue = new SmallJsObject(stack[--stackTop], da / db);
+                break;
+              case 59: // float as string
+                const dStr = "" + stack[--stackTop].nativeObject;
+                returnedValue = new SmallByteArray(stack[--stackTop], dStr);
                 break;
               default:
                 if (this.uiHandler && high >= 60 && high <= 84) {
