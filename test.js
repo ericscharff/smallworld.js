@@ -266,6 +266,15 @@ describe("SmallWorld", () => {
       expect(runPrintIt("(1.4 * 1.2)")).to.equal("1.68");
     });
 
+    it("compares floating point numbers", () => {
+      expect(runPrintIt("(1.4 < 1.2)")).to.equal("false");
+      expect(runPrintIt("(1.4 <= 1.2)")).to.equal("false");
+      expect(runPrintIt("(1.4 = 1.2)")).to.equal("false");
+      expect(runPrintIt("(1.4 = 1.4)")).to.equal("true");
+      expect(runPrintIt("(1.4 > 1.2)")).to.equal("true");
+      expect(runPrintIt("(1.4 >= 1.2)")).to.equal("true");
+    });
+
     it("concatenates strings", () => {
       expect(runPrintIt("'abc' + 'def'")).to.equal("abcdef");
     });

@@ -561,6 +561,16 @@ export class Interpreter {
                 const db = stack[--stackTop].nativeObject;
                 returnedValue = new SmallJsObject(stack[--stackTop], da / db);
                 break;
+              case 55: // float less than
+                const lta = stack[--stackTop].nativeObject;
+                const ltb = stack[--stackTop].nativeObject;
+                returnedValue = lta < ltb ? this.trueObject : this.falseObject;
+                break;
+              case 56: // float equality
+                const ea = stack[--stackTop].nativeObject;
+                const eb = stack[--stackTop].nativeObject;
+                returnedValue = ea === eb ? this.trueObject : this.falseObject;
+                break;
               case 59: // float as string
                 const dStr = "" + stack[--stackTop].nativeObject;
                 returnedValue = new SmallByteArray(stack[--stackTop], dStr);
