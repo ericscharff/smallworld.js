@@ -40,6 +40,9 @@ the `nativeObject` property of a `SmallJsObject`, and the appropriate primitives
 manipulate it. This is optional because the compiler and interpreter can work
 without requiring an arbitrary native object type.
 
+A description of how the core objects could be contructed using JavaScript is
+presented in [object_nternals.js](object_internals.js).
+
 ## The Object File Format
 
 The Smalltalk system is a complicated, circular graph of interrelated objects.
