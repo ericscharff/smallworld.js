@@ -35,6 +35,10 @@ directly on any UI, it could be used for embedding in other systems.
 After cloning, use `npm install` to install the dependencies (only needed for
 running unit tests). Running `npm test` will run the test suite in test.js.
 
+There is a simple repl that you can run from the command line with
+`node node-repl.js` or `./node-repl.js`. Lines on the command line will be
+compiled and run with `doIt`.
+
 You can run a very, very primitive version of the interpeter by loading
 [index.html](index.html) in a Web browser. You can evaluate expressions and the
 result will be printed below.
