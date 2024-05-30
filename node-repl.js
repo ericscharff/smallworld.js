@@ -66,18 +66,14 @@ function runDoIt(task, bytecodePatcher) {
   }
 }
 
-const rl = readline.createInterface(process.stdin, process.stdout);
-const EXITS = ["bye", "exit", "shutdown", "quit"];
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: "SmallWorld> ",
+});
 
-function repl() {
-  rl.question("SmallWorld> ", (s) => {
-    if (EXITS.some((e) => e === s)) {
-      rl.close();
-    } else {
-      console.log("" + runDoIt(s));
-      repl();
-    }
-  });
-}
-
-repl();
+rl.prompt();
+rl.on("line", (s) => {
+  console.log("" + runDoIt(s));
+  rl.prompt();
+});
