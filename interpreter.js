@@ -575,6 +575,12 @@ export class Interpreter {
                 const fv = stack[--stackTop].nativeObject;
                 returnedValue = this.newInteger(fv);
                 break;
+              case 58: // random float
+                returnedValue = new SmallJsObject(
+                  stack[--stackTop],
+                  Math.random(),
+                );
+                break;
               case 59: // float as string
                 const dStr = "" + stack[--stackTop].nativeObject;
                 returnedValue = new SmallByteArray(stack[--stackTop], dStr);

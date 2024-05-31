@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { expect } from "chai";
+import sinon from "sinon";
 import { ImageReader } from "./image_reader.js";
 import { ImageWriter } from "./image_writer.js";
 import { Interpreter } from "./interpreter.js";
@@ -279,6 +280,12 @@ describe("SmallWorld", () => {
       expect(runDoIt("1.9 asInteger")).to.equal(interpreter.newInteger(1));
     });
 
+    it("generates random floats", () => {
+      sinon.stub(Math, "random").returns(0.25);
+      expect(runPrintIt("Float random")).to.equal("0.25");
+      // integer uses float's random too
+      expect(runDoIt("10 random")).to.equal(interpreter.newInteger(2));
+    });
     it("concatenates strings", () => {
       expect(runPrintIt("'abc' + 'def'")).to.equal("abcdef");
     });
