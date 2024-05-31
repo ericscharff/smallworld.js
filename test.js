@@ -143,7 +143,7 @@ describe("SmallWorld", () => {
     let interpreter = null;
 
     beforeEach(async () => {
-      await fs.readFile("testdata/image.noGui").then((buf) => {
+      await fs.readFile("image.data").then((buf) => {
         const reader = new ImageReader(buf);
         nilObject = reader.readObject();
         trueObject = reader.readObject();
@@ -300,6 +300,10 @@ describe("SmallWorld", () => {
     });
 
     it("handles unrecognized messages", () => {
+      runDoIt(
+        "Object compileMethod: 'error: str " +
+          "^(str + Char newline asString + Context current backtrace)'",
+      );
       const r = runPrintIt("3 moo");
       expect(r).to.contain("Unrecognized message selector: moo");
     });
