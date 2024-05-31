@@ -571,6 +571,10 @@ export class Interpreter {
                 const eb = stack[--stackTop].nativeObject;
                 returnedValue = ea === eb ? this.trueObject : this.falseObject;
                 break;
+              case 57: // float as int
+                const fv = stack[--stackTop].nativeObject;
+                returnedValue = this.newInteger(fv);
+                break;
               case 59: // float as string
                 const dStr = "" + stack[--stackTop].nativeObject;
                 returnedValue = new SmallByteArray(stack[--stackTop], dStr);

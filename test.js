@@ -275,6 +275,10 @@ describe("SmallWorld", () => {
       expect(runPrintIt("(1.4 >= 1.2)")).to.equal("true");
     });
 
+    it("converts floats to integer", () => {
+      expect(runDoIt("1.9 asInteger")).to.equal(interpreter.newInteger(1));
+    });
+
     it("concatenates strings", () => {
       expect(runPrintIt("'abc' + 'def'")).to.equal("abcdef");
     });
