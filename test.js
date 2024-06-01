@@ -308,6 +308,10 @@ describe("SmallWorld", () => {
       expect(r).to.contain("Unrecognized message selector: moo");
     });
 
+    it("returns nil when halting", () => {
+      expect(runDoIt("Object halt")).to.equal(interpreter.nilObject);
+    });
+
     describe("User interface", () => {
       let windowTitle = "";
       let listData = [];
