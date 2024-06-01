@@ -1,3 +1,4 @@
+import { ImageWriter } from "./image_writer.js";
 import {
   SmallByteArray,
   SmallInt,
@@ -514,6 +515,22 @@ export class Interpreter {
                   }
                 }
                 returnedValue = this.newInteger(r);
+                break;
+              case 29: // save image
+                returnedValue = stack[--stackTop];
+                const imageFileName = returnedValue.toString();
+                if (this.imageSaveCallback) {
+                  const writer = new ImageWriter();
+                  writer.writeObject(this.nilObject);
+                  writer.writeObject(this.trueObject);
+                  writer.writeObject(this.falseObject);
+                  writer.writeSmallInts(this.smallInts);
+                  writer.writeObject(this.ArrayClass);
+                  writer.writeObject(this.BlockClass);
+                  writer.writeObject(this.ContextClass);
+                  writer.writeObject(this.IntegerClass);
+                  this.imageSaveCallback(imageFileName, writer.finish());
+                }
                 break;
               case 30: // array at
                 low = stack[--stackTop].value;

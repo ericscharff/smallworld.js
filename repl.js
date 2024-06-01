@@ -89,6 +89,7 @@ const interpreter = new Interpreter(
   IntegerClass,
 );
 interpreter.uiHandler = new UIHandler(new ConsoleUIFactory());
+interpreter.imageSaveCallback = (name, buf) => fs.writeFileSync(name, buf);
 
 function runDoIt(task, bytecodePatcher) {
   // Simulate doIt

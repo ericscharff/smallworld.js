@@ -312,6 +312,29 @@ describe("SmallWorld", () => {
       expect(runDoIt("Object halt")).to.equal(interpreter.nilObject);
     });
 
+    it("responds to saveImage:", () => {
+      const uiFactory = {
+        makeWindow: () => ({
+          setTitle: () => 0,
+          setSize: () => 0,
+          addChildWidget: () => 0,
+          setVisible: () => 0,
+        }),
+        makeLabel: () => 0,
+        makeButton: () => ({ addButtonListener: () => 0 }),
+        makeBorderedPanel: () => ({
+          addToCenter: () => 0,
+          addToSouth: () => 0,
+        }),
+      };
+      interpreter.uiHandler = new UIHandler(uiFactory);
+      interpreter.imageSaveCallback = (name, buf) => {
+        expect(name).to.equal("imageToSave");
+        expect(buf).to.be.an.instanceOf(Uint8Array);
+      };
+      runDoIt("File saveImage: 'imageToSave'");
+    });
+
     describe("User interface", () => {
       let windowTitle = "";
       let listData = [];
@@ -321,7 +344,7 @@ describe("SmallWorld", () => {
       let savedWidth = 0;
       let savedHeight = 0;
       let savedTextArea = "";
-      let uiFactory = {
+      const uiFactory = {
         makeBorderedPanel: function () {
           return {
             addToCenter: () => 0,
