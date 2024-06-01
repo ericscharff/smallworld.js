@@ -529,6 +529,8 @@ export class Interpreter {
                   returnedValue.data[i] = oldArr.data[i];
                 returnedValue.data[low] = stack[--stackTop];
                 break;
+              case 34: // halt the interpreter
+                return this.nilObject;
               case 35: // return current context
                 returnedValue = context;
                 break;
