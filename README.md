@@ -62,4 +62,4 @@ and how the illusion of "everything is an object" can be maintained.
 
 Porting from Java to JavaScript has therefore been a personal journey of
 discovery to understand the inner workings of the virtual machine. My rough
-notes along the way are in [NOTES.md](NOTES.md).
+notes along the way are in [NOTES.md](doc/NOTES.md).
