@@ -137,6 +137,10 @@ const rl = readline.createInterface({
 
 rl.prompt();
 rl.on("line", (s) => {
-  console.log("" + runDoIt(s));
-  rl.prompt();
+  if (["bye", "exit", "shutdown", "quit"].includes(s.trim())) {
+    rl.close();
+  } else {
+    console.log("" + runDoIt(s));
+    rl.prompt();
+  }
 });
