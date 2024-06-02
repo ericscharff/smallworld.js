@@ -135,16 +135,31 @@ const rl = readline.createInterface({
   prompt: "SmallWorld> ",
 });
 
+let multiLine = "";
+
 rl.prompt();
 rl.on("line", (s) => {
-  s = s.trim();
-  const blankOrComment = s === "" || s.startsWith("#") || s.startsWith('"');
-  if (!blankOrComment) {
-    if (["bye", "exit", "shutdown", "quit"].includes(s)) {
-      rl.close();
+  if (multiLine) {
+    multiLine += s;
+    if (s.includes("!")) {
+      s = multiLine.replaceAll("!", "");
+      multiLine = "";
     } else {
-      console.log("" + runDoIt(s));
-      rl.prompt();
+      s = "";
+    }
+  }
+  if (s.includes("!")) {
+    multiLine = s;
+  } else {
+    s = s.trim();
+    const blankOrComment = s === "" || s.startsWith("#") || s.startsWith('"');
+    if (!blankOrComment) {
+      if (["bye", "exit", "shutdown", "quit"].includes(s)) {
+        rl.close();
+      } else {
+        console.log("" + runDoIt(s));
+        rl.prompt();
+      }
     }
   }
 });
