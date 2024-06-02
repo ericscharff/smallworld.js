@@ -137,10 +137,14 @@ const rl = readline.createInterface({
 
 rl.prompt();
 rl.on("line", (s) => {
-  if (["bye", "exit", "shutdown", "quit"].includes(s.trim())) {
-    rl.close();
-  } else {
-    console.log("" + runDoIt(s));
-    rl.prompt();
+  s = s.trim();
+  const blankOrComment = s === "" || s.startsWith("#") || s.startsWith('"');
+  if (!blankOrComment) {
+    if (["bye", "exit", "shutdown", "quit"].includes(s)) {
+      rl.close();
+    } else {
+      console.log("" + runDoIt(s));
+      rl.prompt();
+    }
   }
 });
