@@ -25,5 +25,19 @@ Class removeMethod: 'subclass'
 "Single-threaded JavaScript doesn't have or need Semaphore"
 Class removeClass: 'Semaphore'
 
+"File doesn't make much sense in a VM, but we still need a way to save the"
+"image, so move a new verison of saveImage: to class, instead"
+Class compileMethod: 'saveImage: n !
+  <29 (n printString)>.
+  ^ ''Image saved in file '' + n'
+!
+
+"Now, class fileOut and fileTo: can be removed"
+Class removeMethod: 'fileOut'
+Class removeMethod: 'fileTo:'
+
+"and thus File itself can be removed"
+Class removeClass: 'File'
+
 "Save the resulting image"
-File saveImage: 'image-nogui.data'
+Class saveImage: 'image-nogui.data'
