@@ -29,8 +29,7 @@ Class removeClass: 'Semaphore'
 "image, so move a new verison of saveImage: to class, instead"
 Class compileMethod: 'saveImage: n !
   <29 (n printString)>.
-  ^ ''Image saved in file '' + n'
-!
+  ^ ''Image saved in file '' + n' !
 
 "Now, class fileOut and fileTo: can be removed"
 Class removeMethod: 'fileOut'

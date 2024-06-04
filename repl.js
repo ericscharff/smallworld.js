@@ -140,7 +140,7 @@ let multiLine = "";
 rl.prompt();
 rl.on("line", (s) => {
   if (multiLine) {
-    multiLine += s;
+    multiLine += "\n" + s;
     if (s.includes("!")) {
       s = multiLine.replaceAll("!", "");
       multiLine = "";
