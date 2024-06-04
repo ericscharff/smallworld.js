@@ -546,6 +546,13 @@ export class Interpreter {
                   returnedValue.data[i] = oldArr.data[i];
                 returnedValue.data[low] = stack[--stackTop];
                 break;
+              case 33: // sleep thread (current context)
+                // Save current context
+                const sleepTime = stack[--stackTop].value;
+                contextData[4] = this.newInteger(bytePointer);
+                contextData[5] = this.newInteger(stackTop);
+                setTimeout(() => this.execute(context), sleepTime);
+                return this.nilObject;
               case 34: // halt the interpreter
                 return this.nilObject;
               case 35: // return current context

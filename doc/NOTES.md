@@ -246,9 +246,36 @@ PC  Bytecode   Opcode             Comment
 This covers many, but not all of the features of the bytecode. The interpreter
 source itself is the canonical source of truth.
 
+## Threads
+
+SmallWorld relied on Java threads for Semaphores and `sleep` (using
+`Thread.sleep()`. Single-threaded JavaScript doesn't have equivalents, and
+callbacks would be preferred. Semaphore is removed from the ported image, but it
+is possible to simulate `sleep` using callbacks, sort of ad-hoc continuations.
+This works by saving the context (the current running state), calling JavaScript
+`setTimeout` and in the callback, calling `execute` again with the context. This
+allows something like this
+
+```
+  "do a"
+  5000 sleep. "5 seconds"
+  "do b"
+  5000 sleep. "5 seconds"
+  "do c"
+```
+
+To work, as in, a method or block will run, and b will run 5 seconds after a
+(and c 5 seconds after b).
+
+However, it is important to realize that nothing blocks - when sleep is called,
+it's as if a method immediately returns `nil` (even though all the bits run).
+This may lead to suprising side effects. For example, `[1000 sleep 'a'] value`
+could be expected to return 'a' (as `['a'] value` would), but instead it will
+return nil (although 'a' will be "evaluated" in the background).
+
 ## The GUI
 
-Smallworld's GUI provides a Smalltalk programming environment. You can add and
+SmallWorld's GUI provides a Smalltalk programming environment. You can add and
 remove classes, edit existing class methods, add methods, evaluate expressions,
 inspect live object, and so on.
 
@@ -285,7 +312,7 @@ invokes code to change the text in that text display. In practice, the object
 peer can be anything, but in the Java and JavaScript implementations, it is a
 native (JavaScript) object that represents the TextArea.
 
-Smallworld's paradigms belie it's roots as a Java AWT application. It uses
+SmallWorld's paradigms belie it's roots as a Java AWT application. It uses
 concepts such as AWT's `BorderLayout` and `GridLayout`, as well as the event
 listener mechanisms.
 
