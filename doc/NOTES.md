@@ -40,7 +40,7 @@ the `nativeObject` property of a `SmallJsObject`, and the appropriate primitives
 manipulate it. This is optional because the compiler and interpreter can work
 without requiring an arbitrary native object type.
 
-A description of how the core objects could be contructed using JavaScript is
+A description of how the core objects could be constructed using JavaScript is
 presented in [object_nternals.js](object_internals.js).
 
 ## The Object File Format
@@ -267,11 +267,21 @@ allows something like this
 To work, as in, a method or block will run, and b will run 5 seconds after a
 (and c 5 seconds after b).
 
-However, it is important to realize that nothing blocks - when sleep is called,
-it's as if a method immediately returns `nil` (even though all the bits run).
-This may lead to suprising side effects. For example, `[1000 sleep 'a'] value`
-could be expected to return 'a' (as `['a'] value` would), but instead it will
-return nil (although 'a' will be "evaluated" in the background).
+Invoking the sleep primitive causes the `execute` method on the interpreter to
+return immediately. Normally, execute doesn't return until all bytecodes in a
+method run. From the perspective of the Smalltalk virtual machine, though,
+bytecode resumes exactly where it was, giving the illusion of a blocking call.
+
+This illusion breaks down in only a few edge cases, basically when execute is
+called recursively. If something actually depended on the result of the
+interpreter loop, it would get `nil` instead of the `final` value. The only
+place this happens in the VM is in the implementation of `doIt` (used in the
+REPL), which causes `perform:` to be called.
+
+So, from the REPL, doing something like
+`[1 log. 1000 sleep. 2 log. 1000 sleep. 3 log] value` will do what you expect,
+but the value returned to the repl is `nil`, not the final value of the block.
+This is one of the only rare cases where the result is a bit counter-intuitive.
 
 ## The GUI
 
