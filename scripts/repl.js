@@ -2,10 +2,10 @@
 
 import fs from "fs";
 import readline from "readline";
-import { ImageReader } from "./image_reader.js";
-import { Interpreter } from "./interpreter.js";
-import { SmallByteArray, SmallObject } from "./objects.js";
-import { UIHandler } from "./ui_handler.js";
+import { ImageReader } from "../src/image_reader.js";
+import { Interpreter } from "../src/interpreter.js";
+import { SmallByteArray, SmallObject } from "../src/objects.js";
+import { UIHandler } from "../src/ui_handler.js";
 
 class ConsoleUIFactory {
   makeBorderedPanel() {
@@ -67,7 +67,7 @@ class ConsoleUIFactory {
   }
 }
 
-const buf = fs.readFileSync("image.data");
+const buf = fs.readFileSync("../data/image.data");
 const reader = new ImageReader(buf);
 const nilObject = reader.readObject();
 const trueObject = reader.readObject();
