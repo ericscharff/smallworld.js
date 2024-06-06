@@ -31,7 +31,7 @@ METHOD Class
 saveImage: n
   <29 (n printString)>.
   ^ 'Image saved in file ' + n
-ENDMETHOD
+!
 
 "Now, class fileOut and fileTo: can be removed"
 Class removeMethod: 'fileOut'

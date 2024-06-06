@@ -141,7 +141,7 @@ let metaMethod = false;
 
 rl.prompt();
 rl.on("line", (s) => {
-  if (s.startsWith("ENDMETHOD")) {
+  if (s.startsWith("!")) {
     methodBody = methodBody.replaceAll("'", "''");
     methodBody = methodBody.trim();
     if (metaMethod) {

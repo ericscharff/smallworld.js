@@ -1,64 +1,64 @@
 METHOD Object
 log
   <99 (self printString)>
-ENDMETHOD
+!
 
 Class addNewClass: ( Object subclass: 'Element' variables: 'a elname data ' classVariables: '')
 
 METHOD Element
 element: e
   elname <- e.
-ENDMETHOD
+!
 
 METHOD Element
 data: d
   data <- d.
-ENDMETHOD
+!
 
 METHOD Element
 data
   ^ data
-ENDMETHOD
+!
 
 METHOD Element
 printString
   ^ 'Element: ' + elname + ' data ' + data
-ENDMETHOD
+!
 
 METHOD Element
 on: evt do: h
   a <- h.
-ENDMETHOD
+!
 
 METHOD Element
 append: c
   ^ self
-ENDMETHOD
+!
 
 METHOD Element
 addClass: s
   ('Added ' + s + ' to ' + data) log
-ENDMETHOD
+!
 
 METHOD Element
 removeClass: s
   ('Removed ' + s + ' from ' + data) log
-ENDMETHOD
+!
 
 METHOD Element
 click
   a value
-ENDMETHOD
+!
 
 METHOD Element
 clickv
   a value: data
-ENDMETHOD
+!
 
 META Element
 create: tagName
   ^ self new element: tagName
-ENDMETHOD
+!
 
 META Element
 button: label action: a
@@ -66,7 +66,7 @@ button: label action: a
   e <- self new element: 'button'.
   e on: 'click' do: a.
   ^ e
-ENDMETHOD
+!
 
 META Element
 list: items action: a
@@ -88,7 +88,7 @@ list: items action: a
     elts at: i put: c
   ].
   ^ #(ul [(elts at: 3) clickv. (elts at: 1) clickv. (elts at: 2) clickv. ul data log])
-ENDMETHOD
+!
 
 META Element
 test
@@ -96,7 +96,7 @@ test
   e <- self button: 'Hello' action: ['Hello clicked' log].
   e click.
   e click.
-ENDMETHOD
+!
 
 META Element
 counter: s
@@ -104,7 +104,7 @@ counter: s
   i <- 0.
   e <- self button: 'Counter' action: [i <- i + 1. ('Counter ' + s + ' ' + i) log].
   ^ e
-ENDMETHOD
+!
 
 META Element
 test2
@@ -114,7 +114,7 @@ test2
   c1 click. c2 click.
   1 to: 25 do: [:i | c1 click].
   c2 click.
-ENDMETHOD
+!
 
 ((Element list: #(100 200 300 400 ) action: [:v | ('List selected ' + v) log]) at: 2) value
 
