@@ -25,6 +25,9 @@ Class removeMethod: 'subclass'
 "Single-threaded JavaScript doesn't have or need Semaphore"
 Class removeClass: 'Semaphore'
 
+"Application is a GUI framework tied to the old GUI"
+Class removeClass: 'Application'
+
 "File doesn't make much sense in a VM, but we still need a way to save the"
 "image, so move a new verison of saveImage: to class, instead"
 METHOD Class
