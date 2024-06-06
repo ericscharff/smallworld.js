@@ -611,6 +611,9 @@ export class Interpreter {
                 const dStr = "" + stack[--stackTop].nativeObject;
                 returnedValue = new SmallByteArray(stack[--stackTop], dStr);
                 break;
+              case 99: // log
+                console.log("LOG: ", stack[--stackTop].toString());
+                break;
               default:
                 if (this.uiHandler && high >= 60 && high <= 84) {
                   [returnedValue, stack, stackTop] = this.uiHandler.handle(

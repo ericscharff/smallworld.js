@@ -137,17 +137,29 @@ const rl = readline.createInterface({
 
 let methodBody = "";
 let className = "";
+let metaMethod = false;
 
 rl.prompt();
 rl.on("line", (s) => {
   if (s.startsWith("ENDMETHOD")) {
     methodBody = methodBody.replaceAll("'", "''");
     methodBody = methodBody.trim();
-    console.log("" + runDoIt(`${className} compileMethod: '${methodBody}'`));
+    if (metaMethod) {
+      console.log(
+        "" + runDoIt(`${className} class compileMethod: '${methodBody}'`),
+      );
+    } else {
+      console.log("" + runDoIt(`${className} compileMethod: '${methodBody}'`));
+    }
     methodBody = "";
   } else if (s.startsWith("METHOD")) {
     className = s.split(/\s+/)[1];
     methodBody = " ";
+    metaMethod = false;
+  } else if (s.startsWith("META")) {
+    className = s.split(/\s+/)[1];
+    methodBody = " ";
+    metaMethod = true;
   } else if (methodBody) {
     methodBody += "\n" + s;
   } else if (["bye", "exit", "shutdown", "quit"].includes(s)) {

@@ -1,0 +1,120 @@
+METHOD Object
+log
+  <99 (self printString)>
+ENDMETHOD
+
+Class addNewClass: ( Object subclass: 'Element' variables: 'a elname data ' classVariables: '')
+
+METHOD Element
+element: e
+  elname <- e.
+ENDMETHOD
+
+METHOD Element
+data: d
+  data <- d.
+ENDMETHOD
+
+METHOD Element
+data
+  ^ data
+ENDMETHOD
+
+METHOD Element
+printString
+  ^ 'Element: ' + elname + ' data ' + data
+ENDMETHOD
+
+METHOD Element
+on: evt do: h
+  a <- h.
+ENDMETHOD
+
+METHOD Element
+append: c
+  ^ self
+ENDMETHOD
+
+METHOD Element
+addClass: s
+  ('Added ' + s + ' to ' + data) log
+ENDMETHOD
+
+METHOD Element
+removeClass: s
+  ('Removed ' + s + ' from ' + data) log
+ENDMETHOD
+
+METHOD Element
+click
+  a value
+ENDMETHOD
+
+METHOD Element
+clickv
+  a value: data
+ENDMETHOD
+
+META Element
+create: tagName
+  ^ self new element: tagName
+ENDMETHOD
+
+META Element
+button: label action: a
+  | e |
+  e <- self new element: 'button'.
+  e on: 'click' do: a.
+  ^ e
+ENDMETHOD
+
+META Element
+list: items action: a
+  | ul elts c |
+  ul <- self create: 'ul'.
+  ul data: 0 .
+  elts <- Array new: items size.
+  1 to: items size do: [:i |
+    c <- self create: 'li'.
+    c data: i.
+    c on: 'click' do: [:v |
+      "unselect selected if set"
+      (ul data > 0) ifTrue: [(elts at: ul data) removeClass: 'selected'].
+      (elts at: v) addClass: 'selected'.
+      ul data: v.
+      "call the list's on selection action"
+      a value: v].
+    ul append: c.
+    elts at: i put: c
+  ].
+  ^ #(ul [(elts at: 3) clickv. (elts at: 1) clickv. (elts at: 2) clickv. ul data log])
+ENDMETHOD
+
+META Element
+test
+  | e |
+  e <- self button: 'Hello' action: ['Hello clicked' log].
+  e click.
+  e click.
+ENDMETHOD
+
+META Element
+counter: s
+  | e i |
+  i <- 0.
+  e <- self button: 'Counter' action: [i <- i + 1. ('Counter ' + s + ' ' + i) log].
+  ^ e
+ENDMETHOD
+
+META Element
+test2
+  | c1 c2 |
+  c1 <- self counter: 'c1'.
+  c2 <- self counter: 'c2'.
+  c1 click. c2 click.
+  1 to: 25 do: [:i | c1 click].
+  c2 click.
+ENDMETHOD
+
+((Element list: #(100 200 300 400 ) action: [:v | ('List selected ' + v) log]) at: 2) value
+
