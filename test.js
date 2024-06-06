@@ -143,7 +143,7 @@ describe("SmallWorld", () => {
     let interpreter = null;
 
     beforeEach(async () => {
-      await fs.readFile("image.data").then((buf) => {
+      await fs.readFile("image-nogui.data").then((buf) => {
         const reader = new ImageReader(buf);
         nilObject = reader.readObject();
         trueObject = reader.readObject();
@@ -312,28 +312,155 @@ describe("SmallWorld", () => {
       expect(runDoIt("Object halt")).to.equal(interpreter.nilObject);
     });
 
-    it("responds to saveImage:", () => {
-      const uiFactory = {
-        makeWindow: () => ({
-          setTitle: () => 0,
-          setSize: () => 0,
-          addChildWidget: () => 0,
-          setVisible: () => 0,
-        }),
-        makeLabel: () => 0,
-        makeButton: () => ({ addButtonListener: () => 0 }),
-        makeBorderedPanel: () => ({
-          addToCenter: () => 0,
-          addToSouth: () => 0,
-        }),
-      };
-      interpreter.uiHandler = new UIHandler(uiFactory);
-      interpreter.imageSaveCallback = (name, buf) => {
-        expect(name).to.equal("imageToSave");
-        expect(buf).to.be.an.instanceOf(Uint8Array);
-      };
-      runDoIt("File saveImage: 'imageToSave'");
+    it("compiles and runs new methods", () => {
+      const r = runDoIt(`
+[String compileMethod: '
+asUpper | r |
+  r <- String new: self size.
+  1 to: self size do: [:i |
+    r at: i put: (self at: i) upperCase].
+  ^r
+'.
+'hello, world! test.' asUpper] value`);
+      expect(r.toString()).to.equal("HELLO, WORLD! TEST.");
+      expect(runPrintIt("(String methods at: 4) name")).to.equal("asUpper");
+      expect(runPrintIt("(String methods at: 4) byteCodes")).to.equal(
+        "#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
+          "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )",
+      );
     });
+
+    it("throws on invalid opcode", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0x00;
+          code[1] = 0x00;
+        }),
+      ).to.throw("Unknown opcode 0");
+    });
+
+    it("throws on invalid constant", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0x5d;
+        }),
+      ).to.throw("Unknown constant 13");
+    });
+
+    it("throws on invalid unary", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0xa2;
+        }),
+      ).to.throw("Illegal SendUnary 2");
+    });
+
+    it("throws on invalid primitive", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0xd0;
+          code[1] = 0xff;
+        }),
+      ).to.throw("Unknown Primitive 255");
+    });
+
+    it("throws on invalid special", () => {
+      expect(() =>
+        runDoIt("0", (code) => {
+          code[0] = 0xf0;
+        }),
+      ).to.throw("Unrecognized DoSpecial 0");
+    });
+
+    it("throws on bad method lookup", () => {
+      expect(() => interpreter.methodLookup(nilObject, "")).to.throw("bad");
+    });
+
+    it("throws on double error: method lookup", () => {
+      expect(() => interpreter.methodLookup(nilObject, "error:")).to.throw(
+        "Unrecognized message selector: error:",
+      );
+    });
+  });
+
+  describe("Classic GUI", () => {
+    let nilObject = null;
+    let trueObject = null;
+    let falseObject = null;
+    let smallInts = null;
+    let ArrayClass = null;
+    let BlockClass = null;
+    let ContextClass = null;
+    let IntegerClass = null;
+
+    let interpreter = null;
+
+    beforeEach(async () => {
+      await fs.readFile("image.data").then((buf) => {
+        const reader = new ImageReader(buf);
+        nilObject = reader.readObject();
+        trueObject = reader.readObject();
+        falseObject = reader.readObject();
+        smallInts = reader.readSmallInts();
+        ArrayClass = reader.readObject();
+        BlockClass = reader.readObject();
+        ContextClass = reader.readObject();
+        IntegerClass = reader.readObject();
+
+        interpreter = new Interpreter(
+          nilObject,
+          trueObject,
+          falseObject,
+          smallInts,
+          ArrayClass,
+          BlockClass,
+          ContextClass,
+          IntegerClass,
+        );
+      });
+    });
+
+    function runDoIt(task, bytecodePatcher) {
+      // Simulate doIt
+
+      // This relies on the definitions of class
+      // variables: 'name parentClass methods size variables '
+      // and method
+      // variables: 'name byteCodes literals stackSize temporarySize class text '
+      const TrueClass = trueObject.objClass;
+      // the class name (instance var 0) is known to be an instance of String
+      const name = TrueClass.data[0]; // class name (a string)
+      const StringClass = name.objClass;
+      // String class should have a method called "doIt"
+      const methods = StringClass.data[2]; // class methods (an array)
+      // Look for the method
+      let doItMethod = null;
+      for (let i = 0; i < methods.data.length; i++) {
+        const aMethod = methods.data[i];
+        // The method's first instance variable is a SmallByteArray name
+        if (aMethod.data[0].toString() === "doIt") {
+          doItMethod = aMethod;
+          if (bytecodePatcher) {
+            bytecodePatcher(aMethod.data[1].values);
+          }
+        }
+      }
+      if (doItMethod === null) {
+        throw new Error("No doIt method found");
+      } else {
+        // Make the Smalltalk string object on which doIt will be called
+        const taskByteArray = new SmallByteArray(StringClass, 0);
+        taskByteArray.values = new TextEncoder().encode(task);
+        const args = new SmallObject(ArrayClass, 1);
+        args.data[0] = taskByteArray; // This is basically "self" for doIt
+        const ctx = interpreter.buildContext(nilObject, args, doItMethod);
+        return interpreter.execute(ctx);
+      }
+    }
+
+    function runPrintIt(task) {
+      return runDoIt(task + " printString").toString();
+    }
 
     describe("User interface", () => {
       it("Opens the class browser", () => {
@@ -468,74 +595,27 @@ describe("SmallWorld", () => {
       });
     });
 
-    it("compiles and runs new methods", () => {
-      const r = runDoIt(`
-[String compileMethod: '
-asUpper | r |
-  r <- String new: self size.
-  1 to: self size do: [:i |
-    r at: i put: (self at: i) upperCase].
-  ^r
-'.
-'hello, world! test.' asUpper] value`);
-      expect(r.toString()).to.equal("HELLO, WORLD! TEST.");
-      expect(runPrintIt("(String methods at: 4) name")).to.equal("asUpper");
-      expect(runPrintIt("(String methods at: 4) byteCodes")).to.equal(
-        "#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
-          "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )",
-      );
-    });
-
-    it("throws on invalid opcode", () => {
-      expect(() =>
-        runDoIt("0", (code) => {
-          code[0] = 0x00;
-          code[1] = 0x00;
+    it("responds to saveImage:", () => {
+      const uiFactory = {
+        makeWindow: () => ({
+          setTitle: () => 0,
+          setSize: () => 0,
+          addChildWidget: () => 0,
+          setVisible: () => 0,
         }),
-      ).to.throw("Unknown opcode 0");
-    });
-
-    it("throws on invalid constant", () => {
-      expect(() =>
-        runDoIt("0", (code) => {
-          code[0] = 0x5d;
+        makeLabel: () => 0,
+        makeButton: () => ({ addButtonListener: () => 0 }),
+        makeBorderedPanel: () => ({
+          addToCenter: () => 0,
+          addToSouth: () => 0,
         }),
-      ).to.throw("Unknown constant 13");
-    });
-
-    it("throws on invalid unary", () => {
-      expect(() =>
-        runDoIt("0", (code) => {
-          code[0] = 0xa2;
-        }),
-      ).to.throw("Illegal SendUnary 2");
-    });
-
-    it("throws on invalid primitive", () => {
-      expect(() =>
-        runDoIt("0", (code) => {
-          code[0] = 0xd0;
-          code[1] = 0xff;
-        }),
-      ).to.throw("Unknown Primitive 255");
-    });
-
-    it("throws on invalid special", () => {
-      expect(() =>
-        runDoIt("0", (code) => {
-          code[0] = 0xf0;
-        }),
-      ).to.throw("Unrecognized DoSpecial 0");
-    });
-
-    it("throws on bad method lookup", () => {
-      expect(() => interpreter.methodLookup(nilObject, "")).to.throw("bad");
-    });
-
-    it("throws on double error: method lookup", () => {
-      expect(() => interpreter.methodLookup(nilObject, "error:")).to.throw(
-        "Unrecognized message selector: error:",
-      );
+      };
+      interpreter.uiHandler = new UIHandler(uiFactory);
+      interpreter.imageSaveCallback = (name, buf) => {
+        expect(name).to.equal("imageToSave");
+        expect(buf).to.be.an.instanceOf(Uint8Array);
+      };
+      runDoIt("File saveImage: 'imageToSave'");
     });
 
     describe("timer", () => {
