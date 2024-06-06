@@ -336,77 +336,75 @@ describe("SmallWorld", () => {
     });
 
     describe("User interface", () => {
-      let windowTitle = "";
-      let listData = [];
-      let buttons = [];
-      let buttonListeners = [];
-      let listSelectionListener = null;
-      let savedWidth = 0;
-      let savedHeight = 0;
-      let savedTextArea = "";
-      const uiFactory = {
-        makeBorderedPanel: function () {
-          return {
-            addToCenter: () => 0,
-            addToEast: () => 0,
-            addToNorth: () => 0,
-            addToSouth: () => 0,
-            addToWest: () => 0,
-          };
-        },
-        makeButton: function (b) {
-          buttons.push(b);
-          return { addButtonListener: (l) => buttonListeners.push(l) };
-        },
-        makeGridPanel: function () {
-          return { addChild: () => 0 };
-        },
-        makeLabel: function () {
-          return {};
-        },
-        makeListWidget: function (data) {
-          listData = data;
-          return {
-            addSelectionListener: (l) => {
-              listSelectionListener = l;
-            },
-            getSelectedIndex: () => 3,
-            setData: (data) => {
-              listData = data;
-            },
-          };
-        },
-        makeTextArea: function () {
-          return {
-            getText: () => savedTextArea,
-            setText: (s) => {
-              savedTextArea = s;
-            },
-          };
-        },
-        makeTextField: function () {
-          return {};
-        },
-        makeWindow: function () {
-          return {
-            addChildWidget: () => 0,
-            setSize: (w, h) => {
-              savedWidth = w;
-              savedHeight = h;
-            },
-            setTitle: (t) => {
-              windowTitle = t;
-            },
-            setVisible: (v) => expect(v).to.equal(true),
-          };
-        },
-      };
-
-      beforeEach(() => {
-        interpreter.uiHandler = new UIHandler(uiFactory);
-      });
-
       it("Opens the class browser", () => {
+        let windowTitle = "";
+        let listData = [];
+        let buttons = [];
+        let buttonListeners = [];
+        let listSelectionListener = null;
+        let savedWidth = 0;
+        let savedHeight = 0;
+        let savedTextArea = "";
+        const uiFactory = {
+          makeBorderedPanel: function () {
+            return {
+              addToCenter: () => 0,
+              addToEast: () => 0,
+              addToNorth: () => 0,
+              addToSouth: () => 0,
+              addToWest: () => 0,
+            };
+          },
+          makeButton: function (b) {
+            buttons.push(b);
+            return { addButtonListener: (l) => buttonListeners.push(l) };
+          },
+          makeGridPanel: function () {
+            return { addChild: () => 0 };
+          },
+          makeLabel: function () {
+            return {};
+          },
+          makeListWidget: function (data) {
+            listData = data;
+            return {
+              addSelectionListener: (l) => {
+                listSelectionListener = l;
+              },
+              getSelectedIndex: () => 3,
+              setData: (data) => {
+                listData = data;
+              },
+            };
+          },
+          makeTextArea: function () {
+            return {
+              getText: () => savedTextArea,
+              setText: (s) => {
+                savedTextArea = s;
+              },
+            };
+          },
+          makeTextField: function () {
+            return {};
+          },
+          makeWindow: function () {
+            return {
+              addChildWidget: () => 0,
+              setSize: (w, h) => {
+                savedWidth = w;
+                savedHeight = h;
+              },
+              setTitle: (t) => {
+                windowTitle = t;
+              },
+              setVisible: (v) => expect(v).to.equal(true),
+            };
+          },
+        };
+
+        interpreter.uiHandler = new UIHandler(uiFactory);
+
         const browserButtons = [
           "evaluate expression",
           "examine class",
