@@ -135,31 +135,26 @@ const rl = readline.createInterface({
   prompt: "SmallWorld> ",
 });
 
-let multiLine = "";
+let methodBody = "";
+let className = "";
 
 rl.prompt();
 rl.on("line", (s) => {
-  if (multiLine) {
-    multiLine += "\n" + s;
-    if (s.includes("!")) {
-      s = multiLine.replaceAll("!", "");
-      multiLine = "";
-    } else {
-      s = "";
-    }
-  }
-  if (s.includes("!")) {
-    multiLine = s;
-  } else {
-    s = s.trim();
-    const blankOrComment = s === "" || s.startsWith("#") || s.startsWith('"');
-    if (!blankOrComment) {
-      if (["bye", "exit", "shutdown", "quit"].includes(s)) {
-        rl.close();
-      } else {
-        console.log("" + runDoIt(s));
-        rl.prompt();
-      }
-    }
+  if (s.startsWith("ENDMETHOD")) {
+    methodBody = methodBody.replaceAll("'", "''");
+    methodBody = methodBody.trim();
+    console.log("" + runDoIt(`${className} compileMethod: '${methodBody}'`));
+    methodBody = "";
+  } else if (s.startsWith("METHOD")) {
+    className = s.split(/\s+/)[1];
+    methodBody = " ";
+  } else if (methodBody) {
+    methodBody += "\n" + s;
+  } else if (["bye", "exit", "shutdown", "quit"].includes(s)) {
+    rl.close();
+  } else if (!(s === "" || s.startsWith("#") || s.startsWith('"'))) {
+    // Run oneliner
+    console.log("" + runDoIt(s));
+    rl.prompt();
   }
 });

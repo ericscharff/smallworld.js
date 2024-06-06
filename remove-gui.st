@@ -27,9 +27,11 @@ Class removeClass: 'Semaphore'
 
 "File doesn't make much sense in a VM, but we still need a way to save the"
 "image, so move a new verison of saveImage: to class, instead"
-Class compileMethod: 'saveImage: n !
+METHOD Class
+saveImage: n
   <29 (n printString)>.
-  ^ ''Image saved in file '' + n' !
+  ^ 'Image saved in file ' + n
+ENDMETHOD
 
 "Now, class fileOut and fileTo: can be removed"
 Class removeMethod: 'fileOut'
