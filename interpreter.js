@@ -749,14 +749,14 @@ export class Interpreter {
     this.execute(block);
   }
 
-  runActionWithIndex(action, index) {
+  runActionWithValue(action, value) {
     // Make a context for the action (block) provided
     const block = new SmallObject(this.ContextClass, 10);
     for (let i = 0; i < 10; i++) {
       block.data[i] = action.data[i];
     }
     const argLoc = block.data[7].value; // Block's argumentLocaition
-    block.data[2].data[argLoc] = this.newInteger(index);
+    block.data[2].data[argLoc] = value;
 
     // now run it
     const stackSize = block.data[3].data.length;

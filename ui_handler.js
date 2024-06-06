@@ -80,7 +80,10 @@ export class UIHandler {
         const uiList = this.uiFactory.makeListWidget(listData);
         returnedValue = new SmallJsObject(returnedValue, uiList);
         uiList.addSelectionListener((index) =>
-          interpreter.runActionWithIndex(listAction, index),
+          interpreter.runActionWithValue(
+            listAction,
+            interpreter.newInteger(index),
+          ),
         );
         break;
       case 76: // new border panel
