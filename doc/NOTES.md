@@ -280,8 +280,50 @@ REPL), which causes `perform:` to be called.
 
 So, from the REPL, doing something like
 `[1 log. 1000 sleep. 2 log. 1000 sleep. 3 log] value` will do what you expect,
-but the value returned to the repl is `nil`, not the final value of the block.
+but the value returned to the REPL is `nil`, not the final value of the block.
 This is one of the only rare cases where the result is a bit counter-intuitive.
+
+## Closures
+
+Coming from other lexically scoped languages, SmallWorld's block closure
+semantics were a bit surprising to me. While most modern Smalltalks have block
+closure semantics, SmallWorld does not (nor did Smalltalk-80, Squeak, and
+Digitalk, its contemporaries). This became obvious when trying to write code
+like this:
+
+```
+closureTest: labels
+  "make one block per label"
+  ^ labels collect: [:e | ['label ' + e]]
+```
+
+This creates a collection of N blocks, one for each element. You would thus
+expect `((1 closureTest: #(100 200 300)) at: 1) value` to return `label 100` but
+instead it returns `label 300`. The reason for this is because the inner block
+refers to the same invocation - labels is iterated through each time, so the `e`
+in the inner block gets the value of the most recent evaluation of the outer
+block.
+
+As a JavaScript, Java, or Scheme programmer, this lack of scoping is surprising.
+In JavaScript, idioms like this are often used with lambdas to capture the outer
+scope.
+
+A workaround is that, while each block doesn't get its own set of temporaries,
+each message send does. So if a block refers to the temporaries of a method
+implementation, you get a result more like what you would expect.
+
+So, the example above can be fixed with two methods:
+
+```
+makeBlock: label
+  ^ ['label ' + label]
+fixedClosureTest: labels
+  ^ labels collect: [:e | self makeBlock: e]
+```
+
+This turns out to be powerful once you realize that every method call creates a
+context of scoped variables. It can be used to make closure-like objects without
+having to create custom objects with instance variables.
 
 ## The GUI
 
