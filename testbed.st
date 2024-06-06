@@ -69,6 +69,7 @@ META Element
 button: label action: a
   | e |
   e <- self new element: 'button'.
+  e text: label.
   e on: 'click' do: a.
   ^ e
 !
