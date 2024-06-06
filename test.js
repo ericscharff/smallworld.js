@@ -330,6 +330,35 @@ asUpper | r |
       );
     });
 
+    it("responds to saveImage:", () => {
+      interpreter.imageSaveCallback = (name, buf) => {
+        expect(name).to.equal("imageToSave");
+        expect(buf).to.be.an.instanceOf(Uint8Array);
+      };
+      runDoIt("Class saveImage: 'imageToSave'");
+    });
+
+    describe("timer", () => {
+      let clock = null;
+      before(() => {
+        clock = sinon.useFakeTimers();
+      });
+      after(() => clock.restore());
+
+      it("sleeps correctly", () => {
+        let saveCalled = false;
+        interpreter.imageSaveCallback = () => {
+          saveCalled = true;
+        };
+        runDoIt("[5000 sleep. Class saveImage: 'done'] value");
+        expect(saveCalled).to.be.false;
+        clock.tick(4999);
+        expect(saveCalled).to.be.false;
+        clock.tick(2);
+        expect(saveCalled).to.be.true;
+      });
+    });
+
     it("throws on invalid opcode", () => {
       expect(() =>
         runDoIt("0", (code) => {
@@ -592,66 +621,6 @@ asUpper | r |
         expect(runPrintIt("(Block methods at: 1) text")).to.equal(
           savedTextArea,
         );
-      });
-    });
-
-    it("responds to saveImage:", () => {
-      const uiFactory = {
-        makeWindow: () => ({
-          setTitle: () => 0,
-          setSize: () => 0,
-          addChildWidget: () => 0,
-          setVisible: () => 0,
-        }),
-        makeLabel: () => 0,
-        makeButton: () => ({ addButtonListener: () => 0 }),
-        makeBorderedPanel: () => ({
-          addToCenter: () => 0,
-          addToSouth: () => 0,
-        }),
-      };
-      interpreter.uiHandler = new UIHandler(uiFactory);
-      interpreter.imageSaveCallback = (name, buf) => {
-        expect(name).to.equal("imageToSave");
-        expect(buf).to.be.an.instanceOf(Uint8Array);
-      };
-      runDoIt("File saveImage: 'imageToSave'");
-    });
-
-    describe("timer", () => {
-      let clock = null;
-      before(() => {
-        clock = sinon.useFakeTimers();
-      });
-      after(() => clock.restore());
-
-      it("sleeps correctly", () => {
-        // saveImage for now has a GUI callback
-        const uiFactory = {
-          makeWindow: () => ({
-            setTitle: () => 0,
-            setSize: () => 0,
-            addChildWidget: () => 0,
-            setVisible: () => 0,
-          }),
-          makeLabel: () => 0,
-          makeButton: () => ({ addButtonListener: () => 0 }),
-          makeBorderedPanel: () => ({
-            addToCenter: () => 0,
-            addToSouth: () => 0,
-          }),
-        };
-        interpreter.uiHandler = new UIHandler(uiFactory);
-        let saveCalled = false;
-        interpreter.imageSaveCallback = () => {
-          saveCalled = true;
-        };
-        runDoIt("[5000 sleep. File saveImage: 'done'] value");
-        expect(saveCalled).to.be.false;
-        clock.tick(4999);
-        expect(saveCalled).to.be.false;
-        clock.tick(2);
-        expect(saveCalled).to.be.true;
       });
     });
   });
