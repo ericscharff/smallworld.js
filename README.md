@@ -20,7 +20,7 @@ The current implementation is extremely minimalist. The GUI is rough and
 incomplete. However, what is here is capable of running a fairly large amount of
 Smalltalk code correctly, including basic arbitrary precision arithmetic, string
 manipulation, and adding new methods to existing classes. See the tests in
-[test.js](test.js) for more details.
+[test.js](test/test.js) for more details.
 
 The main interpreter can be used "headless" - you can run basic Smalltalk code
 without a GUI. You can optionally add a UI Handler (which adds the UI
@@ -40,8 +40,8 @@ There is a simple repl that you can run from the command line with
 run with `doIt`.
 
 You can run a very, very primitive version of the interpeter by loading
-[index.html](index.html) in a Web browser. You can evaluate expressions and the
-result will be printed below.
+[index.html](html/index.html) in a Web browser. You can evaluate expressions and
+the result will be printed below.
 
 ## Why?
 

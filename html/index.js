@@ -1,10 +1,10 @@
 import { DomUiFactory } from "./dom_ui_factory.js";
-import { UIHandler } from "./ui_handler.js";
-import { ImageReader } from "./image_reader.js";
-import { Interpreter } from "./interpreter.js";
-import { SmallByteArray, SmallObject } from "./objects.js";
+import { UIHandler } from "../src/ui_handler.js";
+import { ImageReader } from "../src/image_reader.js";
+import { Interpreter } from "../src/interpreter.js";
+import { SmallByteArray, SmallObject } from "../src/objects.js";
 
-fetch("image.data").then((resp) => {
+fetch("../data/image.data").then((resp) => {
   resp.arrayBuffer().then((buf) => {
     const reader = new ImageReader(buf);
     const nilObject = reader.readObject();
