@@ -21,6 +21,11 @@ data
 !
 
 METHOD Element
+text: t
+  ('item ' + data + ' with text ' + t) log.
+!
+
+METHOD Element
 printString
   ^ 'Element: ' + elname + ' data ' + data
 !
@@ -77,6 +82,7 @@ list: items action: a
   1 to: items size do: [:i |
     c <- self create: 'li'.
     c data: i.
+    c text: (items at: i).
     c on: 'click' do: [:v |
       "unselect selected if set"
       (ul data > 0) ifTrue: [(elts at: ul data) removeClass: 'selected'].
