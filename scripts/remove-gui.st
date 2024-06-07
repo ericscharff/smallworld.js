@@ -43,5 +43,35 @@ Class removeMethod: 'fileTo:'
 "and thus File itself can be removed"
 Class removeClass: 'File'
 
+"Redefine error: to not refer to the GUI"
+METHOD Object
+error: str
+  ^ str + Char newline asString + Context current backtrace
+!
+
+"Remove references to inspect:, inspect, edit:, and edit"
+String removeMethod: 'inspect:'
+Array removeMethod: 'inspect'
+Object removeMethod: 'inspect'
+SmallInt removeMethod: 'inspect'
+String removeMethod: 'inspect'
+Array removeMethod: 'edit:'
+Object removeMethod: 'edit:'
+SmallInt removeMethod: 'edit:'
+String removeMethod: 'edit:'
+Class removeMethod: 'edit'
+Object removeMethod: 'edit'
+String removeMethod: 'edit'
+
+"As well as editClassVariables, subclass, and browser"
+Class removeMethod: 'editClassVariables'
+Class removeMethod: 'subclass'
+Class class removeMethod: 'browser'
+
+"so now the GUI can be completely removed"
+Class removeClass: 'Menu'
+Class removeClass: 'Pane'
+Class removeClass: 'Window'
+
 "Save the resulting image"
 Class saveImage: 'image-nogui.data'
