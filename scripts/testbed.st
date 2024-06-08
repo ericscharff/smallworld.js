@@ -1,3 +1,8 @@
+METHOD Object
+log
+  <99 (self printString)>
+!
+
 Class addNewClass: ( Object subclass: 'Element' variables: 'a elname data ' classVariables: '')
 
 METHOD Element
@@ -18,6 +23,16 @@ data
 METHOD Element
 text: t
   ('item ' + data + ' with text ' + t) log.
+!
+
+METHOD Element
+value
+  'getValue' log
+!
+
+METHOD Element
+value: t
+  ('value ' + t) log
 !
 
 METHOD Element
@@ -56,6 +71,12 @@ clickv
 !
 
 META Element
+id: id
+  "TODO: getElementById"
+  ^ self new element: 'div'
+!
+
+META Element
 create: tagName
   ^ self new element: tagName
 !
@@ -66,6 +87,14 @@ button: label action: a
   e <- self new element: 'button'.
   e text: label.
   e on: 'click' do: a.
+  ^ e
+!
+
+META Element
+label: s
+  | e |
+  e <- self new element: 'span'.
+  e text: s.
   ^ e
 !
 
@@ -93,11 +122,24 @@ list: items action: a
 !
 
 META Element
-test
+textArea
   | e |
-  e <- self button: 'Hello' action: ['Hello clicked' log].
-  e click.
-  e click.
+  ^ self new element: 'textarea'.
+!
+
+META Element
+textField
+  | e |
+  ^ self new element: 'input'.
+!
+
+META Element
+window: title
+  | e |
+  e <- self new element: 'div'.
+  e addClass: 'stWindow'.
+  (self id: 'workspace') append: e.
+  ^ e
 !
 
 META Element
@@ -106,6 +148,15 @@ counter: s
   i <- 0.
   e <- self button: 'Counter' action: [i <- i + 1. ('Counter ' + s + ' ' + i) log].
   ^ e
+!
+
+META Element
+test
+  | e |
+  e <- self button: 'Hello' action: ['Hello clicked' log].
+  e click.
+  e click.
+  self label: 'hi there'.
 !
 
 META Element
@@ -118,5 +169,20 @@ test2
   c2 click.
 !
 
+META Element
+test3
+  | w l f ta |
+  w <- self window: 'Test 3'.
+  l <- self label: 'Test 3 Label'.
+  f <- self textField.
+  ta <- self textArea.
+  w append: l.
+  w append: f.
+  w append: ta.
+!
+
+Element test
+Element test2
 ((Element list: #(100 200 300 400 ) action: [:v | ('List selected ' + v) log]) at: 2) value
 
+Element test3
