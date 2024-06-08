@@ -1,11 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 import { expect } from "chai";
-import sinon from "sinon";
 import { ImageReader } from "../src/image_reader.js";
-import { ImageWriter } from "../src/image_writer.js";
 import { Interpreter } from "../src/interpreter.js";
-import { SmallByteArray, SmallJsObject, SmallObject } from "../src/objects.js";
+import { SmallByteArray, SmallObject } from "../src/objects.js";
 import { UIHandler } from "../src/ui_handler.js";
 
 const ALL_SMALLTALK_CLASSES = [

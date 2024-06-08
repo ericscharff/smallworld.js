@@ -6,7 +6,6 @@ import { ImageReader } from "../src/image_reader.js";
 import { ImageWriter } from "../src/image_writer.js";
 import { Interpreter } from "../src/interpreter.js";
 import { SmallByteArray, SmallJsObject, SmallObject } from "../src/objects.js";
-import { UIHandler } from "../src/ui_handler.js";
 
 describe("SmallWorld", () => {
   describe("Image reading", () => {
