@@ -118,6 +118,29 @@ list: items action: a
     ul append: c.
     elts at: i put: c
   ].
+  ^ ul
+!
+
+META Element
+listTest: items action: a
+  | ul elts c |
+  ul <- self create: 'ul'.
+  ul data: 0 .
+  elts <- Array new: items size.
+  1 to: items size do: [:i |
+    c <- self create: 'li'.
+    c data: i.
+    c text: (items at: i).
+    c on: 'click' do: [:v |
+      "unselect selected if set"
+      (ul data > 0) ifTrue: [(elts at: ul data) removeClass: 'selected'].
+      (elts at: v) addClass: 'selected'.
+      ul data: v.
+      "call the list's on selection action"
+      a value: v].
+    ul append: c.
+    elts at: i put: c
+  ].
   ^ #(ul [(elts at: 3) clickv. (elts at: 1) clickv. (elts at: 2) clickv. ul data log])
 !
 
@@ -169,6 +192,26 @@ test2
   c2 click.
 !
 
+META Class
+browser2
+  | w t p out b bd |
+  t <- Element textField. out <- Element textArea.
+  p <- Element list: classes asStringArray action: [:i | nil].
+  b <- #(
+    (Element button: 'evaluate expression' action: [out value: t value doIt printString])
+    (Element button: 'examine class' action: [(classes at: (p data)) edit])
+    (Element button: 'delete class' action: [nil])
+    (Element button: 'close' action: [w close])).
+  bd <- Element create: 'div'.
+  b do: [:e | bd append: e].
+  w <- Element window: 'Smalltalk Browser'.
+  t addClass: 'north'. w append: t.
+  p addClass: 'east'. w append: p.
+"
+  bd addClass: 'west'. w append: bd.
+"
+!
+
 META Element
 test3
   | w l f ta |
@@ -183,6 +226,7 @@ test3
 
 Element test
 Element test2
-((Element list: #(100 200 300 400 ) action: [:v | ('List selected ' + v) log]) at: 2) value
+((Element listTest: #(100 200 300 400 ) action: [:v | ('List selected ' + v) log]) at: 2) value
 
 Element test3
+Class browser2
