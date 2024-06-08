@@ -270,6 +270,16 @@ describe("SmallWorld", () => {
       expect(r).to.contain("Unrecognized message selector: moo");
     });
 
+    it("halts on error", () => {
+      const stub = sinon.stub(console, "log");
+      expect(runDoIt("[3 moo. 4] value")).to.equal(nilObject);
+      sinon.assert.calledOnceWithMatch(
+        stub,
+        "LOG:",
+        "Unrecognized message selector: moo",
+      );
+    });
+
     it("returns nil when halting", () => {
       expect(runDoIt("Object halt")).to.equal(interpreter.nilObject);
     });
@@ -300,7 +310,7 @@ asUpper | r |
       runDoIt("Class saveImage: 'imageToSave'");
     });
 
-    describe("timer", () => {
+    describe("Timer", () => {
       let clock = null;
       before(() => {
         clock = sinon.useFakeTimers();

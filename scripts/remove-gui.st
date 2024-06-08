@@ -1,5 +1,11 @@
 "Script to remove the GUI classes from Smallworld"
 
+"Add a console logger for debugging"
+METHOD Object
+log
+  <99 (self printString)>
+!
+
 "nil test is the last reference to ListPane"
 Undefined removeMethod: 'test'
 
@@ -46,7 +52,8 @@ Class removeClass: 'File'
 "Redefine error: to not refer to the GUI"
 METHOD Object
 error: str
-  ^ str + Char newline asString + Context current backtrace
+  (str + Char newline asString + Context current backtrace) log.
+  Object halt.
 !
 
 "Remove references to inspect:, inspect, edit:, and edit"

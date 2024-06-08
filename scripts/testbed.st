@@ -1,8 +1,3 @@
-METHOD Object
-log
-  <99 (self printString)>
-!
-
 Class addNewClass: ( Object subclass: 'Element' variables: 'a elname data ' classVariables: '')
 
 METHOD Element
