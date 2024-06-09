@@ -143,7 +143,7 @@ window: title
 !
 
 META Class
-browser2
+browser
   | w t p out b bd bp |
   t <- Element textField. out <- Element textArea.
   p <- Element list: classes asStringArray action: [:i | nil].
