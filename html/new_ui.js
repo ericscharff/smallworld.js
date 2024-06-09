@@ -1,6 +1,6 @@
 import { SmallByteArray, SmallJsObject } from "../src/objects.js";
 
-export class UIHandler {
+export class UiHandler {
   handle(interpreter, high, stack, stackTop) {
     let returnedValue = null;
     switch (high) {

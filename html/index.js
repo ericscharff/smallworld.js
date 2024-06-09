@@ -1,5 +1,5 @@
 import { DomUiFactory } from "./dom_ui_factory.js";
-import { UIHandler } from "../src/ui_handler.js";
+import { UiHandler } from "../src/ui_handler.js";
 import { ImageReader } from "../src/image_reader.js";
 import { Interpreter } from "../src/interpreter.js";
 import { SmallByteArray, SmallObject } from "../src/objects.js";
@@ -29,7 +29,7 @@ fetch("../data/image.data").then((resp) => {
       ContextClass,
       IntegerClass,
     );
-    interpreter.uiHandler = new UIHandler(new DomUiFactory());
+    interpreter.uiHandler = new UiHandler(new DomUiFactory());
 
     document.getElementById("doItButton").addEventListener("click", () => {
       // Simulate doIt

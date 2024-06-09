@@ -1,6 +1,6 @@
 import { SmallByteArray, SmallJsObject } from "./objects.js";
 
-export class UIHandler {
+export class UiHandler {
   constructor(uiFactory) {
     this.uiFactory = uiFactory;
   }

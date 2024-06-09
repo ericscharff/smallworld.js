@@ -4,7 +4,7 @@ import { expect } from "chai";
 import { ImageReader } from "../src/image_reader.js";
 import { Interpreter } from "../src/interpreter.js";
 import { SmallByteArray, SmallObject } from "../src/objects.js";
-import { UIHandler } from "../src/ui_handler.js";
+import { UiHandler } from "../src/ui_handler.js";
 
 const ALL_SMALLTALK_CLASSES = [
   "Application",
@@ -191,7 +191,7 @@ describe("Classic GUI", () => {
         },
       };
 
-      interpreter.uiHandler = new UIHandler(uiFactory);
+      interpreter.uiHandler = new UiHandler(uiFactory);
 
       const browserButtons = [
         "evaluate expression",

@@ -1,4 +1,4 @@
-import { UIHandler } from "./new_ui.js";
+import { UiHandler } from "./new_ui.js";
 import { ImageReader } from "../src/image_reader.js";
 import { Interpreter } from "../src/interpreter.js";
 import { SmallByteArray, SmallObject } from "../src/objects.js";
@@ -28,7 +28,7 @@ fetch("../data/image-newgui.data").then((resp) => {
       ContextClass,
       IntegerClass,
     );
-    interpreter.uiHandler = new UIHandler();
+    interpreter.uiHandler = new UiHandler();
 
     document.getElementById("doItButton").addEventListener("click", () => {
       // Simulate doIt
