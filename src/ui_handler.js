@@ -130,8 +130,6 @@ export class UIHandler {
         returnedValue = stack[--stackTop]; // the list widget
         returnedValue.nativeObject.setData(newListData);
         break;
-      default:
-        throw new Error("Bad UI " + high);
     }
     return [returnedValue, stack, stackTop];
   }

@@ -188,4 +188,4 @@ edit | w t l ba bd bp |
    w append: bp.
 !
 
-File saveImage: '../data/image-newgui.data'
+Class saveImage: '../data/image-newgui.data'
