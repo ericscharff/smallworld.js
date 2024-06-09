@@ -84,10 +84,9 @@ describe("SmallWorld", () => {
       const writer = new ImageWriter();
       const nilObject = new SmallObject(null, 0);
       nilObject.objClass = nilObject;
-      writer.writeObject(new SmallJsObject(nilObject, "str"));
-      expect(() => writer.finish()).to.throw(
-        "SmallJsObject can not be serialized",
-      );
+      expect(() =>
+        writer.writeObject(new SmallJsObject(nilObject, "str")),
+      ).to.throw("SmallJsObject can not be serialized");
     });
   });
 

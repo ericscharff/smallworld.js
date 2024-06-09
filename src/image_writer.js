@@ -56,8 +56,6 @@ export class ImageWriter {
         stream.writeByte(2);
       } else if (o.isSmallInt()) {
         stream.writeByte(1);
-      } else if (o.isSmallJsObject()) {
-        throw new Error("SmallJsObject can not be serialized");
       } else {
         stream.writeByte(0);
       }
@@ -92,6 +90,9 @@ export class ImageWriter {
   }
 
   recordObjectData(obj) {
+    if (obj.isSmallJsObject()) {
+      throw new Error("SmallJsObject can not be serialized");
+    }
     if (!this.hashToIndex.has(obj.hashCode())) {
       this.hashToIndex.set(obj.hashCode(), this.objectIndex);
       // All objects are 1 byte (pool type) + 4 bytes (class index) +
