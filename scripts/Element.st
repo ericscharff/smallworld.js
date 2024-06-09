@@ -143,7 +143,7 @@ window: title
 !
 
 META Class
-browser
+browser2
   | w t p out b bd bp |
   t <- Element textField. out <- Element textArea.
   p <- Element list: classes asStringArray action: [:i | nil].
@@ -171,15 +171,13 @@ edit | w t l ba bd bp |
         action: [:i | t value: (methods at: i data) text].
    ba <- #((Element button: 'clear text area' action: [ t value: '' ])
       (Element button: 'compile' action: 
-      [ (self compileMethod: t value) ifTrue: [ 'compiliation successful' log ] ])
+      [ (self compileMethod: t value) ifTrue: [ w remove. self edit. ] ])
       (Element button: 'delete method' action: 
-     [ methods <- methods removeAt: l data. t value: ''. ])
+     [ methods <- methods removeAt: l data. w remove. self edit. ])
       (Element button: 'instance variables' action: [ t value: variables asString])
-      (Element button: 'edit class variables' action: [ 'todo' log ])
       (Element button: 'examine superclass' action: [ self superclass notNil ifTrue: [ self superclass edit] 
          ifFalse: [ 'no superclass' log]])
       (Element button: 'examine metaclass' action: [ self class edit ])
-      (Element button: 'object edit' action: ['todo' log])
       (Element button: 'close' action: [ w remove]) ).
    bd <- Element create: 'div'.
    ba do: [:e | bd append: e].
