@@ -62,12 +62,7 @@ removeClass: s
 
 METHOD Element
 click
-  a value
-!
-
-METHOD Element
-clickv
-  a value: data
+  a value: self
 !
 
 META Element
@@ -86,7 +81,7 @@ button: label action: a
   | e |
   e <- self new element: 'button'.
   e text: label.
-  e on: 'click' do: a.
+  e on: 'click' do: [:v | a value].
   ^ e
 !
 
@@ -111,8 +106,8 @@ list: items action: a
     c on: 'click' do: [:v |
       "unselect selected if set"
       (ul data > 0) ifTrue: [(elts at: ul data) removeClass: 'selected'].
-      (elts at: v) addClass: 'selected'.
-      ul data: v.
+      (elts at: v data) addClass: 'selected'.
+      ul data: v data.
       "call the list's on selection action"
       a value: v].
     ul append: c.
@@ -134,14 +129,14 @@ listTest: items action: a
     c on: 'click' do: [:v |
       "unselect selected if set"
       (ul data > 0) ifTrue: [(elts at: ul data) removeClass: 'selected'].
-      (elts at: v) addClass: 'selected'.
-      ul data: v.
+      (elts at: v data) addClass: 'selected'.
+      ul data: v data.
       "call the list's on selection action"
       a value: v].
     ul append: c.
     elts at: i put: c
   ].
-  ^ #(ul [(elts at: 3) clickv. (elts at: 1) clickv. (elts at: 2) clickv. ul data log])
+  ^ #(ul [(elts at: 3) click. (elts at: 1) click. (elts at: 2) click. ul data log])
 !
 
 META Element
