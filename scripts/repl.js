@@ -5,69 +5,8 @@ import readline from "readline";
 import { ImageReader } from "../src/image_reader.js";
 import { Interpreter } from "../src/interpreter.js";
 import { SmallByteArray, SmallObject } from "../src/objects.js";
-import { UIHandler } from "../src/ui_handler.js";
 
-class ConsoleUIFactory {
-  makeBorderedPanel() {
-    return {
-      addToCenter: (e) => 0,
-      addToEast: (e) => 0,
-      addToNorth: (e) => 0,
-      addToSouth: (e) => 0,
-      addToWest: (e) => 0,
-    };
-  }
-
-  makeButton(buttonLabel) {
-    console.log("BUTTON:", buttonLabel);
-    return {
-      addButtonListener: (l) => 0,
-    };
-  }
-
-  makeGridPanel() {
-    return { addChild: (c) => 0 };
-  }
-
-  makeLabel(labelText) {
-    console.log("LABEL:", labelText);
-    return {};
-  }
-
-  makeListWidget(listItems) {
-    console.log("LIST:", listItems);
-    return {
-      addSelectionListener: (l) => 0,
-      getSelectedIndex: () => 1,
-      setData: (newListItems) => 0,
-    };
-  }
-
-  makeTextArea() {
-    return {
-      getText: () => 0,
-      setText: (s) => console.log("TEXTAREA:", s),
-    };
-  }
-
-  makeTextField() {
-    return {
-      getText: () => 0,
-      setText: (s) => console.log("TEXTFIELD:", s),
-    };
-  }
-
-  makeWindow() {
-    return {
-      addChildWidget: (c) => 0,
-      setSize: (w, h) => 0,
-      setTitle: (t) => console.log("WINDOW:", t),
-      setVisible: (v) => 0,
-    };
-  }
-}
-
-const buf = fs.readFileSync("../data/image.data");
+const buf = fs.readFileSync("../data/image-nogui.data");
 const reader = new ImageReader(buf);
 const nilObject = reader.readObject();
 const trueObject = reader.readObject();
@@ -88,7 +27,6 @@ const interpreter = new Interpreter(
   ContextClass,
   IntegerClass,
 );
-interpreter.uiHandler = new UIHandler(new ConsoleUIFactory());
 interpreter.imageSaveCallback = (name, buf) => fs.writeFileSync(name, buf);
 
 function runDoIt(task, bytecodePatcher) {
