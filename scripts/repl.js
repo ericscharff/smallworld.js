@@ -5,9 +5,9 @@ import readline from "readline";
 import { SmallWorld } from "../src/smallworld.js";
 
 const buf = fs.readFileSync("../data/image-nogui.data");
-const smallWorld = new SmallWorld(buf);
-smallWorld.interpreter.imageSaveCallback = (name, buf) =>
-  fs.writeFileSync(name, buf);
+const smallWorld = new SmallWorld(buf, (name, buf) =>
+  fs.writeFileSync(name, buf),
+);
 
 const rl = readline.createInterface({
   input: process.stdin,
