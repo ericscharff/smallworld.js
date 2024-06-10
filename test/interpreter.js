@@ -36,12 +36,8 @@ describe("Interpreter", () => {
   });
 
   it("divides", () => {
-    expect(doIt("75 quo: 5").value).to.equal(
-      interpreter.newInteger(15).value,
-    );
-    expect(doIt("76 quo: 5").value).to.equal(
-      interpreter.newInteger(15).value,
-    );
+    expect(doIt("75 quo: 5").value).to.equal(interpreter.newInteger(15).value);
+    expect(doIt("76 quo: 5").value).to.equal(interpreter.newInteger(15).value);
   });
 
   it("remainder", () => {
@@ -155,11 +151,16 @@ asUpper | r |
   });
 
   it("responds to saveImage:", () => {
-    interpreter.imageSaveCallback = (name, buf) => {
+    const buf = fs.readFileSync("data/image-nogui.data");
+    let saveCalled = false;
+    const callback = (name, buf) => {
+      saveCalled = true;
       expect(name).to.equal("imageToSave");
       expect(buf).to.be.an.instanceOf(Uint8Array);
     };
+    smallWorld = new SmallWorld(buf, callback);
     doIt("Class saveImage: 'imageToSave'");
+    expect(saveCalled).to.be.true;
   });
 
   describe("Timer", () => {

@@ -1,9 +1,10 @@
 import { ImageReader } from "./image_reader.js";
+import { ImageWriter } from "./image_writer.js";
 import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
 
 export class SmallWorld {
-  constructor(buf) {
+  constructor(buf, optImageSaveCallback) {
     const reader = new ImageReader(buf);
     const nilObject = reader.readObject();
     const trueObject = reader.readObject();
@@ -24,6 +25,20 @@ export class SmallWorld {
       ContextClass,
       IntegerClass,
     );
+    if (optImageSaveCallback) {
+      this.interpreter.imageSaveCallback = (imageFileName) => {
+        const writer = new ImageWriter();
+        writer.writeObject(nilObject);
+        writer.writeObject(trueObject);
+        writer.writeObject(falseObject);
+        writer.writeSmallInts(smallInts);
+        writer.writeObject(ArrayClass);
+        writer.writeObject(BlockClass);
+        writer.writeObject(ContextClass);
+        writer.writeObject(IntegerClass);
+        optImageSaveCallback(imageFileName, writer.finish());
+      };
+    }
   }
 
   doIt(task, bytecodePatcher) {
