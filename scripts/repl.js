@@ -24,6 +24,19 @@ rl.on("line", (s) => {
   if (s.startsWith("!")) {
     methodBody = methodBody.replaceAll("'", "''");
     methodBody = methodBody.trim();
+    if (metaMethod) {
+      console.log(
+        smallWorld
+          .runDoIt(`${className} class compileMethod: '${methodBody}'`)
+          .toString(),
+      );
+    } else {
+      console.log(
+        smallWorld
+          .runDoIt(`${className} compileMethod: '${methodBody}'`)
+          .toString(),
+      );
+    }
     methodBody = "";
   } else if (s.startsWith("METHOD")) {
     className = s.split(/\s+/)[1];
