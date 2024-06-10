@@ -27,13 +27,13 @@ rl.on("line", (s) => {
     if (metaMethod) {
       console.log(
         smallWorld
-          .runDoIt(`${className} class compileMethod: '${methodBody}'`)
+          .doIt(`${className} class compileMethod: '${methodBody}'`)
           .toString(),
       );
     } else {
       console.log(
         smallWorld
-          .runDoIt(`${className} compileMethod: '${methodBody}'`)
+          .doIt(`${className} compileMethod: '${methodBody}'`)
           .toString(),
       );
     }
@@ -52,7 +52,7 @@ rl.on("line", (s) => {
     rl.close();
   } else if (!(s === "" || s.startsWith("#") || s.startsWith('"'))) {
     // Run oneliner
-    console.log("" + smallWorld.runDoIt(s));
+    console.log("" + smallWorld.doIt(s));
     rl.prompt();
   }
 });

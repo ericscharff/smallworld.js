@@ -26,7 +26,7 @@ export class SmallWorld {
     );
   }
 
-  runDoIt(task, bytecodePatcher) {
+  doIt(task, bytecodePatcher) {
     // Simulate doIt
 
     // This relies on the definitions of class
@@ -64,7 +64,7 @@ export class SmallWorld {
     return this.interpreter.execute(ctx);
   }
 
-  runPrintIt(task) {
-    return this.runDoIt(task + " printString").toString();
+  printIt(task) {
+    return this.doIt(task + " printString").toString();
   }
 }

@@ -11,7 +11,7 @@ fetch("../data/image-newgui.data").then((resp) => {
     smallWorld.interpreter.uiHandler = new UiHandler();
 
     document.getElementById("doItButton").addEventListener("click", () => {
-      resultArea.innerText = "Result: " + smallWorld.runDoIt(stcode.value);
+      resultArea.innerText = "Result: " + smallWorld.doIt(stcode.value);
     });
   });
 });

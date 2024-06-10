@@ -15,116 +15,116 @@ describe("Interpreter", () => {
     nilObject = interpreter.nilObject;
   });
 
-  function runDoIt(task, bytecodePatcher) {
-    return smallWorld.runDoIt(task, bytecodePatcher);
+  function doIt(task, bytecodePatcher) {
+    return smallWorld.doIt(task, bytecodePatcher);
   }
 
-  function runPrintIt(task) {
-    return smallWorld.runPrintIt(task);
+  function printIt(task) {
+    return smallWorld.printIt(task);
   }
 
   it("adds", () => {
-    expect(runDoIt("3 + 2")).to.equal(interpreter.newInteger(5));
+    expect(doIt("3 + 2")).to.equal(interpreter.newInteger(5));
   });
 
   it("subtracts", () => {
-    expect(runPrintIt("(100 - 75)")).to.equal("25");
+    expect(printIt("(100 - 75)")).to.equal("25");
   });
 
   it("multiplies", () => {
-    expect(runPrintIt("(9 * 12)")).to.equal("108");
+    expect(printIt("(9 * 12)")).to.equal("108");
   });
 
   it("divides", () => {
-    expect(runDoIt("75 quo: 5").value).to.equal(
+    expect(doIt("75 quo: 5").value).to.equal(
       interpreter.newInteger(15).value,
     );
-    expect(runDoIt("76 quo: 5").value).to.equal(
+    expect(doIt("76 quo: 5").value).to.equal(
       interpreter.newInteger(15).value,
     );
   });
 
   it("remainder", () => {
-    expect(runDoIt("75 rem: 5")).to.equal(interpreter.newInteger(0));
-    expect(runDoIt("76 rem: 5")).to.equal(interpreter.newInteger(1));
+    expect(doIt("75 rem: 5")).to.equal(interpreter.newInteger(0));
+    expect(doIt("76 rem: 5")).to.equal(interpreter.newInteger(1));
   });
 
   it("fractions", () => {
-    expect(runPrintIt("((1 / 3) + (3 / 4))")).to.equal("(13/12)");
+    expect(printIt("((1 / 3) + (3 / 4))")).to.equal("(13/12)");
   });
 
   it("adds large integers", () => {
-    expect(runPrintIt("(2000000000 + 2000000000)")).to.equal("4000000000");
+    expect(printIt("(2000000000 + 2000000000)")).to.equal("4000000000");
   });
 
   it("subtracts large integers", () => {
-    expect(runPrintIt("(2000000000 negated - 2000000000)")).to.equal(
+    expect(printIt("(2000000000 negated - 2000000000)")).to.equal(
       "-4000000000",
     );
   });
 
   it("multiplies large integers", () => {
-    expect(runPrintIt("(2000000000 * 2000000000)")).to.equal(
+    expect(printIt("(2000000000 * 2000000000)")).to.equal(
       "04000000000000000000",
     );
   });
 
   it("adds floating point numbers", () => {
-    expect(runPrintIt("(1.2 + 1.2)")).to.equal("2.4");
+    expect(printIt("(1.2 + 1.2)")).to.equal("2.4");
   });
 
   it("subtracts floating point numbers", () => {
-    expect(runPrintIt("(2.0 - 1.5)")).to.equal("0.5");
+    expect(printIt("(2.0 - 1.5)")).to.equal("0.5");
   });
 
   it("multiplies floating point numbers", () => {
-    expect(runPrintIt("(1.4 * 1.2)")).to.equal("1.68");
+    expect(printIt("(1.4 * 1.2)")).to.equal("1.68");
   });
 
   it("compares floating point numbers", () => {
-    expect(runPrintIt("(1.4 < 1.2)")).to.equal("false");
-    expect(runPrintIt("(1.4 <= 1.2)")).to.equal("false");
-    expect(runPrintIt("(1.4 = 1.2)")).to.equal("false");
-    expect(runPrintIt("(1.4 = 1.4)")).to.equal("true");
-    expect(runPrintIt("(1.4 > 1.2)")).to.equal("true");
-    expect(runPrintIt("(1.4 >= 1.2)")).to.equal("true");
+    expect(printIt("(1.4 < 1.2)")).to.equal("false");
+    expect(printIt("(1.4 <= 1.2)")).to.equal("false");
+    expect(printIt("(1.4 = 1.2)")).to.equal("false");
+    expect(printIt("(1.4 = 1.4)")).to.equal("true");
+    expect(printIt("(1.4 > 1.2)")).to.equal("true");
+    expect(printIt("(1.4 >= 1.2)")).to.equal("true");
   });
 
   it("converts floats to integer", () => {
-    expect(runDoIt("1.9 asInteger")).to.equal(interpreter.newInteger(1));
+    expect(doIt("1.9 asInteger")).to.equal(interpreter.newInteger(1));
   });
 
   it("generates random floats", () => {
     sinon.stub(Math, "random").returns(0.25);
-    expect(runPrintIt("Float random")).to.equal("0.25");
+    expect(printIt("Float random")).to.equal("0.25");
     // integer uses float's random too
-    expect(runDoIt("10 random")).to.equal(interpreter.newInteger(2));
+    expect(doIt("10 random")).to.equal(interpreter.newInteger(2));
   });
   it("concatenates strings", () => {
-    expect(runPrintIt("'abc' + 'def'")).to.equal("abcdef");
+    expect(printIt("'abc' + 'def'")).to.equal("abcdef");
   });
 
   it("compares strings", () => {
-    expect(runPrintIt("('abc' < 'def')")).to.equal("true");
-    expect(runPrintIt("('abc' <= 'def')")).to.equal("true");
-    expect(runPrintIt("('abc' = 'def')")).to.equal("false");
-    expect(runPrintIt("('abc' = 'abcd')")).to.equal("false");
-    expect(runPrintIt("('abc' >= 'def')")).to.equal("false");
-    expect(runPrintIt("('abc' > 'def')")).to.equal("false");
+    expect(printIt("('abc' < 'def')")).to.equal("true");
+    expect(printIt("('abc' <= 'def')")).to.equal("true");
+    expect(printIt("('abc' = 'def')")).to.equal("false");
+    expect(printIt("('abc' = 'abcd')")).to.equal("false");
+    expect(printIt("('abc' >= 'def')")).to.equal("false");
+    expect(printIt("('abc' > 'def')")).to.equal("false");
   });
 
   it("handles unrecognized messages", () => {
-    runDoIt(
+    doIt(
       "Object compileMethod: 'error: str " +
         "^(str + Char newline asString + Context current backtrace)'",
     );
-    const r = runPrintIt("3 moo");
+    const r = printIt("3 moo");
     expect(r).to.contain("Unrecognized message selector: moo");
   });
 
   it("halts on error", () => {
     const stub = sinon.stub(console, "log");
-    expect(runDoIt("[3 moo. 4] value")).to.equal(nilObject);
+    expect(doIt("[3 moo. 4] value")).to.equal(nilObject);
     sinon.assert.calledOnceWithMatch(
       stub,
       "LOG:",
@@ -133,11 +133,11 @@ describe("Interpreter", () => {
   });
 
   it("returns nil when halting", () => {
-    expect(runDoIt("Object halt")).to.equal(interpreter.nilObject);
+    expect(doIt("Object halt")).to.equal(interpreter.nilObject);
   });
 
   it("compiles and runs new methods", () => {
-    const r = runDoIt(`
+    const r = doIt(`
 [String compileMethod: '
 asUpper | r |
   r <- String new: self size.
@@ -147,8 +147,8 @@ asUpper | r |
 '.
 'hello, world! test.' asUpper] value`);
     expect(r.toString()).to.equal("HELLO, WORLD! TEST.");
-    expect(runPrintIt("(String methods at: 4) name")).to.equal("asUpper");
-    expect(runPrintIt("(String methods at: 4) byteCodes")).to.equal(
+    expect(printIt("(String methods at: 4) name")).to.equal("asUpper");
+    expect(printIt("(String methods at: 4) byteCodes")).to.equal(
       "#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
         "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )",
     );
@@ -159,7 +159,7 @@ asUpper | r |
       expect(name).to.equal("imageToSave");
       expect(buf).to.be.an.instanceOf(Uint8Array);
     };
-    runDoIt("Class saveImage: 'imageToSave'");
+    doIt("Class saveImage: 'imageToSave'");
   });
 
   describe("Timer", () => {
@@ -174,7 +174,7 @@ asUpper | r |
       interpreter.imageSaveCallback = () => {
         saveCalled = true;
       };
-      runDoIt("[5000 sleep. Class saveImage: 'done'] value");
+      doIt("[5000 sleep. Class saveImage: 'done'] value");
       expect(saveCalled).to.be.false;
       clock.tick(4999);
       expect(saveCalled).to.be.false;
@@ -185,7 +185,7 @@ asUpper | r |
 
   it("throws on invalid opcode", () => {
     expect(() =>
-      runDoIt("0", (code) => {
+      doIt("0", (code) => {
         code[0] = 0x00;
         code[1] = 0x00;
       }),
@@ -194,7 +194,7 @@ asUpper | r |
 
   it("throws on invalid constant", () => {
     expect(() =>
-      runDoIt("0", (code) => {
+      doIt("0", (code) => {
         code[0] = 0x5d;
       }),
     ).to.throw("Unknown constant 13");
@@ -202,7 +202,7 @@ asUpper | r |
 
   it("throws on invalid unary", () => {
     expect(() =>
-      runDoIt("0", (code) => {
+      doIt("0", (code) => {
         code[0] = 0xa2;
       }),
     ).to.throw("Illegal SendUnary 2");
@@ -210,7 +210,7 @@ asUpper | r |
 
   it("throws on invalid primitive", () => {
     expect(() =>
-      runDoIt("0", (code) => {
+      doIt("0", (code) => {
         code[0] = 0xd0;
         code[1] = 0xff;
       }),
@@ -219,7 +219,7 @@ asUpper | r |
 
   it("throws on invalid special", () => {
     expect(() =>
-      runDoIt("0", (code) => {
+      doIt("0", (code) => {
         code[0] = 0xf0;
       }),
     ).to.throw("Unrecognized DoSpecial 0");

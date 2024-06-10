@@ -12,7 +12,7 @@ fetch("../data/image.data").then((resp) => {
     smallWorld.interpreter.uiHandler = new UiHandler(new DomUiFactory());
 
     document.getElementById("doItButton").addEventListener("click", () => {
-      resultArea.innerText = "Result: " + smallWorld.runDoIt(stcode.value);
+      resultArea.innerText = "Result: " + smallWorld.doIt(stcode.value);
     });
   });
 });

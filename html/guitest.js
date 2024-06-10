@@ -20,7 +20,7 @@ describe("GUI Test", () => {
   });
 
   it("exercises the GUI", () => {
-    smallWorld.runDoIt("Class browser");
+    smallWorld.doIt("Class browser");
     function findByText(target, start, eltKind) {
       const xpath = `//${eltKind}[text()='${target}']`;
       return document.evaluate(

@@ -49,12 +49,12 @@ describe("Classic GUI", () => {
     smallWorld = new SmallWorld(buf);
   });
 
-  function runDoIt(task, bytecodePatcher) {
-    return smallWorld.runDoIt(task, bytecodePatcher);
+  function doIt(task, bytecodePatcher) {
+    return smallWorld.doIt(task, bytecodePatcher);
   }
 
-  function runPrintIt(task) {
-    return smallWorld.runPrintIt(task);
+  function printIt(task) {
+    return smallWorld.printIt(task);
   }
 
   describe("User interface", () => {
@@ -134,7 +134,7 @@ describe("Classic GUI", () => {
         "clear",
         "close",
       ];
-      runDoIt("Class browser");
+      doIt("Class browser");
       expect(windowTitle).to.equal("Smalltalk Browser");
       expect(listData).to.eql(ALL_SMALLTALK_CLASSES);
       expect(buttons).to.eql([
@@ -184,7 +184,7 @@ describe("Classic GUI", () => {
       savedTextArea = 'fork\n  " from UI "\n<19 self>';
       compileMethodButton(); // click compile method
       // The newly compiled fork method should be in the image now
-      expect(runPrintIt("(Block methods at: 1) text")).to.equal(savedTextArea);
+      expect(printIt("(Block methods at: 1) text")).to.equal(savedTextArea);
     });
   });
 });
