@@ -20,7 +20,7 @@ The current implementation is extremely minimalist. The GUI is rough and
 incomplete. However, what is here is capable of running a fairly large amount of
 Smalltalk code correctly, including basic arbitrary precision arithmetic, string
 manipulation, and adding new methods to existing classes. See the tests in
-[test.js](test/test.js) for more details.
+[interpreter.js](test/interpreter.js) (and related) for more details.
 
 The main interpreter can be used "headless" - you can run basic Smalltalk code
 without a GUI. You can optionally add a UI Handler (which adds the UI
@@ -35,9 +35,9 @@ directly on any UI, it could be used for embedding in other systems.
 After cloning, use `npm install` to install the dependencies (only needed for
 running unit tests). Running `npm test` will run the test suite in test.js.
 
-There is a simple repl that you can run from the command line with
-`node repl.js` or `./repl.js`. Lines on the command line will be compiled and
-run with `doIt`.
+There is a [simple REPL](scripts/repl.js) in the `scripts` directory that you
+can run from the command line with `node repl.js` or `./repl.js`. Lines on the
+command line will be compiled and run with `doIt`.
 
 You can run a very, very primitive version of the interpeter by loading
 [index.html](html/index.html) in a Web browser. You can evaluate expressions and
