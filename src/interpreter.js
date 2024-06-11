@@ -124,7 +124,6 @@ export class Interpreter {
       let stack = contextData[3].data;
       let stackTop = contextData[5].value;
       let returnedValue = null;
-      let tempa;
 
       // everything else can be null for now
       let temporaries = null;
@@ -218,8 +217,7 @@ export class Interpreter {
             break;
           case 8: // MarkArguments
             const newArguments = new SmallObject(this.ArrayClass, low);
-            tempa = newArguments.data; // direct access to array
-            while (low > 0) tempa[--low] = stack[--stackTop];
+            while (low > 0) newArguments.data[--low] = stack[--stackTop];
             stack[stackTop++] = newArguments;
             break;
           case 9: // SendMessage
@@ -342,17 +340,17 @@ export class Interpreter {
             // next byte is goto value
             high = code[bytePointer++] & 0x0ff;
             returnedValue = new SmallObject(this.BlockClass, 10);
-            tempa = returnedValue.data;
-            tempa[0] = contextData[0]; // share method
-            tempa[1] = contextData[1]; // share arguments
-            tempa[2] = contextData[2]; // share temporaries
-            tempa[3] = contextData[3]; // stack (later replaced)
-            tempa[4] = this.newInteger(bytePointer); // current byte pointer
-            tempa[5] = this.newInteger(0); // stacktop
-            tempa[6] = contextData[6]; // previous context
-            tempa[7] = this.newInteger(low); // argument location
-            tempa[8] = context; // creating context
-            tempa[9] = this.newInteger(bytePointer); // current byte pointer
+            const block = returnedValue.data;
+            block[0] = contextData[0]; // share method
+            block[1] = contextData[1]; // share arguments
+            block[2] = contextData[2]; // share temporaries
+            block[3] = contextData[3]; // stack (later replaced)
+            block[4] = this.newInteger(bytePointer); // current byte pointer
+            block[5] = this.newInteger(0); // stacktop
+            block[6] = contextData[6]; // previous context
+            block[7] = this.newInteger(low); // argument location
+            block[8] = context; // creating context
+            block[9] = this.newInteger(bytePointer); // current byte pointer
             stack[stackTop++] = returnedValue;
             bytePointer = high;
             break;
