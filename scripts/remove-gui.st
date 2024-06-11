@@ -1,5 +1,11 @@
 "Script to remove the GUI classes from Smallworld"
 
+"Fix a syntax error in the source for List>>#remove:"
+METHOD List
+remove: element
+	self remove: element ifAbsent: [ nil ]
+!
+
 "Add a console logger for debugging"
 METHOD Object
 log
