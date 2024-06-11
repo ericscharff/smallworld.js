@@ -230,10 +230,10 @@ export class Interpreter {
               literals = method.data[2].data;
             }
             returnedValue = literals[low]; // message selector
-            // System.out.println("Sending " + returnedValue);
-            // System.out.println("Arguments " + arguments);
-            // System.out.println("Arguments receiver " + arguments.data[0]);
-            // System.out.println("Arguments class " + arguments.data[0].objClass);
+            // console.log("Sending " + returnedValue);
+            // console.log("Arguments " + arguments);
+            // console.log("Arguments receiver " + arguments.data[0]);
+            // console.log("Arguments class " + arguments.data[0].objClass);
             high =
               (args.data[0].objClass.hashCode() + returnedValue.hashCode()) %
               197;
