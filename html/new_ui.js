@@ -71,6 +71,6 @@ export class UiHandler {
       default:
         throw new Error("Bad UI " + high);
     }
-    return [returnedValue, stack, stackTop];
+    return [returnedValue, stackTop];
   }
 }

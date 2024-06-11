@@ -131,6 +131,6 @@ export class UiHandler {
         returnedValue.nativeObject.setData(newListData);
         break;
     }
-    return [returnedValue, stack, stackTop];
+    return [returnedValue, stackTop];
   }
 }
