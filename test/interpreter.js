@@ -9,7 +9,7 @@ describe("Interpreter", () => {
   let nilObject = null;
 
   beforeEach(async () => {
-    const buf = fs.readFileSync("data/image-nogui.data");
+    const buf = fs.readFileSync("data/nogui.image");
     smallWorld = new SmallWorld(buf);
     interpreter = smallWorld.interpreter;
     nilObject = interpreter.nilObject;
@@ -151,7 +151,7 @@ asUpper | r |
   });
 
   it("responds to saveImage:", () => {
-    const buf = fs.readFileSync("data/image-nogui.data");
+    const buf = fs.readFileSync("data/nogui.image");
     let saveCalled = false;
     const callback = (name, buf) => {
       saveCalled = true;

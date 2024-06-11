@@ -87,4 +87,4 @@ Class removeClass: 'Pane'
 Class removeClass: 'Window'
 
 "Save the resulting image"
-Class saveImage: 'image-nogui.data'
+Class saveImage: 'nogui.image'

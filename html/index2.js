@@ -1,7 +1,7 @@
 import { SmallWorld } from "../src/smallworld.js";
 import { UiHandler } from "./new_ui.js";
 
-fetch("../data/image-newgui.data").then((resp) => {
+fetch("../data/newgui.image").then((resp) => {
   resp.arrayBuffer().then((buf) => {
     const smallWorld = new SmallWorld(buf);
     const stcode = document.getElementById("stcode");

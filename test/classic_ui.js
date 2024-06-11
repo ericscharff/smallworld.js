@@ -45,7 +45,7 @@ describe("Classic GUI", () => {
   let smallWorld = null;
 
   beforeEach(async () => {
-    const buf = fs.readFileSync("data/image.data");
+    const buf = fs.readFileSync("data/base.image");
     smallWorld = new SmallWorld(buf);
   });
 

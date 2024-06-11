@@ -7,28 +7,28 @@ import { SmallJsObject } from "../src/objects.js";
 describe("Image I/O", () => {
   describe("Image reading", () => {
     it("fails on bad magic number", () => {
-      const buf = fs.readFileSync("data/image.data");
+      const buf = fs.readFileSync("data/base.image");
       buf[0] = 70;
       const reader = new ImageReader(buf);
       expect(() => reader.readObject()).to.throw("Bad magic number");
     });
 
     it("fails on bad version", () => {
-      const buf = fs.readFileSync("data/image.data");
+      const buf = fs.readFileSync("data/base.image");
       buf[7] = 3; // LSB in version number, makes this v3
       const reader = new ImageReader(buf);
       expect(() => reader.readObject()).to.throw("Bad version number");
     });
 
     it("fails on bad object type", () => {
-      const buf = fs.readFileSync("data/image.data");
+      const buf = fs.readFileSync("data/base.image");
       buf[100] = 10; // One of the entries in the object pool
       const reader = new ImageReader(buf);
       expect(() => reader.readObject()).to.throw("Unknown object type 10");
     });
 
     it("succeeds on valid image", () => {
-      const buf = fs.readFileSync("data/image.data");
+      const buf = fs.readFileSync("data/base.image");
       const reader = new ImageReader(buf);
       const nilObject = reader.readObject();
       const trueObject = reader.readObject();
@@ -48,7 +48,7 @@ describe("Image I/O", () => {
 
   describe("Image writing", () => {
     it("writes a complete image", () => {
-      const buf = fs.readFileSync("data/image.data");
+      const buf = fs.readFileSync("data/base.image");
       const reader = new ImageReader(buf);
       const nilObject = reader.readObject();
       const trueObject = reader.readObject();

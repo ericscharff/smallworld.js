@@ -197,4 +197,4 @@ error: str
   Object halt.
 !
 
-Class saveImage: '../data/image-newgui.data'
+Class saveImage: '../data/newgui.image'
