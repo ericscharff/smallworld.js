@@ -1,10 +1,13 @@
 import fs from "fs";
 import { expect } from "chai";
+import sinon from "sinon";
 import { ImageReader } from "../src/image_reader.js";
 import { ImageWriter } from "../src/image_writer.js";
 import { SmallJsObject } from "../src/objects.js";
 
 describe("Image I/O", () => {
+  afterEach(() => sinon.restore());
+
   describe("Image reading", () => {
     it("fails on bad magic number", () => {
       const buf = fs.readFileSync("data/base.image");
@@ -68,10 +71,9 @@ describe("Image I/O", () => {
       writer.writeObject(BlockClass);
       writer.writeObject(ContextClass);
       writer.writeObject(IntegerClass);
-      const l = console.log;
-      console.log = (s) => 0;
+      const stub = sinon.stub(console, "log");
       writer.dumpToText();
-      console.log = l;
+      sinon.assert.callCount(stub, 4903);
       const arr = writer.finish();
       expect(arr).to.eql(buf);
     });
