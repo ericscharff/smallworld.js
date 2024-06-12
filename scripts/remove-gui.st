@@ -12,6 +12,22 @@ log
   <99 (self printString)>
 !
 
+"Add trig functions"
+META Float
+pi
+  ^ <100 self>
+!
+
+METHOD Float
+cos
+  ^ <101 self>
+!
+
+METHOD Float
+sin
+  ^ <102 self>
+!
+
 "nil test is the last reference to ListPane"
 Undefined removeMethod: 'test'
 

@@ -96,6 +96,19 @@ describe("Interpreter", () => {
     // integer uses float's random too
     expect(doIt("10 random")).to.equal(interpreter.newInteger(2));
   });
+
+  it("fetches Float pi", () => {
+    expect(printIt("Float pi")).to.contain("3.1415");
+  });
+
+  it("computes cosine", () => {
+    expect(printIt("0.25 cos")).to.contain("0.9689");
+  });
+
+  it("computes sine", () => {
+    expect(printIt("0.25 sin")).to.contain("0.2474");
+  });
+
   it("concatenates strings", () => {
     expect(printIt("'abc' + 'def'")).to.equal("abcdef");
   });

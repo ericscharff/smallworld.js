@@ -602,6 +602,23 @@ export class Interpreter {
               case 99: // log
                 console.log("LOG: ", stack[--stackTop].toString());
                 break;
+              case 100: // float pi
+                returnedValue = new SmallJsObject(stack[--stackTop], Math.PI);
+                break;
+              case 101: // float cos
+                const vcos = stack[--stackTop];
+                returnedValue = new SmallJsObject(
+                  vcos.objClass,
+                  Math.cos(vcos.nativeObject),
+                );
+                break;
+              case 102: // float sin
+                const vsin = stack[--stackTop];
+                returnedValue = new SmallJsObject(
+                  vsin.objClass,
+                  Math.sin(vsin.nativeObject),
+                );
+                break;
               default:
                 if (this.uiHandler && high >= 60 && high <= 84) {
                   [returnedValue, stackTop] = this.uiHandler.handle(
