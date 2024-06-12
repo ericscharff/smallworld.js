@@ -22,7 +22,9 @@ class DataStream {
 
 // Write objects to a binary stream
 export class ImageWriter {
-  constructor() {
+  constructor(stringClass) {
+    this.stringClass = stringClass;
+
     // allObjects hold everything that needs to be written. These are
     // the SmallObjects themselves.
     this.allObjects = [];
@@ -41,6 +43,24 @@ export class ImageWriter {
     // Precompute size for the array. Initial size is
     // 4 bytes (SWST) + 4 bytes (version #) + 4 bytes (object count)
     this.arraySize = 12;
+  }
+
+  dumpToText() {
+    const idx = (o) => this.hashToIndex.get(o.hashCode());
+    this.allObjects.forEach((o) => {
+      let textual = "";
+      textual += `Object ${idx(o)} class: ${o.objClass.data[0].toString()} `;
+      textual += `dataLength: ${o.data.length} [`;
+      textual += o.data.map((d) => idx(d)).join(", ");
+      textual += "]";
+      if (o.isSmallInt()) {
+        textual += ` value: ${o.value}`;
+      }
+      if (o.objClass === this.stringClass) {
+        textual += ` value: ${JSON.stringify(o.toString())}`;
+      }
+      console.log(textual);
+    });
   }
 
   finish() {

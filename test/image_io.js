@@ -59,7 +59,7 @@ describe("Image I/O", () => {
       const ContextClass = reader.readObject();
       const IntegerClass = reader.readObject();
 
-      const writer = new ImageWriter();
+      const writer = new ImageWriter(ArrayClass.data[0].objClass);
       writer.writeObject(nilObject);
       writer.writeObject(trueObject);
       writer.writeObject(falseObject);
@@ -68,6 +68,10 @@ describe("Image I/O", () => {
       writer.writeObject(BlockClass);
       writer.writeObject(ContextClass);
       writer.writeObject(IntegerClass);
+      const l = console.log;
+      console.log = (s) => 0;
+      writer.dumpToText();
+      console.log = l;
       const arr = writer.finish();
       expect(arr).to.eql(buf);
     });

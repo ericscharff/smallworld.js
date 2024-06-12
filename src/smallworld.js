@@ -27,7 +27,7 @@ export class SmallWorld {
     );
     if (optImageSaveCallback) {
       this.interpreter.imageSaveCallback = (imageFileName) => {
-        const writer = new ImageWriter();
+        const writer = new ImageWriter(ArrayClass.data[0].objClass);
         writer.writeObject(nilObject);
         writer.writeObject(trueObject);
         writer.writeObject(falseObject);
@@ -36,6 +36,7 @@ export class SmallWorld {
         writer.writeObject(BlockClass);
         writer.writeObject(ContextClass);
         writer.writeObject(IntegerClass);
+        //writer.dumpToText();
         optImageSaveCallback(imageFileName, writer.finish());
       };
     }
