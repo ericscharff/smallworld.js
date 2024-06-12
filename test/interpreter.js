@@ -15,6 +15,8 @@ describe("Interpreter", () => {
     nilObject = interpreter.nilObject;
   });
 
+  afterEach(() => sinon.restore());
+
   function doIt(task, bytecodePatcher) {
     return smallWorld.doIt(task, bytecodePatcher);
   }
