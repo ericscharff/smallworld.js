@@ -53,7 +53,7 @@ especially interesting Smalltalk variants, because a very few Smalltalk classes
 and a relatively small virtual machine can accomplish a great deal. The base
 image is made from 41 classes. The whole environment (full source code,
 bytecode, programming tools, and so on) is made from 4924 objects, taking up
-less than 170K of disk space.
+less than 170K of disk space (and considerably less with some deduplication).
 
 I've written many interpreters and compilers over the years, and I even took Tim
 Budd's original SmallWorld and cleaned up the code a bit. However, I never

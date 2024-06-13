@@ -22,8 +22,9 @@ class DataStream {
 
 // Write objects to a binary stream
 export class ImageWriter {
-  constructor(stringClass) {
-    this.stringClass = stringClass;
+  constructor(arrayClass) {
+    this.arrayClass = arrayClass;
+    this.stringClass = arrayClass?.data[0].objClass;
 
     // allObjects hold everything that needs to be written. These are
     // the SmallObjects themselves.
@@ -33,6 +34,17 @@ export class ImageWriter {
     // values are indices into the allObjects array. This relies on the
     // fact that every SmallObject has a unique hashCode
     this.hashToIndex = new Map();
+
+    // valueToIndex is a map whose keys are JS values (either strings or
+    // integers representing String and SmallInt respectively), and whose
+    // values are indices into the allObjects array. This is used so that
+    // there is only one copy of each string or integer in the image.
+    this.valueToIndex = new Map();
+
+    // indexOfEmptyArray is the index of a special object, an array whose
+    // size is 0 (the empty array). This ensures there is only one of them
+    // in the written image.
+    this.indexOfEmptyArray = -1;
 
     // Roots store the calls to writeObject so they can be recalled in
     // a specific order. The elements are SmallObjects.
@@ -114,6 +126,40 @@ export class ImageWriter {
       throw new Error("SmallJsObject can not be serialized");
     }
     if (!this.hashToIndex.has(obj.hashCode())) {
+      if (obj.objClass === this.arrayClass && obj.data.length === 0) {
+        if (this.indexOfEmptyArray >= 0) {
+          // re-use the existing empty array, and don't serialize this one
+          this.hashToIndex.set(obj.hashCode(), this.indexOfEmptyArray);
+          return;
+        } else {
+          // this version will be the singleton
+          this.indexOfEmptyArray = this.objectIndex;
+        }
+      }
+      if (obj.isSmallInt()) {
+        if (this.valueToIndex.has(obj.value)) {
+          // re-use the existing SmallInt
+          this.hashToIndex.set(
+            obj.hashCode(),
+            this.valueToIndex.get(obj.value),
+          );
+          return;
+        } else {
+          this.valueToIndex.set(obj.value, this.objectIndex);
+        }
+      }
+      if (obj.objClass === this.stringClass) {
+        if (this.valueToIndex.has(obj.toString())) {
+          // re-use the existing String
+          this.hashToIndex.set(
+            obj.hashCode(),
+            this.valueToIndex.get(obj.toString()),
+          );
+          return;
+        } else {
+          this.valueToIndex.set(obj.toString(), this.objectIndex);
+        }
+      }
       this.hashToIndex.set(obj.hashCode(), this.objectIndex);
       // All objects are 1 byte (pool type) + 4 bytes (class index) +
       // 4 bytes (instance variable count)

@@ -52,6 +52,7 @@ describe("Image I/O", () => {
   describe("Image writing", () => {
     it("writes a complete image", () => {
       const buf = fs.readFileSync("data/base.image");
+      const buf2 = fs.readFileSync("data/base-packed.image");
       const reader = new ImageReader(buf);
       const nilObject = reader.readObject();
       const trueObject = reader.readObject();
@@ -62,7 +63,7 @@ describe("Image I/O", () => {
       const ContextClass = reader.readObject();
       const IntegerClass = reader.readObject();
 
-      const writer = new ImageWriter(ArrayClass.data[0].objClass);
+      const writer = new ImageWriter(ArrayClass);
       writer.writeObject(nilObject);
       writer.writeObject(trueObject);
       writer.writeObject(falseObject);
@@ -73,9 +74,9 @@ describe("Image I/O", () => {
       writer.writeObject(IntegerClass);
       const stub = sinon.stub(console, "log");
       writer.dumpToText();
-      sinon.assert.callCount(stub, 4903);
+      sinon.assert.callCount(stub, 2800);
       const arr = writer.finish();
-      expect(arr).to.eql(buf);
+      expect(arr).to.eql(buf2);
     });
 
     it("fails to write native objects", () => {
