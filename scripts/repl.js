@@ -1,10 +1,19 @@
 #!/usr/bin/env node
 
 import fs from "fs";
+import { parseArgs } from "node:util";
 import readline from "readline";
 import { SmallWorld } from "../src/smallworld.js";
 
-const buf = fs.readFileSync("../data/nogui.image");
+const { values } = parseArgs({
+  options: {
+    image_name: { type: "string", short: "i", default: "../data/nogui.image" },
+  },
+});
+const imageName = values.image_name;
+console.log("Welcome to SmallWorld!");
+console.log(`Reading image from ${imageName}`);
+const buf = fs.readFileSync(imageName);
 const smallWorld = new SmallWorld(buf, (name, buf) =>
   fs.writeFileSync(name, buf),
 );
