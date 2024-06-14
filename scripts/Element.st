@@ -1,3 +1,11 @@
+"Add an HTML-native GUI"
+"This new Element class represents an HTML element. It has methods"
+"for doing DOM manipulation (adding and removing nodes), handling"
+"events from the browser, and adding/removing CSS classes."
+"There are class methods for generating a very simple UI with things"
+"like windows, lists, and text areas. This is suitable for making a"
+"UI similar to Budd's original which used Java AWT."
+
 Class addNewClass: ( Object subclass: 'Element' variables: 'data ' classVariables: '')
 
 METHOD Element
@@ -163,38 +171,3 @@ browser
   out addClass: 'center'. bp append: out.
   w append: bp.
 !
-
-METHOD Class
-edit | w t l ba bd bp |
-  w <- Element window: 'Class Editor: ' + name.
-  t <- Element textArea. 
-  l <- Element list: methods asStringArray
-    action: [:i | t value: (methods at: i data) text].
-  ba <- #((Element button: 'clear text area' action: [ t value: '' ])
-    (Element button: 'compile' action:
-      [ (self compileMethod: t value) ifTrue: [ Element notify: 'compilation successful'. w remove. self edit. ] ])
-    (Element button: 'delete method' action:
-      [ methods <- methods removeAt: l data. w remove. self edit. ])
-    (Element button: 'instance variables' action:
-      [ t value: variables asString])
-    (Element button: 'examine superclass' action:
-      [ self superclass notNil ifTrue: [ self superclass edit]
-        ifFalse: [ 'no superclass' log]])
-    (Element button: 'examine metaclass' action: [ self class edit ])
-    (Element button: 'close' action: [ w remove]) ).
-  bd <- Element create: 'div'.
-  ba do: [:e | bd append: e].
-  bp <- Element create: 'div' class: 'borderPane'.
-  bd addClass: 'west'. bp append: bd.
-  l addClass: 'east'. bp append: l.
-  t addClass: 'center'. bp append: t.
-  w append: bp.
-!
-
-METHOD Object
-error: str
-  Element notify: (str + Char newline asString + Context current backtrace).
-  Object halt.
-!
-
-Class saveImage: '../data/newgui.image'
