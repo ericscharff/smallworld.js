@@ -1,33 +1,5 @@
 "Script to remove the GUI classes from Smallworld"
 
-"Fix a syntax error in the source for List>>#remove:"
-METHOD List
-remove: element
-	self remove: element ifAbsent: [ nil ]
-!
-
-"Add a console logger for debugging"
-METHOD Object
-log
-  <99 (self printString)>
-!
-
-"Add trig functions"
-META Float
-pi
-  ^ <100 self>
-!
-
-METHOD Float
-cos
-  ^ <101 self>
-!
-
-METHOD Float
-sin
-  ^ <102 self>
-!
-
 "nil test is the last reference to ListPane"
 Undefined removeMethod: 'test'
 
@@ -56,27 +28,12 @@ Class removeClass: 'Semaphore'
 "Application is a GUI framework tied to the old GUI"
 Class removeClass: 'Application'
 
-"File doesn't make much sense in a VM, but we still need a way to save the"
-"image, so move a new verison of saveImage: to class, instead"
-METHOD Class
-saveImage: n
-  <29 (n printString)>.
-  ^ 'Image saved in file ' + n
-!
-
 "Now, class fileOut and fileTo: can be removed"
 Class removeMethod: 'fileOut'
 Class removeMethod: 'fileTo:'
 
 "and thus File itself can be removed"
 Class removeClass: 'File'
-
-"Redefine error: to not refer to the GUI"
-METHOD Object
-error: str
-  (str + Char newline asString + Context current backtrace) log.
-  Object halt.
-!
 
 "Remove references to inspect:, inspect, edit:, and edit"
 String removeMethod: 'inspect:'
@@ -101,6 +58,3 @@ Class class removeMethod: 'browser'
 Class removeClass: 'Menu'
 Class removeClass: 'Pane'
 Class removeClass: 'Window'
-
-"Save the resulting image"
-Class saveImage: 'nogui.image'
