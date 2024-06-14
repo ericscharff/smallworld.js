@@ -11,6 +11,7 @@ cat \
   fix-list-bug.st \
   redefine-object-error.st \
   remove-gui.st \
+  recompile.st \
   Element.st \
   html-editor.st \
   html-error-handler.st \
