@@ -156,6 +156,26 @@ describe("Interpreter", () => {
     });
   });
 
+  describe("Lists", () => {
+    it("removes elements from the beginning", () => {
+      expect(printIt("(#(1 2 3 4) asList removeAt: 1)")).to.equal(
+        "List(2 3 4 )",
+      );
+    });
+
+    it("removes elements from the middle", () => {
+      expect(printIt("(#(1 2 3 4) asList removeAt: 3)")).to.equal(
+        "List(1 2 4 )",
+      );
+    });
+
+    it("removes elements from the end", () => {
+      expect(printIt("(#(1 2 3 4) asList removeAt: 4)")).to.equal(
+        "List(1 2 3 )",
+      );
+    });
+  });
+
   describe("Errors", () => {
     it("handles unrecognized messages", () => {
       doIt(
