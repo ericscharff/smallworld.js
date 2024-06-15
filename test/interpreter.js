@@ -136,6 +136,26 @@ describe("Interpreter", () => {
     });
   });
 
+  describe("Arrays", () => {
+    it("concatenates arrays", () => {
+      expect(printIt("(#(10 20 30) + #(40 50 60))")).to.equal(
+        "#(10 20 30 40 50 60 )",
+      );
+    });
+
+    it("removes elements from the beginning", () => {
+      expect(printIt("(#(1 2 3 4) removeAt: 1)")).to.equal("#(2 3 4 )");
+    });
+
+    it("removes elements from the middle", () => {
+      expect(printIt("(#(1 2 3 4) removeAt: 3)")).to.equal("#(1 2 4 )");
+    });
+
+    it("removes elements from the end", () => {
+      expect(printIt("(#(1 2 3 4) removeAt: 4)")).to.equal("#(1 2 3 )");
+    });
+  });
+
   describe("Errors", () => {
     it("handles unrecognized messages", () => {
       doIt(
