@@ -9,9 +9,11 @@ cat \
   add-object-log.st \
   add-trig.st \
   fix-list-bug.st \
+  fix-class-bugs.st \
   redefine-object-error.st \
   remove-gui.st \
   Element.st \
   html-editor.st \
   html-error-handler.st \
+  recompile.st \
   save-newgui.st | ./repl.js --image_name ../data/base.image

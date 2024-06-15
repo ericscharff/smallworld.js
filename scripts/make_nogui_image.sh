@@ -9,6 +9,8 @@ cat \
   add-object-log.st \
   add-trig.st \
   fix-list-bug.st \
+  fix-class-bugs.st \
   redefine-object-error.st \
   remove-gui.st \
+  recompile.st \
   save-nogui.st | ./repl.js --image_name ../data/base.image
