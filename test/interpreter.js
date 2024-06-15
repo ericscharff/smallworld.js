@@ -73,6 +73,34 @@ describe("Interpreter", () => {
         "04000000000000000000",
       );
     });
+
+    it("compares less than large integers", () => {
+      expect(printIt("(2000000000 < 2000000000)")).to.equal("false");
+    });
+
+    it("compares less than small integers", () => {
+      expect(printIt("(2000000000 < 2)")).to.equal("false");
+    });
+
+    it("compares less than or equal large integers", () => {
+      expect(printIt("(2000000000 <= 2000000000)")).to.equal("true");
+    });
+
+    it("compares equal large integers", () => {
+      expect(printIt("(2000000000 = 2000000000)")).to.equal("true");
+    });
+
+    it("compares greater than large integers", () => {
+      expect(printIt("(2000000000 > 2000000000)")).to.equal("false");
+    });
+
+    it("compares greater than large integers", () => {
+      expect(printIt("(2000000000 > 2)")).to.equal("true");
+    });
+
+    it("compares greater than or equal large integers", () => {
+      expect(printIt("(2000000000 >= 2000000000)")).to.equal("true");
+    });
   });
 
   describe("Floats", () => {
