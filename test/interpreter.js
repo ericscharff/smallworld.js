@@ -174,6 +174,10 @@ describe("Interpreter", () => {
         "List(1 2 3 )",
       );
     });
+
+    it("removes elements b7 value", () => {
+      expect(printIt("(#(1 2 3 4) asList remove: 2)")).to.equal("List(1 3 4 )");
+    });
   });
 
   describe("Errors", () => {
