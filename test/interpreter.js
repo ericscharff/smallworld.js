@@ -292,8 +292,8 @@ asUpper | r |
       expect(r.toString()).to.equal("HELLO, WORLD! TEST.");
       expect(printIt("(String methods at: 4) name")).to.equal("asUpper");
       expect(printIt("(String methods at: 4) byteCodes")).to.equal(
-        "#(64 32 129 145 130 146 112 245 81 32 129 147 193 25 48 49 32 " +
-          "49 130 148 129 149 131 150 242 131 151 245 48 242 245 241 )",
+	"#(64 32 129 145 130 146 112 245 81 32 129 145 193 25 48 49 32 " +
+	  "49 130 147 129 148 131 149 242 131 150 245 48 242 245 241 )",
       );
     });
 

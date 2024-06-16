@@ -16,6 +16,16 @@ addArgName: name
   argNames add: name
 !
 
+"This enhancement to the encoder will avoid the same literal being added"
+"to the literals array multiple times."
+METHOD Encoder
+genLiteral: aValue
+  | i |
+  i <- literals indexOf: aValue ifAbsent: [
+    literals <- literals add: aValue. literals size].
+  ^ i - 1
+!
+
 "recompile the compiler"
 6 to: 18 do: [:i | (Object in: (Class parser class) at: i) methods do: [:m | (Object in: (Class parser class) at: i) compileMethod: m text]]
 Class parser class class methods do: [:m | Class parser class class compileMethod: m text]
