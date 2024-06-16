@@ -47,12 +47,12 @@ describe("Interpreter", () => {
       );
     });
 
-    it("remainder", () => {
+    it("computes remainder", () => {
       expect(doIt("75 rem: 5")).to.equal(interpreter.newInteger(0));
       expect(doIt("76 rem: 5")).to.equal(interpreter.newInteger(1));
     });
 
-    it("fractions", () => {
+    it("adds fractions", () => {
       expect(printIt("((1 / 3) + (3 / 4))")).to.equal("(13/12)");
     });
   });
@@ -203,7 +203,7 @@ describe("Interpreter", () => {
       );
     });
 
-    it("removes elements b7 value", () => {
+    it("removes elements by value", () => {
       expect(printIt("(#(1 2 3 4) asList remove: 2)")).to.equal("List(1 3 4 )");
     });
   });

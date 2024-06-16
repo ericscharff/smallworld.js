@@ -58,7 +58,7 @@ describe("Classic GUI", () => {
   }
 
   describe("User interface", () => {
-    it("Opens the class browser", () => {
+    it("opens the class browser", () => {
       let windowTitle = "";
       let listData = [];
       let buttons = [];
