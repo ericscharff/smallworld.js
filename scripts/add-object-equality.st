@@ -12,11 +12,21 @@ compareToLP: other
 !
 
 METHOD Object
-negated
-  ^ nil
+value
+  ^ self
 !
 
 METHOD Object
-value
-  ^ nil
+negatable
+  ^ false
+!
+
+METHOD Number
+negatable
+  ^ true
+!
+
+METHOD LargeNegative
+= arg
+	^ (arg negatable) and: [self negated = arg negated]
 !

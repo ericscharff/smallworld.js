@@ -90,6 +90,10 @@ describe("Interpreter", () => {
       expect(printIt("(2000000000 = 2000000000)")).to.equal("true");
     });
 
+    it("compares equal large negative integers", () => {
+      expect(printIt("(-2000000000 = -2000000000)")).to.equal("true");
+    });
+
     it("compares greater than large integers", () => {
       expect(printIt("(2000000000 > 2000000000)")).to.equal("false");
     });
