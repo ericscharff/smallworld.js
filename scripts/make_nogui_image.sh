@@ -7,6 +7,7 @@
 cat \
   add-class-saveimage.st \
   add-object-log.st \
+  add-object-equality.st \
   add-trig.st \
   fix-list-bug.st \
   fix-class-bugs.st \

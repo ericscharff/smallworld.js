@@ -233,6 +233,47 @@ describe("Interpreter", () => {
     });
   });
 
+  describe("Cross type equality comparisons", () => {
+    it("compares SmallInts to non-SmallInts", () => {
+      expect(printIt("(3 = nil)")).to.equal("false");
+    });
+
+    it("compares non-SmallInts to SmallInts", () => {
+      expect(printIt("(nil = 3)")).to.equal("false");
+    });
+
+    it("compares LargePositive to non-LargePositive", () => {
+      expect(printIt("(1000000000000 = nil)")).to.equal("false");
+    });
+
+    it("compares non-LargePositive to LargePositive", () => {
+      expect(printIt("(nil = 1000000000000)")).to.equal("false");
+    });
+
+    it("compares LargeNegative to non-LargeNegative", () => {
+      expect(printIt("(-1000000000000 = nil)")).to.equal("false");
+    });
+
+    it("compares non-LargeNegative to LargeNegative", () => {
+      expect(printIt("(nil = -1000000000000)")).to.equal("false");
+    });
+
+    it("compares Strings to non-Strings", () => {
+      expect(printIt("('abc' = nil)")).to.equal("false");
+    });
+
+    it("compares non-Strings to Strings", () => {
+      expect(printIt("(nil = 'abc')")).to.equal("false");
+    });
+
+    it("compares Chars to non-Chars", () => {
+      expect(printIt("($a = nil)")).to.equal("false");
+    });
+
+    it("compares non-Chars to Chars", () => {
+      expect(printIt("(nil = $a)")).to.equal("false");
+    });
+  });
   describe("Image Updates", () => {
     it("compiles and runs new methods", () => {
       const r = doIt(`
@@ -287,7 +328,7 @@ asUpper | r |
     });
   });
 
-  describe("Invalid States", () => {
+  describe("Invalid Bytecode", () => {
     it("throws on invalid opcode", () => {
       expect(() =>
         doIt("0", (code) => {
