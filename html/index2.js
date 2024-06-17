@@ -1,5 +1,5 @@
 import { SmallWorld } from "../src/smallworld.js";
-import { UiHandler } from "./new_ui.js";
+import { UiHandler } from "./html_ui.js";
 
 fetch("../data/newgui.image").then((resp) => {
   resp.arrayBuffer().then((buf) => {

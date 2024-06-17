@@ -1,6 +1,6 @@
 import { expect } from "../node_modules/chai/chai.js";
 import { SmallWorld } from "../src/smallworld.js";
-import { UiHandler } from "./new_ui.js";
+import { UiHandler } from "./html_ui.js";
 
 describe("GUI Test", () => {
   let smallWorld = null;
