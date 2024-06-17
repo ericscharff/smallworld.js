@@ -1,4 +1,4 @@
-import { DomUiFactory } from "./dom_ui_factory.js";
+import { DomUiFactory } from "./ui_factory.js";
 import { SmallWorld } from "../src/smallworld.js";
 import { UiHandler } from "../src/ui_handler.js";
 
