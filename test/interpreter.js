@@ -262,6 +262,14 @@ describe("Interpreter", () => {
       expect(printIt("(nil = -1000000000000)")).to.equal("false");
     });
 
+    it("compares Floats to non-Floats", () => {
+      expect(printIt("(3.0 = nil)")).to.equal("false");
+    });
+
+    it("compares non-Floatss to Floats", () => {
+      expect(printIt("(nil = 3.0)")).to.equal("false");
+    });
+
     it("compares Strings to non-Strings", () => {
       expect(printIt("('abc' = nil)")).to.equal("false");
     });

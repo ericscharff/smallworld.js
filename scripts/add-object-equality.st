@@ -26,7 +26,22 @@ negatable
   ^ true
 !
 
+METHOD Object
+floatable
+  ^ false
+!
+
+METHOD Number
+floatable
+  ^ true
+!
+
 METHOD LargeNegative
 = arg
 	^ (arg negatable) and: [self negated = arg negated]
+!
+
+METHOD Float
+= arg
+	^ (arg floatable) and: [arg asFloat equalToFloat: self]
 !
