@@ -151,8 +151,10 @@ test
   w append: c.
   w append: b.
   c roundedRect: 12 y: 12 w: 184 h: 168 r: 15.
+  c lineWidth: 5.
+  c strokeStyle: 'red'.
   c moveTo: 50 y: 50.
-  c lineTo: 60 y: 60.
+  c lineTo: 90 y: 90.
   c stroke.
 !
 
