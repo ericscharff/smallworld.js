@@ -1,4 +1,9 @@
-Class addNewClass: ( Object subclass: 'Element' variables: 'data ' classVariables: '')
+"Add a class representing an HTML Canvas"
+
+"Canvas is a subclass of Element that provides the drawing API of the"
+"HTML 2D Canvas."
+
+"It requires that the Element class already exist."
 Class addNewClass: ( Element subclass: 'Canvas' variables: '' classVariables: '')
 
 METHOD Canvas
@@ -143,19 +148,6 @@ roundedRect: x y: y w: w h: h r: r
 !
 
 META Canvas
-test
-  | w c b |
-  w <- self window: 'Canvas Test'.
-  c <- self create: 'canvas'.
-  b <- self button: 'close' action: [w remove].
-  w append: c.
-  w append: b.
-  c roundedRect: 12 y: 12 w: 184 h: 168 r: 15.
-  c lineWidth: 5.
-  c strokeStyle: 'red'.
-  c moveTo: 50 y: 50.
-  c lineTo: 90 y: 90.
-  c stroke.
+new
+  ^ self create: 'canvas'
 !
-
-Class saveImage: 'im'

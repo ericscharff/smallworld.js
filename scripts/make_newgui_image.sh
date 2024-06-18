@@ -14,6 +14,8 @@ cat \
   redefine-object-error.st \
   remove-gui.st \
   Element.st \
+  Canvas.st \
+  canvas-examples.st \
   html-editor.st \
   html-error-handler.st \
   recompile.st \

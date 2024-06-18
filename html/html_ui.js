@@ -1,5 +1,180 @@
 import { SmallByteArray, SmallJsObject } from "../src/objects.js";
 
+// Maps Canvas DOM elements to their CanvasRenderingContext2d for drawing
+const canvasToContext = new WeakMap();
+
+// Converts a Smalltalk SmallInt or Float to a JavaScript number
+function stToNumber(stObj) {
+  if (stObj.isSmallInt()) {
+    return stObj.value;
+  } else {
+    return stObj.nativeObject;
+  }
+}
+
+// Convert a Smalltalk String to a JavaScript String
+function stToString(stObj) {
+  return stObj.toString();
+}
+
+function handleCanvas(ctx, stack, stackTop) {
+  const opcode = stToNumber(stack[--stackTop]);
+  switch (opcode) {
+    case 0: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.moveTo(x, y);
+      break;
+    }
+    case 1: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.lineTo(x, y);
+      break;
+    }
+    case 2:
+      ctx.fill();
+      break;
+    case 3:
+      ctx.stroke();
+      break;
+    case 4:
+      ctx.fillStyle = stToString(stack[--stackTop]);
+      break;
+    case 5:
+      ctx.strokeStyle = stToString(stack[--stackTop]);
+      break;
+    case 6:
+      ctx.beginPath();
+      break;
+    case 7: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      const w = stToNumber(stack[--stackTop]);
+      const h = stToNumber(stack[--stackTop]);
+      ctx.fillRect(x, y, w, h);
+      break;
+    }
+    case 8: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      const w = stToNumber(stack[--stackTop]);
+      const h = stToNumber(stack[--stackTop]);
+      ctx.strokeRect(x, y, w, h);
+      break;
+    }
+    case 9: {
+      const str = stToString(stack[--stackTop]);
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.fillText(str, x, y);
+      break;
+    }
+    case 10: {
+      const str = stToString(stack[--stackTop]);
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.strokeText(str, x, y);
+      break;
+    }
+    case 11:
+      ctx.font = stToString(stack[--stackTop]);
+      break;
+    case 12:
+      ctx.lineWidth = stToNumber(stack[--stackTop]);
+      break;
+    case 13: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      const w = stToNumber(stack[--stackTop]);
+      const h = stToNumber(stack[--stackTop]);
+      ctx.clearRect(x, y, w, h);
+      break;
+    }
+    case 14:
+      ctx.closePath();
+      break;
+    case 15: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      const r = stToNumber(stack[--stackTop]);
+      const startAngle = stToNumber(stack[--stackTop]);
+      const endAngle = stToNumber(stack[--stackTop]);
+      ctx.arc(x, y, r, startAngle, endAngle);
+      break;
+    }
+    case 16: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      const rx = stToNumber(stack[--stackTop]);
+      const ry = stToNumber(stack[--stackTop]);
+      ctx.ellipse(x, y, rx, ry, 0, 0, 2 * Math.PI);
+      break;
+    }
+    case 17: {
+      const cpx = stToNumber(stack[--stackTop]);
+      const cpy = stToNumber(stack[--stackTop]);
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.quadraticCurveTo(cpx, cpy, x, y);
+      break;
+    }
+    case 18: {
+      const cp1x = stToNumber(stack[--stackTop]);
+      const cp1y = stToNumber(stack[--stackTop]);
+      const cp2x = stToNumber(stack[--stackTop]);
+      const cp2y = stToNumber(stack[--stackTop]);
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y);
+      break;
+    }
+    case 19: {
+      const x1 = stToNumber(stack[--stackTop]);
+      const y1 = stToNumber(stack[--stackTop]);
+      const x2 = stToNumber(stack[--stackTop]);
+      const y2 = stToNumber(stack[--stackTop]);
+      const r = stToNumber(stack[--stackTop]);
+      ctx.arcTo(x1, y1, x2, y2, r);
+      break;
+    }
+    case 20: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      const w = stToNumber(stack[--stackTop]);
+      const h = stToNumber(stack[--stackTop]);
+      ctx.rect(x, y, w, h);
+      break;
+    }
+    case 21:
+      ctx.save();
+      break;
+    case 22:
+      ctx.restore();
+      break;
+    case 23: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.translate(x, y);
+      break;
+    }
+    case 24: {
+      const a = stToNumber(stack[--stackTop]);
+      ctx.rotate(a);
+      break;
+    }
+    case 25: {
+      const x = stToNumber(stack[--stackTop]);
+      const y = stToNumber(stack[--stackTop]);
+      ctx.scale(x, y);
+      break;
+    }
+    default:
+      throw new Error("Bad canvas opcode " + opcode);
+  }
+  return stackTop;
+}
+
 export class UiHandler {
   handle(interpreter, high, stack, stackTop) {
     let returnedValue = null;
@@ -16,6 +191,12 @@ export class UiHandler {
       case 61: // create element with tagName
         const tagName = stack[--stackTop].toString();
         const newElt = document.createElement(tagName);
+        if (tagName === "canvas") {
+          newElt.width = 300;
+          newElt.height = 200;
+          const ctx = newElt.getContext("2d");
+          canvasToContext.set(newElt, ctx);
+        }
         returnedValue = new SmallJsObject(stack[--stackTop], newElt);
         break;
       case 62: // set element innerText
@@ -67,6 +248,11 @@ export class UiHandler {
         const clDelEl = stack[--stackTop];
         clDelEl.nativeObject.classList.remove(clToDel);
         returnedValue = clDelEl;
+        break;
+      case 70: // Canvas handler
+        returnedValue = stack[--stackTop];
+        const cnvsEl = returnedValue.nativeObject;
+        stackTop = handleCanvas(canvasToContext.get(cnvsEl), stack, stackTop);
         break;
       default:
         throw new Error("Bad UI " + high);
