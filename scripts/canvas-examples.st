@@ -87,3 +87,18 @@ pacman
   c arc: 89 y: 102 radius: 2 startAngle: 0 endAngle: (Float pi) * 2.
   c fill.
 !
+
+META Canvas
+speechBubble
+  | c |
+  c <- self setupTest: 'Speech Bubble'.
+  c beginPath.
+  c moveTo: 75 y: 25.
+  c quadraticCurveTo: 25 cpy: 25 x: 25 y: 62.5.
+  c quadraticCurveTo: 25 cpy: 100 x: 50 y: 100.
+  c quadraticCurveTo: 50 cpy: 120 x: 30 y: 125.
+  c quadraticCurveTo: 60 cpy: 120 x: 65 y: 100.
+  c quadraticCurveTo: 125 cpy: 100 x: 125 y: 62.5.
+  c quadraticCurveTo: 125 cpy: 25 x: 75 y: 25.
+  c stroke.
+!
