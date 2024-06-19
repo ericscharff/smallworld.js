@@ -21,33 +21,36 @@ function handleCanvas(ctx, stack, stackTop) {
   const opcode = stToNumber(stack[--stackTop]);
   switch (opcode) {
     case 0: {
+      // moveTo
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       ctx.moveTo(x, y);
       break;
     }
     case 1: {
+      // lineTo
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       ctx.lineTo(x, y);
       break;
     }
-    case 2:
+    case 2: // fill
       ctx.fill();
       break;
-    case 3:
+    case 3: // stroke
       ctx.stroke();
       break;
-    case 4:
+    case 4: // fillStyle
       ctx.fillStyle = stToString(stack[--stackTop]);
       break;
-    case 5:
+    case 5: // strokeStyle
       ctx.strokeStyle = stToString(stack[--stackTop]);
       break;
-    case 6:
+    case 6: // beginPath
       ctx.beginPath();
       break;
     case 7: {
+      // fillRect
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       const w = stToNumber(stack[--stackTop]);
@@ -56,6 +59,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 8: {
+      // strokeRect
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       const w = stToNumber(stack[--stackTop]);
@@ -64,6 +68,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 9: {
+      // fillText
       const str = stToString(stack[--stackTop]);
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
@@ -71,19 +76,21 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 10: {
+      // strokeText
       const str = stToString(stack[--stackTop]);
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       ctx.strokeText(str, x, y);
       break;
     }
-    case 11:
+    case 11: // font
       ctx.font = stToString(stack[--stackTop]);
       break;
-    case 12:
+    case 12: // lineWidth
       ctx.lineWidth = stToNumber(stack[--stackTop]);
       break;
     case 13: {
+      // clearRect
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       const w = stToNumber(stack[--stackTop]);
@@ -91,10 +98,11 @@ function handleCanvas(ctx, stack, stackTop) {
       ctx.clearRect(x, y, w, h);
       break;
     }
-    case 14:
+    case 14: // closePath
       ctx.closePath();
       break;
     case 15: {
+      // arc
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       const r = stToNumber(stack[--stackTop]);
@@ -104,6 +112,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 16: {
+      // ellipse
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       const rx = stToNumber(stack[--stackTop]);
@@ -112,6 +121,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 17: {
+      // quadraticCurveTo
       const cpx = stToNumber(stack[--stackTop]);
       const cpy = stToNumber(stack[--stackTop]);
       const x = stToNumber(stack[--stackTop]);
@@ -120,6 +130,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 18: {
+      // bezierCurveTo
       const cp1x = stToNumber(stack[--stackTop]);
       const cp1y = stToNumber(stack[--stackTop]);
       const cp2x = stToNumber(stack[--stackTop]);
@@ -130,6 +141,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 19: {
+      // arcTo
       const x1 = stToNumber(stack[--stackTop]);
       const y1 = stToNumber(stack[--stackTop]);
       const x2 = stToNumber(stack[--stackTop]);
@@ -139,6 +151,7 @@ function handleCanvas(ctx, stack, stackTop) {
       break;
     }
     case 20: {
+      // rect
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       const w = stToNumber(stack[--stackTop]);
@@ -146,24 +159,27 @@ function handleCanvas(ctx, stack, stackTop) {
       ctx.rect(x, y, w, h);
       break;
     }
-    case 21:
+    case 21: // save
       ctx.save();
       break;
-    case 22:
+    case 22: // restore
       ctx.restore();
       break;
     case 23: {
+      // translate
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       ctx.translate(x, y);
       break;
     }
     case 24: {
+      // rotate
       const a = stToNumber(stack[--stackTop]);
       ctx.rotate(a);
       break;
     }
     case 25: {
+      // scale
       const x = stToNumber(stack[--stackTop]);
       const y = stToNumber(stack[--stackTop]);
       ctx.scale(x, y);
