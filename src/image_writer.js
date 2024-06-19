@@ -190,6 +190,9 @@ export class ImageWriter {
       if (obj.isSmallByteArray()) {
         this.arraySize += 4 + obj.values.length;
       }
+      if (obj.isSmallJsObject() && obj.isNumber()) {
+        this.arraySize += obj.nativeObject.toString().length + 1;
+      }
     }
   }
 

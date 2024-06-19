@@ -56,11 +56,11 @@ pacman
   c bezierCurveTo: 83 cp1y: 94 cp2x: 89 cp2y: 88 x: 97 y: 88.
   c bezierCurveTo: 105 cp1y: 88 cp2x: 111 cp2y: 94 x: 111 y: 102.
   c lineTo: 111 y: 116.
-  c lineTo: 106 y: 111.
-  c lineTo: 102 y: 116.
-  c lineTo: 97 y: 111.
-  c lineTo: 92 y: 116.
-  c lineTo: 88 y: 111.
+  c lineTo: 106.333 y: 111.333.
+  c lineTo: 101.666 y: 116.
+  c lineTo: 97 y: 111.333.
+  c lineTo: 92.333 y: 116.
+  c lineTo: 87.666 y: 111.333.
   c lineTo: 83 y: 116.
   c fill.
 
