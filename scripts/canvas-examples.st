@@ -2,13 +2,21 @@
 "Requires that the Canvas object already exist."
 
 META Canvas
-test
+setupTest: testName
+  "Set up a canvas in a window"
   | w c b |
-  w <- self window: 'Canvas Test'.
+  w <- self window: testName.
   c <- self create: 'canvas'.
   b <- self button: 'close' action: [w remove].
   w append: c.
   w append: b.
+  ^ c
+!
+
+META Canvas
+test
+  | c |
+  c <- self setupTest: 'Canvas Test'.
   c roundedRect: 12 y: 12 w: 184 h: 168 r: 15.
   c lineWidth: 5.
   c strokeStyle: 'red'.
@@ -19,13 +27,8 @@ test
 
 META Canvas
 pacman
-  | w c b |
-  w <- self window: 'Canvas Test'.
-  c <- self create: 'canvas'.
-  b <- self button: 'close' action: [w remove].
-  w append: c.
-  w append: b.
-
+  | c |
+  c <- self setupTest: 'Pacman'.
   c roundedRect: 12 y: 12 w: 184 h: 168 r: 15.
   c roundedRect: 19 y: 19 w: 170 h: 154 r: 9.
   c roundedRect: 53 y: 53 w: 49 h: 33 r: 10.
