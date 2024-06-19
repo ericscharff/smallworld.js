@@ -18,6 +18,14 @@ class DataStream {
   writeByte(val) {
     this.content[this.pos++] = val;
   }
+
+  writeJsNumber(val) {
+    const str = val.toString();
+    this.writeByte(str.length);
+    for (let i = 0; i < str.length; i++) {
+      this.writeByte(str.charCodeAt(i));
+    }
+  }
 }
 
 // Write objects to a binary stream
@@ -84,7 +92,9 @@ export class ImageWriter {
     // First, write the object types
     // 0 = SmallObject, 1 = SmallInt, 2 = SmallByteArray
     for (const o of this.allObjects) {
-      if (o.isSmallByteArray()) {
+      if (o.isSmallJsObject() && o.isNumber()) {
+        stream.writeByte(3);
+      } else if (o.isSmallByteArray()) {
         stream.writeByte(2);
       } else if (o.isSmallInt()) {
         stream.writeByte(1);
@@ -111,6 +121,9 @@ export class ImageWriter {
           stream.writeByte(v);
         }
       }
+      if (o.isSmallJsObject() && o.isNumber()) {
+        stream.writeJsNumber(o.nativeObject);
+      }
     }
     // Write the (special case) count of small integers
     stream.writeInt(this.smallIntCount);
@@ -122,7 +135,7 @@ export class ImageWriter {
   }
 
   recordObjectData(obj) {
-    if (obj.isSmallJsObject()) {
+    if (obj.isSmallJsObject() && !obj.isNumber()) {
       throw new Error("SmallJsObject can not be serialized");
     }
     if (!this.hashToIndex.has(obj.hashCode())) {

@@ -81,9 +81,16 @@ export class SmallJsObject extends SmallObject {
   constructor(stClass, nativeObject) {
     super(stClass, 1);
     this.nativeObject = nativeObject;
+    if (typeof nativeObject === "number") {
+      this.data = new Array();
+    }
   }
 
   isSmallJsObject() {
     return true;
+  }
+
+  isNumber() {
+    return typeof this.nativeObject === "number";
   }
 }

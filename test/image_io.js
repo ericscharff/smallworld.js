@@ -79,9 +79,20 @@ describe("Image I/O", () => {
       expect(arr).to.eql(buf2);
     });
 
+    it("serializes floats", () => {
+      const writer = new ImageWriter();
+      const theFloat = new SmallJsObject(null, 3.2);
+      theFloat.objClass = theFloat;
+      writer.writeObject(theFloat);
+      const arr = writer.finish();
+      const reader = new ImageReader(arr);
+      const readFloat = reader.readObject();
+      expect(readFloat.nativeObject).to.equal(3.2);
+    });
+
     it("fails to write native objects", () => {
       const writer = new ImageWriter();
-      const nilObject = new SmallJsObject(null, 0);
+      const nilObject = new SmallJsObject(null, "object");
       nilObject.objClass = nilObject;
       expect(() =>
         writer.writeObject(new SmallJsObject(nilObject, "str")),

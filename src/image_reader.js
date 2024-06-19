@@ -1,4 +1,9 @@
-import { SmallObject, SmallByteArray, SmallInt } from "./objects.js";
+import {
+  SmallObject,
+  SmallByteArray,
+  SmallInt,
+  SmallJsObject,
+} from "./objects.js";
 
 // Convenience for reading big endian numbers from a Uint8Array
 class DataStream {
@@ -18,6 +23,15 @@ class DataStream {
 
   readByte() {
     return this.content[this.pos++];
+  }
+
+  readJsNumber() {
+    let s = "";
+    let len = this.readByte();
+    while (len--) {
+      s += String.fromCharCode(this.readByte());
+    }
+    return parseFloat(s);
   }
 }
 
@@ -50,6 +64,9 @@ export class ImageReader {
         case 2:
           this.objectPool[i] = new SmallByteArray(null, 0);
           break;
+        case 3:
+          this.objectPool[i] = new SmallJsObject(null, 0);
+          break;
         default:
           throw new Error("Unknown object type " + objType);
       }
@@ -73,6 +90,9 @@ export class ImageReader {
         for (let j = 0; j < byteLength; j++) {
           obj.values[j] = this.stream.readByte();
         }
+      }
+      if (obj.isSmallJsObject()) {
+        obj.nativeObject = this.stream.readJsNumber();
       }
     }
     this.smallIntCount = this.stream.readInt();
