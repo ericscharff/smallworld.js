@@ -208,8 +208,16 @@ export class UiHandler {
         const tagName = stack[--stackTop].toString();
         const newElt = document.createElement(tagName);
         if (tagName === "canvas") {
-          newElt.width = 300;
-          newElt.height = 200;
+          // We want a 300x200 drawing grid (specified by style)
+          // but a slightly different physical size to smooth for
+          // this screen.
+          const WIDTH = 300;
+          const HEIGHT = 200;
+          const dpi = window.devicePixelRatio;
+          newElt.width = WIDTH * dpi;
+          newElt.height = HEIGHT * dpi;
+          newElt.style.width = `${WIDTH}px`;
+          newElt.style.height = `${HEIGHT}px`;
           const ctx = newElt.getContext("2d");
           canvasToContext.set(newElt, ctx);
         }
