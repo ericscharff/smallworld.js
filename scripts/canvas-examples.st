@@ -80,7 +80,7 @@ META Canvas
 speechBubble
   | c |
   c <- self setup: 'Speech Bubble'.
-  c lineStyle: 'red'.
+  c strokeStyle: 'red'.
   c lineWidth: 3.
   c beginPath.
   c moveTo: 75 y: 25.
