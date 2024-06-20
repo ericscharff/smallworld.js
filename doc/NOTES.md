@@ -41,7 +41,7 @@ manipulate it. This is optional because the compiler and interpreter can work
 without requiring an arbitrary native object type.
 
 A description of how the core objects could be constructed using JavaScript is
-presented in [object_nternals.js](object_internals.js).
+presented in [object_internals.js](object_internals.js).
 
 ## The Object File Format
 
@@ -325,7 +325,7 @@ This turns out to be powerful once you realize that every method call creates a
 context of scoped variables. It can be used to make closure-like objects without
 having to create custom objects with instance variables.
 
-## The GUI
+## The Original GUI
 
 SmallWorld's GUI provides a Smalltalk programming environment. You can add and
 remove classes, edit existing class methods, add methods, evaluate expressions,
@@ -374,3 +374,52 @@ stored in the native object's event handler. When the native code runs it's
 event handler, it invokes code in `ui_handler.js`, which in turn calls
 `interpreter.runAction(action)`, which effectively creates a new context from
 the block and executes it.
+
+## The New GUI
+
+One of the reasons for rewriting SmallWorld in JavaScript was so that it could
+run natively in a Web browser. As such, assuming external primitives (like AWT
+or Swing) doesn't make a lot of sense. Furthermore, the existing system had a
+large set of primitives for dealing with very specific types of Java objects
+(Lists, TextFields, TextAreas, BorderPanel, etc.) In a Web based UI, these
+abstractions don't make sense.
+
+What does make sense in HTML is being able to create and manipulate HTML
+elements within Smalltalk. This drastically reduces the number of necessary
+primitives, and gives the Smalltalk code a lot of flexibility and power. The
+HTML GUI system exposes DOM manipulation directly to Smalltalk, and the UI can
+be built from this.
+
+To accomplish this, I defined a new class called Element that represents an HTML
+Element (like `div` or `button`). When you create an Element, you can grab a
+reference from the DOM (using `getElementById()`) or create a new element (using
+`document.createElement()`). Similar to the Java GUI, this returns an instance
+of the Element class that has a native peer that represents the DOM element. You
+can add or remove CSS classes, add child nodes to parent nodes, and remove nodes
+from the DOM. This, alongside appropriate CSS, gives a lot of power with minimal
+work. For convenience, the Element object also has a single `data` instance
+variable which can be anything the programmer wants. This is useful for defining
+a complex widget without defining new classes, and putting the widget state in
+that data holder.
+
+The Smalltalk code can listen to DOM events (e.g., `click`) by providing a DOM
+event type and a block. That block is passed the element itself in its callback
+so that it can be used (and, at some point, some proxy for the HTML event may be
+necessary, to handle things like key presses or mouse coordinates).
+
+This simple API was sufficient to simulate most of what the original Java API
+did with a few factory methods (for creating text fields, lists, and so on). I
+was then able to define a Class browser and editor which had a very similar API
+to the original, making it small and easy to use.
+
+Some JavaScript objects, especially HTML Canvas, have a very rich API surface
+area for drawing commands. To avoid defining dozens of interpreter primitives, I
+instead chose to define a single Canvas primitive, which provides an opcode read
+by the interpreter. A curious aspect of this approach is that a single primitive
+takes a variable number of arguments, and depending on how many operands a
+particular drawing operation takes, it will pop that many arguments out of the
+invoking method. In the native code, a `WeakMap` provides a map from HTML
+(canvas) elements to the drawing context for those elements, to avoid repeated
+calls to `elt.getContext("2d")`. A WeakMap is especially advantageous because
+when the DOM node is unreferenced, the reference to the context will
+automatically go away.
