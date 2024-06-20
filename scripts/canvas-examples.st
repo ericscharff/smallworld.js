@@ -14,18 +14,6 @@ setupTest: testName
 !
 
 META Canvas
-test
-  | c |
-  c <- self setupTest: 'Canvas Test'.
-  c roundedRect: 12 y: 12 w: 184 h: 168 r: 15.
-  c lineWidth: 5.
-  c strokeStyle: 'red'.
-  c moveTo: 50 y: 50.
-  c lineTo: 90 y: 90.
-  c stroke.
-!
-
-META Canvas
 pacman
   | c |
   c <- self setupTest: 'Pacman'.
@@ -92,6 +80,8 @@ META Canvas
 speechBubble
   | c |
   c <- self setupTest: 'Speech Bubble'.
+  c lineStyle: 'red'.
+  c lineWidth: 3.
   c beginPath.
   c moveTo: 75 y: 25.
   c quadraticCurveTo: 25 cpy: 25 x: 25 y: 62.5.
