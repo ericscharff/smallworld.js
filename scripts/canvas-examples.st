@@ -2,7 +2,7 @@
 "Requires that the Canvas object already exist."
 
 META Canvas
-setupTest: testName
+setup: testName
   "Set up a canvas in a window"
   | w c b |
   w <- self window: testName.
@@ -16,7 +16,7 @@ setupTest: testName
 META Canvas
 pacman
   | c |
-  c <- self setupTest: 'Pacman'.
+  c <- self setup: 'Pacman'.
   c roundedRect: 12 y: 12 w: 184 h: 168 r: 15.
   c roundedRect: 19 y: 19 w: 170 h: 154 r: 9.
   c roundedRect: 53 y: 53 w: 49 h: 33 r: 10.
@@ -79,7 +79,7 @@ pacman
 META Canvas
 speechBubble
   | c |
-  c <- self setupTest: 'Speech Bubble'.
+  c <- self setup: 'Speech Bubble'.
   c lineStyle: 'red'.
   c lineWidth: 3.
   c beginPath.
