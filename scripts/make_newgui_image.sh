@@ -19,4 +19,4 @@ cat \
   html-editor.st \
   html-error-handler.st \
   recompile.st \
-  save-newgui.st | ./repl.js --image_name ../data/nogui.image
+  save-newgui.st | ./repl.js --image_name ../data/base.image
