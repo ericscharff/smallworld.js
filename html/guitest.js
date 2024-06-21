@@ -9,7 +9,7 @@ describe("GUI Test", () => {
     const ws = document.createElement("div");
     ws.id = "workspace";
     document.body.appendChild(ws);
-    const resp = await fetch("../data/newgui.image");
+    const resp = await fetch("../data/html_gui.image");
     const buf = await resp.arrayBuffer();
     smallWorld = new SmallWorld(buf);
     smallWorld.interpreter.uiHandler = new UiHandler();
