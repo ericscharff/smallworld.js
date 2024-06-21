@@ -82,7 +82,7 @@ closePath
 !
 
 METHOD Canvas
-arc: x y: y radius: r startAngle: startAngle endAngle: endAngle
+arc: x y: y r: r startAngle: startAngle endAngle: endAngle
   <70 endAngle startAngle r y x 15 self>
 !
 

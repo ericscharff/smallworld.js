@@ -25,7 +25,7 @@ pacman
   c roundedRect: 135 y: 119 w: 25 h: 49 r: 10.
 
   c beginPath.
-  c arc: 37 y: 37 radius: 13 startAngle: (Float pi) / 7 endAngle: (Float pi) / -7.
+  c arc: 37 y: 37 r: 13 startAngle: (Float pi) / 7 endAngle: (Float pi) / -7.
   c lineTo: 31 y: 37.
   c fill.
 
@@ -68,11 +68,11 @@ pacman
 
   c fillStyle: 'black'.
   c beginPath.
-  c arc: 101 y: 102 radius: 2 startAngle: 0 endAngle: (Float pi) * 2.
+  c arc: 101 y: 102 r: 2 startAngle: 0 endAngle: (Float pi) * 2.
   c fill.
 
   c beginPath.
-  c arc: 89 y: 102 radius: 2 startAngle: 0 endAngle: (Float pi) * 2.
+  c arc: 89 y: 102 r: 2 startAngle: 0 endAngle: (Float pi) * 2.
   c fill.
 !
 
