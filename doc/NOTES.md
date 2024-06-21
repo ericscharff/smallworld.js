@@ -375,7 +375,7 @@ event handler, it invokes code in `ui_handler.js`, which in turn calls
 `interpreter.runAction(action)`, which effectively creates a new context from
 the block and executes it.
 
-## The New GUI
+## The HTML GUI
 
 One of the reasons for rewriting SmallWorld in JavaScript was so that it could
 run natively in a Web browser. As such, assuming external primitives (like AWT
