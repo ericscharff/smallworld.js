@@ -11,8 +11,7 @@ describe("GUI Test", () => {
     document.body.appendChild(ws);
     const resp = await fetch("../data/html_gui.image");
     const buf = await resp.arrayBuffer();
-    smallWorld = new SmallWorld(buf);
-    smallWorld.interpreter.uiHandler = new UiHandler();
+    smallWorld = new SmallWorld(buf, null, new UiHandler());
   });
 
   afterEach(() => {

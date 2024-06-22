@@ -4,7 +4,7 @@ import { Interpreter } from "./interpreter.js";
 import { SmallByteArray, SmallObject } from "./objects.js";
 
 export class SmallWorld {
-  constructor(buf, optImageSaveCallback) {
+  constructor(buf, optImageSaveCallback, optUiHandler) {
     const reader = new ImageReader(buf);
     const nilObject = reader.readObject();
     const trueObject = reader.readObject();
@@ -24,6 +24,7 @@ export class SmallWorld {
       BlockClass,
       ContextClass,
       IntegerClass,
+      optUiHandler,
     );
     if (optImageSaveCallback) {
       this.interpreter.imageSaveCallback = (imageFileName) => {

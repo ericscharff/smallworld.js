@@ -43,9 +43,10 @@ const ALL_SMALLTALK_CLASSES = [
 
 describe("Classic GUI", () => {
   let smallWorld = null;
+  let buf = null;
 
   beforeEach(async () => {
-    const buf = fs.readFileSync("data/base.image");
+    buf = fs.readFileSync("data/base.image");
     smallWorld = new SmallWorld(buf);
   });
 
@@ -125,7 +126,7 @@ describe("Classic GUI", () => {
         },
       };
 
-      smallWorld.interpreter.uiHandler = new UiHandler(uiFactory);
+      smallWorld = new SmallWorld(buf, null, new UiHandler(uiFactory));
 
       const browserButtons = [
         "evaluate expression",

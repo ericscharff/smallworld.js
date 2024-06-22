@@ -15,6 +15,7 @@ export class Interpreter {
     BlockClass,
     ContextClass,
     IntegerClass,
+    uiHandler,
   ) {
     this.nilObject = nilObject;
     this.trueObject = trueObject;
@@ -24,6 +25,7 @@ export class Interpreter {
     this.BlockClass = BlockClass;
     this.ContextClass = ContextClass;
     this.IntegerClass = IntegerClass;
+    this.uiHandler = uiHandler;
   }
 
   buildContext(oldContext, args, method) {
