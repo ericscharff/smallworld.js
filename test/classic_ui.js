@@ -175,10 +175,11 @@ describe("Classic GUI", () => {
    <19 self>`);
       const compileMethodButton = buttonListeners[1];
       // The method to compile
-      savedTextArea = 'fork\n  " from UI "\n<19 self>';
+      const newFork = 'fork\n  " from UI "\n<19 self>';
+      savedTextArea = newFork;
       compileMethodButton(); // click compile method
       // The newly compiled fork method should be in the image now
-      expect(printIt("(Block methods at: 1) text")).to.equal(savedTextArea);
+      expect(printIt("(Block methods at: 1) text")).to.equal(newFork);
     });
   });
 });
