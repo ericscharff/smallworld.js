@@ -128,13 +128,6 @@ describe("Classic GUI", () => {
 
       smallWorld = new SmallWorld(buf, null, new UiHandler(uiFactory));
 
-      const browserButtons = [
-        "evaluate expression",
-        "examine class",
-        "delete class",
-        "clear",
-        "close",
-      ];
       doIt("Class browser");
       expect(windowTitle).to.equal("Smalltalk Browser");
       expect(listData).to.eql(ALL_SMALLTALK_CLASSES);
