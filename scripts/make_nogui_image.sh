@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Use the base.image to create nogui.image which is headless (removing
-# methods referring to Budd's Java GUI). nogui.image is a good starting point
-# for adding features (such as the HTML based GUI).
+# Use the base.image to remove methods referring to Budd's Java GUI. The result
+# is nogui.image, which is a minimal image that doesn't require a GUI. It is
+# used by the REPL and is the starting point for adding new features, such as
+# alternative GUIs (e.g. the HTML GUI).
 
 cat \
   add-class-saveimage.st \
