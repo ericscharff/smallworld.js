@@ -1,4 +1,4 @@
-# smallworld.js (2025)
+# smallworld.js
 
 smallworld.js is a translation of Timothy Budd's SmallWorld into JavaScript.
 SmallWorld is a Java implementation of a very basic Smalltalk virtual machine.
