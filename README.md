@@ -70,4 +70,3 @@ Here is the HTML UI showing off SmallWorld's integration with the HTML Canvas
 API:
 
 ![SmallWorld in a Browser](doc/pacman.png)
-Wed Apr  2 08:13:11 AM MDT 2025
