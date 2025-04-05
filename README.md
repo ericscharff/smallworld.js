@@ -39,7 +39,7 @@ There is a [simple REPL](scripts/repl.js) in the `scripts` directory that you
 can run from the command line with `node repl.js` or `./repl.js`. Lines on the
 command line will be compiled and run with `doIt`.
 
-You can run a very, very primitive version of the interpeter by loading
+You can run a very rudimentary version of the interpeter by loading
 [index.html](html/index.html) in a Web browser. You can evaluate expressions and
 the result will be printed below.
 
