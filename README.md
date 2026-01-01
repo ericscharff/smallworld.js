@@ -1,3 +1,5 @@
+# Happy 2026
+
 # smallworld.js
 
 smallworld.js is a translation of Timothy Budd's SmallWorld into JavaScript.
