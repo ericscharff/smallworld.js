@@ -1,5 +1,3 @@
-# Happy 2026
-
 # smallworld.js
 
 smallworld.js is a translation of Timothy Budd's SmallWorld into JavaScript.
@@ -13,8 +11,7 @@ Java version, every Smalltalk object corresponds to a JavaScript object. Thus,
 the JavaScript runtime does all the memory management and garbage collection.
 This isn't a particularly fast or elegant Smalltalk VM, but it is very simple,
 and relies on the fact that modern systems are very fast, and JavaScript
-runtimes are quite good, so actually using the system has reasonable
-performance.
+runtimes are quite good, so using the system has reasonable performance.
 
 ## Status
 
