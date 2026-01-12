@@ -2,7 +2,7 @@
 
 This lists every primitive that is referenced by classes in the system. This
 was derived by looking at the (extracted) source code of the system, and a bit
-of perl regular expression magic to get the primitive number, the class, and the
+of Perl regular expression magic to get the primitive number, the class, and the
 method that the primitive is referenced.
 
 This list is useful in case the primitives are redefined, or removed (e.g.,
