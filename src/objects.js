@@ -76,7 +76,7 @@ export class SmallInt extends SmallObject {
   }
 }
 
-// A holder for a javascript object
+// A holder for a JavaScript object
 export class SmallJsObject extends SmallObject {
   constructor(stClass, nativeObject) {
     super(stClass, 1);
