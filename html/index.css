@@ -1,3 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
+#workspace {
+  position: relative;
+  width: 100vw;
+  height: 90vw;
+  overflow: hidden;
+}
+
 .stWindow {
   border: 2px solid black;
 }

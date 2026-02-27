@@ -1,3 +1,7 @@
+import "./window_component.js";
+
+let highestZIndex = 100;
+
 export class DomUiFactory {
   makeBorderedPanel() {
     const d = document.createElement("div");
@@ -130,19 +134,23 @@ export class DomUiFactory {
   }
 
   makeWindow() {
-    const d = document.createElement("div");
-    d.classList.add("stWindow");
+    const d = document.createElement("st-window");
+    d.setAttribute("window-title", "Window");
+    d.style.zIndex = ++highestZIndex;
+    d.setAttribute("x", 50);
+    d.setAttribute("y", 50);
+    d.setAttribute("width", 400);
+    d.setAttribute("height", 300);
     document.getElementById("workspace").appendChild(d);
     return {
       elt: d,
       addChildWidget: (c) => d.appendChild(c.elt),
-      //setSize: (w, h) => console.log("window size", w, h),
-      setSize: (w, h) => 0,
+      setSize: (w, h) => {
+        d.setAttribute("width", w);
+        d.setAttribute("height", h);
+      },
       setTitle: (t) => {
-        const s = document.createElement("span");
-        s.classList.add("windowTitle");
-        s.innerText = t;
-        d.appendChild(s);
+        d.setAttribute("window-title", t);
       },
       setVisible: (v) => {
         if (!v) {
@@ -152,3 +160,8 @@ export class DomUiFactory {
     };
   }
 }
+
+// Handle z index on window selections
+document.addEventListener("window-focus", (e) => {
+  e.target.style.zIndex = ++highestZIndex;
+});
