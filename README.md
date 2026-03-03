@@ -15,7 +15,7 @@ runtimes are quite good, so using the system has reasonable performance.
 
 ## Status
 
-The current implementation is extremely minimalist. The GUI is rough and
+The current implementation is extremely barebones. The GUI is rough and
 incomplete. However, what is here is capable of running a fairly large amount of
 Smalltalk code correctly, including basic arbitrary precision arithmetic, string
 manipulation, and adding new methods to existing classes. See the tests in
