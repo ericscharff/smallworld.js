@@ -15,7 +15,7 @@
     "c8": "^11.0.0",
     "chai": "^6.2.2",
     "mocha": "^11.7.6",
-    "prettier": "^3.8.3",
+    "prettier": "^3.9.0",
     "sinon": "^22.0.0",
     "typescript": "^6.0.3",
     "typescript-language-server": "^5.3.0"
